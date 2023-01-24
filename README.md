@@ -64,6 +64,8 @@ packer build -only=qemu.rocky-9-smartos-x86_64 .
 
 ## Requirements
 
+This was tested on a baremetal Ubuntu 22.04 server.  Other variations might behave differently due to Ansible os_family changes being made upstream to support Alma and Rocky.
+
 * [Packer](https://www.packer.io/) `>= 1.7.0`
 * [Ansible](https://www.ansible.com/) `>= 2.12`
 * [QEMU](https://www.qemu.org/) 
