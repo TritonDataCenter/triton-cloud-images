@@ -4,6 +4,14 @@ The Triton DataCenter and SmartOS cloud images repo was based on [AlmaLinux clou
 
 This peoject uses [Packer](https://www.packer.io/) templates and and Ansible for building the images.
 
+
+## Build details
+
+- All Linux instances are currently built with LVM on the primary disk with a single logical volume (rootlv) for the root partition. 
+- Swap is disabled in all kickstarts, and preseed configurations.
+- cloud-init will look for /dev/vdb and mount it under /data (ext4).
+
+
 ## Available Images
 
 | Name | Version |
