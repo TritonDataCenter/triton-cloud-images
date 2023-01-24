@@ -1,0 +1,8 @@
+---
+collections:
+  - ansible.posix
+  - almalinux.ci
+  - community.general
+
+roles:
+  - ezamriy.vbox_guest

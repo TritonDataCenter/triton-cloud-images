@@ -1,0 +1,12 @@
+---
+
+- name: "Running tasks for {{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_distribution_major_version }})"
+  include_tasks: "{{ lookup('first_found', possible_files) }}"
+  vars:
+    possible_files:
+      - "{{ ansible_distribution }}_{{ ansible_distribution_version }}.yml"
+      - "{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml"
+      - "{{ ansible_os_family }}.yml"
+
+- name: Running common tasks for any distribution any version - common.yml
+  include_tasks: common.yml

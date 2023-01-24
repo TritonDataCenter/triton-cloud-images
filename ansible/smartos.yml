@@ -1,0 +1,10 @@
+# An Ansible playbook that configures a SmartOS image
+---
+- name: SmartOS
+  hosts: default
+  become: true
+
+  roles:
+    #- setup_cloud_init
+    - smartos_guest
+    - cleanup_vm

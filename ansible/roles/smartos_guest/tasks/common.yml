@@ -1,0 +1,70 @@
+---
+
+- name: Disable root login
+  user:
+    name: root
+    password: '!!'
+
+- name: Setup SmartOS cloud-init
+  copy:
+    src: 90_smartos.cfg
+    dest: /etc/cloud/cloud.cfg.d/90_smartos.cfg
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Triton sdcvmtools lib/smartdc
+  copy:
+    src: lib/smartdc
+    dest: /lib
+    owner: root
+    group: root
+
+- name: Triton sdcvmtools lib/smartdc
+  copy:
+    src: "{{ item }}"
+    dest: /usr/sbin/
+    owner: root
+    group: root
+    mode: 0755
+  with_fileglob:
+    - "usr/sbin/mdata-*"
+
+
+#ln -s /usr/sbin/mdata-get /lib/smartdc/mdata-get
+- name: Triton symlink mdata
+  file:
+    src: /usr/sbin/mdata-get
+    dest: /lib/smartdc/mdata-get
+    owner: root
+    group: root
+    state: link
+    force: true
+
+
+- name: setup motd
+  template:
+    src: motd.j2
+    dest: /etc/motd
+    owner: root
+    group: root
+    mode: 0644
+
+- name: link /etc/motd to /etc/issue
+  file:
+    src: /etc/motd
+    dest: /etc/issue
+    owner: root
+    group: root
+    state: link
+    force: true
+
+- name: link /etc/motd to /etc/issue.net
+  file:
+    src: /etc/motd
+    dest: /etc/issue.net
+    owner: root
+    group: root
+    state: link
+    force: true
+
