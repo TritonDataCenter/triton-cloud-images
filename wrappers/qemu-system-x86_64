@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [[ -n "$TRACE" ]]; then
+    export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+    set -o xtrace
+fi
+
+declare -A map
+map[-machine]='-M'
+map["type=pc,accel=kvm"]="pc"
+command_args=()
+
+count=0
+for arg in "$@"; do
+  count=$(( count + 1 ))
+  if [[ -n ${map[$arg]} ]]; then
+    a="${map[$arg]}"
+    #printf 'arg %d: %s -> %s\n' "$count" "$arg" "$a"
+  else
+    a="$arg"
+    #printf 'arg %d: %s\n' "$count" "$arg"
+  fi
+  #a="${a/virtio-scsi/virtio}"
+  #a="${a/virtio-net/virtio-net-pci}"
+  command_args=( "${command_args[@]}" "$a" )
+done
+
+#printf 'Final arg string:\n\t%s\n' "${command_args[*]}"
+
+/smartdc/bin/qemu-system-x86_64 "${command_args[@]}"
