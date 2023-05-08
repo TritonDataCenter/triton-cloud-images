@@ -12,7 +12,8 @@ locals {
   rocky_8_boot_command_uefi = [
     "c<wait>",
     "linuxefi /images/pxeboot/vmlinuz inst.stage2=hd:LABEL=rocky-8-7-x86_64-boot ro ",
-    "inst.text biosdevname=0 net.ifnames=0 ",
+    "inst.text ",
+    "inst.nompath ",
     "inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rocky-8.smartos-x86_64.ks<enter>",
     "initrdefi /images/pxeboot/initrd.img<enter>",
     "boot<enter><wait>"
@@ -76,7 +77,7 @@ source "qemu" "rocky-8-smartos-uefi-x86_64" {
 
 build {
   sources = [
-    "qemu.rocky-8-smartos-x86_64"
+    "qemu.rocky-8-smartos-uefi-x86_64"
   ]
 
   provisioner "ansible" {
