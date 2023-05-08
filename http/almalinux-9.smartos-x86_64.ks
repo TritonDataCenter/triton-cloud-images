@@ -18,15 +18,15 @@ firewall --enabled --service=ssh
 services --disabled="kdump" --enabled="chronyd,rsyslog,sshd"
 selinux --enforcing
 
-bootloader --timeout=1 --location=mbr --append="console=ttyS0,115200n8 no_timer_check crashkernel=auto net.ifnames=0"
+bootloader --timeout=1 --location=mbr --append="console=ttyS0,115200n8 no_timer_check crashkernel=auto tsc=reliable net.ifnames=0"
 
 # Partition stuff
 zerombr
 clearpart --all --initlabel --disklabel=gpt
 
 part biosboot  --size=1    --fstype=biosboot --asprimary
-part /boot/efi --size=100  --fstype=efi      --asprimary
-part /boot     --size=1000 --fstype=xfs      --label=boot
+part /boot/efi --size=200  --fstype=efi      --asprimary
+part /boot     --size=800 --fstype=xfs      --label=boot
 part pv.01     --size=1    --ondisk=sda      --grow
 volgroup rootvg pv.01
 logvol / --vgname=rootvg --size=8000 --name=rootlv --grow

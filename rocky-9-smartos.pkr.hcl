@@ -10,6 +10,17 @@ locals {
     "<tab> inst.text biosdevname=0 net.ifnames=0 inst.gpt inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rocky-9.smartos-x86_64.ks<enter><wait>"
   ]
 
+  rocky_9_boot_command_uefi = [
+    "c<wait>",
+    "linuxefi /images/pxeboot/vmlinuz inst.stage2=hd:LABEL=Rocky-9-1-x86_64-dvd ro ",
+    "inst.text biosdevname=0 net.ifnames=0 ",
+    "inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rocky-9.smartos-x86_64.ks<enter>",
+    "initrdefi /images/pxeboot/initrd.img<enter>",
+    "boot<enter><wait>"
+  ]
+
+
+
 }
 
 
@@ -67,7 +78,7 @@ source "qemu" "rocky-9-smartos-uefi-x86_64" {
   memory             = var.memory
   net_device         = "virtio-net"
   qemu_binary        = var.qemu_binary
-  vm_name            = "AlmaLinux-9-GenericCloud-9.1-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
+  vm_name            = "rocky-9.1-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
   boot_wait          = var.boot_wait
   boot_command       = local.rocky_9_boot_command_uefi
   qemuargs = [
@@ -77,7 +88,7 @@ source "qemu" "rocky-9-smartos-uefi-x86_64" {
 
 build {
   sources = [
-    "qemu.rocky-9-smartos-x86_64"
+    "qemu.rocky-9-smartos-uefi-x86_64"
   ]
 
   provisioner "ansible" {
