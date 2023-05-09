@@ -31,11 +31,14 @@ autoinstall:
   user-data:
     disable_root: false
     timezone: UTC
+    users:
+      - name: root
+        hashed_passwd: $6$PoeuPl9INRKg51ib$yZcI0ipo4vxa6GA2yI7DhOgY7qnkNQastH0GmtlhD9d57nbaxUh0elFz2OQYtxdEPLnb1V7BS4ke6dvBDHLdR1
 
   identity:
     hostname: jammy-daily
     username: root
-    password: $6$mBxDC8/xUfInBEZY$Sjjj4oRj9kzTee7pDpGq6JZ98kZKUDJ6F54.hMv.OBrrggtOZwRFsqb/EICRJ2ep7eeebLoTZ1ztZmdPLJttY0
+    password: $6$PoeuPl9INRKg51ib$yZcI0ipo4vxa6GA2yI7DhOgY7qnkNQastH0GmtlhD9d57nbaxUh0elFz2OQYtxdEPLnb1V7BS4ke6dvBDHLdR1
 
   ssh:
     install-server: true
@@ -53,6 +56,4 @@ autoinstall:
   late-commands:
     - sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /target/etc/ssh/sshd_config
     - sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/g' /target/etc/ssh/sshd_config
-    - systemctl restart ssh
-    - sed -i 's/^root:.*/root:$6$mBxDC8\/xUfInBEZY$Sjjj4oRj9kzTee7pDpGq6JZ98kZKUDJ6F54.hMv.OBrrggtOZwRFsqb\/EICRJ2ep7eeebLoTZ1ztZmdPLJttY0/g' /target/etc/shadow
 
