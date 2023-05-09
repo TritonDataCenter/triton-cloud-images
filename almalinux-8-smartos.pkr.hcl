@@ -77,8 +77,8 @@ source "qemu" "almalinux-8-smartos-uefi-x86_64" {
 
 build {
   sources = [
-    "qemu.almalinux-8-smartos-uefi-x86_64"
-    "qemu.almalinux-8-smartos-x86_64"
+    "qemu.almalinux-8-smartos-uefi-x86_64",
+    "qemu.almalinux-8-smartos-x86_64",
   ]
 
   provisioner "ansible" {

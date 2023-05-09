@@ -50,7 +50,7 @@
     group: root
     mode: 0644
 
-- name: link /etc/motd to /etc/issue
+- name: link /etc/motd to /etc/issue.net
   file:
     src: /etc/motd
     dest: /etc/issue
@@ -58,6 +58,7 @@
     group: root
     state: link
     force: true
+
 
 - name: link /etc/motd to /etc/issue.net
   file:
