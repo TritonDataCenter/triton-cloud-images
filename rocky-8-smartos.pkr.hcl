@@ -20,6 +20,22 @@ locals {
   ]
 }
 
+source "bhyve" "rocky-8-smartos-x86_64" {
+  boot_command       = local.rocky_8_boot_command_uefi
+  boot_wait          = var.boot_wait
+  cpus               = var.cpus
+  disk_size          = var.disk_size
+  http_directory     = var.http_directory
+  iso_checksum       = local.rocky_8_iso_checksum
+  iso_url            = local.rocky_8_iso_url
+  memory             = var.memory
+  shutdown_command   = var.root_shutdown_command
+  ssh_password       = var.ssh_password
+  ssh_timeout        = var.ssh_timeout
+  ssh_username       = var.ssh_username
+  vm_name            = "rocky-8.7-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
+}
+
 source "qemu" "rocky-8-smartos-x86_64" {
   iso_url            = local.rocky_8_iso_url
   iso_checksum       = local.rocky_8_iso_checksum
@@ -77,6 +93,7 @@ source "qemu" "rocky-8-smartos-uefi-x86_64" {
 
 build {
   sources = [
+    "bhyve.rocky-8-smartos-x86_64",
     "qemu.rocky-8-smartos-uefi-x86_64"
   ]
 
@@ -85,10 +102,11 @@ build {
     galaxy_file      = "./ansible/requirements.yml"
     roles_path       = "./ansible/roles"
     collections_path = "./ansible/collections"
+    extra_arguments  = [ "--scp-extra-args", "'-O'" ]
     ansible_env_vars = [
       "ANSIBLE_PIPELINING=True",
       "ANSIBLE_REMOTE_TEMP=/tmp",
-      "ANSIBLE_SSH_ARGS='-o ControlMaster=no -o ControlPersist=180s -o ServerAliveInterval=120s -o TCPKeepAlive=yes'"
+      "ANSIBLE_SSH_ARGS='-o ControlMaster=no -o ControlPersist=180s -o ServerAliveInterval=120s -o TCPKeepAlive=yes -oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa'"
     ]
   }
 }

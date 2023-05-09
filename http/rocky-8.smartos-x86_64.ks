@@ -1,8 +1,8 @@
 # AlmaLinux 8 kickstart file for Generic Cloud (OpenStack) image
 
 url --url https://download.rockylinux.org/stg/rocky/8/BaseOS/x86_64/os/
-repo --name="BaseOS" --baseurl=http://dl.rockylinux.org/pub/rocky/8.7/BaseOS/x86_64/os/ 
-repo --name="AppStream" --baseurl=http://dl.rockylinux.org/pub/rocky/8.7/AppStream/x86_64/os/ 
+repo --name="BaseOS" --baseurl=http://dl.rockylinux.org/pub/rocky/8.7/BaseOS/x86_64/os/
+repo --name="AppStream" --baseurl=http://dl.rockylinux.org/pub/rocky/8.7/AppStream/x86_64/os/
 
 text
 skipx

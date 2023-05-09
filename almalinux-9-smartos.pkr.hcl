@@ -9,7 +9,6 @@ locals {
   almalinux_9_boot_command = [
     "<tab> inst.text biosdevname=0 net.ifnames=0 inst.gpt inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/almalinux-9.smartos-x86_64.ks<enter><wait>"
   ]
-
   almalinux_9_boot_command_uefi = [
     "c<wait>",
     "linuxefi /images/pxeboot/vmlinuz inst.repo=cdrom ",
@@ -18,10 +17,23 @@ locals {
     "initrdefi /images/pxeboot/initrd.img<enter>",
     "boot<enter><wait>"
   ]
-
-
 }
 
+source "bhyve" "almalinux-9-smartos-x86_64" {
+  boot_command       = local.almalinux_9_boot_command_uefi
+  boot_wait          = var.boot_wait
+  cpus               = var.cpus
+  disk_size          = var.disk_size
+  http_directory     = var.http_directory
+  iso_checksum       = local.almalinux_9_iso_checksum
+  iso_url            = local.almalinux_9_iso_url
+  memory             = var.memory
+  shutdown_command   = var.root_shutdown_command
+  ssh_password       = var.ssh_password
+  ssh_timeout        = var.ssh_timeout
+  ssh_username       = var.ssh_username
+  vm_name            = "almalinux-9.1-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
+}
 
 source "qemu" "almalinux-9-smartos-x86_64" {
   iso_url            = local.almalinux_9_iso_url
@@ -88,6 +100,7 @@ source "qemu" "almalinux-9-smartos-uefi-x86_64" {
 
 build {
   sources = [
+    "bhyve.almalinux-9-smartos-x86_64",
     "qemu.almalinux-9-smartos-uefi-x86_64",
     "qemu.almalinux-9-smartos-x86_64"
   ]
@@ -97,10 +110,11 @@ build {
     galaxy_file      = "./ansible/requirements.yml"
     roles_path       = "./ansible/roles"
     collections_path = "./ansible/collections"
+    extra_arguments  = [ "--scp-extra-args", "'-O'" ]
     ansible_env_vars = [
       "ANSIBLE_PIPELINING=True",
       "ANSIBLE_REMOTE_TEMP=/tmp",
-      "ANSIBLE_SSH_ARGS='-o ControlMaster=no -o ControlPersist=180s -o ServerAliveInterval=120s -o TCPKeepAlive=yes'"
+      "ANSIBLE_SSH_ARGS='-o ControlMaster=no -o ControlPersist=180s -o ServerAliveInterval=120s -o TCPKeepAlive=yes -oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa'"
     ]
   }
 }
