@@ -7,17 +7,19 @@ locals {
   rocky_8_iso_checksum = "file:https://dl.rockylinux.org/stg/rocky/8.8/isos/x86_64/CHECKSUM"
 
   rocky_8_boot_command = [
-    "<tab> inst.text net.ifnames=0 inst.gpt inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rocky-8.smartos-x86_64.ks<enter><wait>"
+    "<tab> inst.text net.ifnames=0 inst.gpt inst.ks=${var.kickstart_url}<enter><wait>"
   ]
   rocky_8_boot_command_uefi = [
     "c<wait>",
     "linuxefi /images/pxeboot/vmlinuz inst.repo=cdrom ",
     "inst.text ",
     "inst.nompath ",
-    "inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rocky-8.smartos-x86_64.ks<enter>",
+    "inst.ks=${var.kickstart_url}<enter>",
     "initrdefi /images/pxeboot/initrd.img<enter>",
     "boot<enter><wait>"
   ]
+
+  rocky_8_kickstart_template = "${path.root}/http/rocky-8.smartos-x86_64.ks"
 }
 
 source "bhyve" "rocky-8-smartos-x86_64" {
@@ -25,7 +27,12 @@ source "bhyve" "rocky-8-smartos-x86_64" {
   boot_wait          = var.boot_wait
   cpus               = var.cpus
   disk_size          = var.disk_size
-  http_directory     = var.http_directory
+  host_nic           = var.host_nic
+  http_content       = {
+    "/${var.kickstart_file}" = templatefile(local.rocky_8_kickstart_template, {
+      disk_device = "vda"
+    })
+  }
   iso_checksum       = local.rocky_8_iso_checksum
   iso_url            = local.rocky_8_iso_url
   memory             = var.memory

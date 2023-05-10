@@ -6,6 +6,7 @@ variables {
   memory                = 4096
   post_cpus             = 2
   post_memory           = 2048
+  host_nic              = "net0"
   http_directory        = "http"
   ssh_timeout           = "3600s"
   root_shutdown_command = "/sbin/shutdown -hP now"
@@ -22,4 +23,6 @@ variables {
   ssh_username = "root"
   ssh_password = "tritondatacenter"
 
+  kickstart_file     = "anaconda.ks"
+  kickstart_url      = "http://{{ .HTTPIP }}:{{ .HTTPPort }}/anaconda.ks"
 }
