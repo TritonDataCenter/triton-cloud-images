@@ -28,7 +28,7 @@ source "bhyve" "rocky-9-smartos-x86_64" {
   disk_size          = var.disk_size
   host_nic           = var.host_nic
   http_content       = {
-    "/${var.kickstart_file}" = templatefile(local.rocky_8_kickstart_template, {
+    "/${var.kickstart_file}" = templatefile(local.rocky_9_kickstart_template, {
       disk_device = "vda"
     })
   }
