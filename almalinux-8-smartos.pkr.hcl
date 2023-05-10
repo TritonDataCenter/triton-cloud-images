@@ -32,7 +32,6 @@ source "bhyve" "almalinux-8-smartos-x86_64" {
       disk_device = "vda"
     })
   }
-  http_directory     = var.http_directory
   iso_checksum       = local.almalinux_8_iso_checksum
   iso_url            = local.almalinux_8_iso_url
   memory             = var.memory
