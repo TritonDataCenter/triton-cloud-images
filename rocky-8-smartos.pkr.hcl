@@ -41,6 +41,7 @@ source "bhyve" "rocky-8-smartos-x86_64" {
   ssh_timeout        = var.ssh_timeout
   ssh_username       = var.ssh_username
   vm_name            = "rocky-8.7-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
+  vnc_bind_address   = var.vnc_bind_address
   vnc_use_password   = true
 }
 
