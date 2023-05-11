@@ -19,6 +19,25 @@ locals {
 
 }
 
+source "bhyve" "ubuntu-2204-smartos-x86_64" {
+  boot_command       = local.ubuntu_2204_boot_command
+  boot_wait          = var.boot_wait
+  cpus               = var.cpus
+  disk_size          = var.disk_size
+  host_nic           = var.host_nic
+  http_directory     = var.http_directory
+  iso_checksum       = local.ubuntu_2204_iso_checksum
+  iso_url            = local.ubuntu_2204_iso_url
+  memory             = var.memory
+  shutdown_command   = var.root_shutdown_command
+  ssh_password       = var.ssh_password
+  ssh_timeout        = var.ssh_timeout
+  ssh_username       = var.ssh_username
+  vm_name            = "ubuntu-22.04-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
+  vnc_bind_address   = var.vnc_bind_address
+  vnc_use_password   = true
+}
+
 source "qemu" "ubuntu-2204-smartos-x86_64" {
   iso_url            = local.ubuntu_2204_iso_url
   iso_checksum       = local.ubuntu_2204_iso_checksum
@@ -82,6 +101,7 @@ source "qemu" "ubuntu-2204-smartos-uefi-x86_64" {
 
 build {
   sources = [
+    "bhyve.ubuntu-2204-smartos-x86_64",
     "qemu.ubuntu-2204-smartos-x86_64",
     "qemu.ubuntu-2204-smartos-uefi-x86_64",
   ]
@@ -91,6 +111,7 @@ build {
     galaxy_file      = "./ansible/requirements.yml"
     roles_path       = "./ansible/roles"
     collections_path = "./ansible/collections"
+    extra_arguments  = [ "--scp-extra-args", "'-O'" ]
     ansible_env_vars = [
       "ANSIBLE_PIPELINING=True",
       "ANSIBLE_REMOTE_TEMP=/tmp",
