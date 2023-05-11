@@ -24,6 +24,8 @@ source "bhyve" "ubuntu-2204-smartos-x86_64" {
   boot_wait          = var.boot_wait
   cpus               = var.cpus
   disk_size          = var.disk_size
+  disk_use_zvol      = var.disk_use_zvol
+  disk_zpool         = var.disk_zpool
   host_nic           = var.host_nic
   http_directory     = var.http_directory
   iso_checksum       = local.ubuntu_2204_iso_checksum

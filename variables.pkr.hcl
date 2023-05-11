@@ -3,6 +3,8 @@ variables {
   headless              = true
   boot_wait             = "10s"
   cpus                  = 4
+  disk_use_zvol         = false
+  disk_zpool            = "zones"
   memory                = 4096
   post_cpus             = 2
   post_memory           = 2048

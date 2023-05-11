@@ -26,6 +26,8 @@ source "bhyve" "almalinux-8-smartos-x86_64" {
   boot_wait          = var.boot_wait
   cpus               = var.cpus
   disk_size          = var.disk_size
+  disk_use_zvol      = var.disk_use_zvol
+  disk_zpool         = var.disk_zpool
   host_nic           = var.host_nic
   http_content       = {
     "/${var.kickstart_file}" = templatefile(local.almalinux_8_kickstart_template, {
