@@ -45,9 +45,44 @@ source "qemu" "ubuntu-2204-smartos-x86_64" {
   boot_command       = local.ubuntu_2204_boot_command
 }
 
+source "qemu" "ubuntu-2204-smartos-uefi-x86_64" {
+  iso_url            = local.ubuntu_2204_iso_url
+  iso_checksum       = local.ubuntu_2204_iso_checksum
+  shutdown_command   = var.root_shutdown_command
+  accelerator        = "kvm"
+  http_directory     = var.http_directory
+  ssh_username       = var.ssh_username
+  ssh_password       = var.ssh_password
+  ssh_timeout        = var.ssh_timeout
+  cpus               = var.cpus
+  disk_interface     = "virtio-scsi"
+  disk_size          = var.disk_size
+  disk_cache         = "unsafe"
+  disk_discard       = "unmap"
+  disk_detect_zeroes = "unmap"
+  disk_compression   = true
+
+  efi_firmware_code  = var.ovmf_code
+  efi_firmware_vars  = var.ovmf_vars
+  firmware           = var.ovmf_code
+
+  format             = "raw"
+  headless           = var.headless
+  machine_type       = "pc"
+  memory             = var.memory
+  net_device         = "virtio-net-pci"
+  qemu_binary        = var.qemu_binary
+  vm_name            = "ubuntu-22.04-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
+  boot_wait          = var.boot_wait
+  boot_command       = local.ubuntu_2204_boot_command
+}
+
+
+
 build {
   sources = [
     "qemu.ubuntu-2204-smartos-x86_64",
+    "qemu.ubuntu-2204-smartos-uefi-x86_64",
   ]
 
   provisioner "ansible" {
