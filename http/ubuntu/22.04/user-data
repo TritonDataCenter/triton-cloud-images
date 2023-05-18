@@ -28,10 +28,6 @@ autoinstall:
   keyboard:
     layout: us
 
-  storage:
-    grub:
-      reorder_uefi: False
-
   user-data:
     disable_root: false
     timezone: UTC
@@ -56,6 +52,9 @@ autoinstall:
     - zsh
     - wget
     - tasksel
+
+  grub:
+    reorder_uefi: False
 
   late-commands:
     - sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /target/etc/ssh/sshd_config
