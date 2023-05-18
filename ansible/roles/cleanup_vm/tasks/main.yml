@@ -1,4 +1,9 @@
 ---
+
+- name: run cloud-init clean
+  command: cloud-init clean
+  ignore_errors: true
+
 - name: Remove old kernels
   shell: dnf remove -y $(dnf repoquery --installonly --latest-limit=-1 -q)
   when: ansible_os_family == "RedHat"
