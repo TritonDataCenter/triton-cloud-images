@@ -28,6 +28,10 @@ autoinstall:
   keyboard:
     layout: us
 
+  storage:
+    grub:
+      reorder_uefi: False
+
   user-data:
     disable_root: false
     timezone: UTC
@@ -61,5 +65,4 @@ autoinstall:
         apt-get install -y efibootmgr
         efibootmgr -o $(efibootmgr | perl -n -e '/Boot(.+)\* ubuntu/ && print $1')
       fi
-    - cloud-init clean
 

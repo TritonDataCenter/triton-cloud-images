@@ -69,3 +69,10 @@
     state: link
     force: true
 
+
+- name: Run prepare-image script
+  script: /lib/smartdc/prepare-image
+  args:
+    executable: bash
+
+
