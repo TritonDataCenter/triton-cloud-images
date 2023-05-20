@@ -8,7 +8,7 @@ locals {
 
   ubuntu_2204_boot_command = [
     "c<wait>",
-    "linux /casper/vmlinuz --- autoinstall ds=\"nocloud-net;seedfrom=http://{{.HTTPIP}}:{{.HTTPPort}}/ubuntu/22.04/\"",
+    "linux /casper/vmlinuz --- autoinstall console=tty0 console=ttyS0,115200n8 ds=\"nocloud-net;seedfrom=http://{{.HTTPIP}}:{{.HTTPPort}}/ubuntu/22.04/\"",
     "<enter><wait>",
     "initrd /casper/initrd",
     "<enter><wait>",
