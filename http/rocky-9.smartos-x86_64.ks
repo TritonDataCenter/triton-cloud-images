@@ -48,6 +48,7 @@ reboot --eject
 @core
 dracut-config-generic
 usermode
+-python3-libselinux
 -biosdevname
 -dnf-plugin-spacewalk
 -dracut-config-rescue
