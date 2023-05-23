@@ -21,19 +21,28 @@ selinux --enforcing
 bootloader --timeout=1 --location=mbr --append="console=ttyS0,115200n8 no_timer_check crashkernel=auto tsc=reliable net.ifnames=0"
 
 # Partition stuff
-zerombr
-clearpart --all --initlabel --disklabel=gpt
 
-part biosboot  --size=1    --fstype=biosboot --asprimary
-part /boot/efi --size=200  --fstype=efi      --asprimary
-part /boot     --size=800 --fstype=xfs      --label=boot
-part pv.01     --size=1    --ondisk=sda      --grow
+%pre --erroronfail
+
+parted -s -a optimal /dev/sda -- mklabel gpt
+parted -s -a optimal /dev/sda -- mkpart biosboot 1MiB 2MiB set 1 bios_grub on
+parted -s -a optimal /dev/sda -- mkpart '"EFI System Partition"' fat32 2MiB 258MiB set 2 esp on
+parted -s -a optimal /dev/sda -- mkpart boot xfs 258MiB 1058MiB
+parted -s -a optimal /dev/sda -- mkpart primary 1058MiB 100%
+
+%end
+
+
+part biosboot  --fstype=biosboot --onpart=sda1
+part /boot/efi --fstype=efi --onpart=sda2
+part /boot     --fstype=xfs --onpart=sda3
+part pv.01     --onpart=sda4
 volgroup rootvg pv.01
-logvol / --vgname=rootvg --size=8000 --name=rootlv --grow
+logvol / --vgname=rootvg --size=5000 --name=rootlv --grow
 
 rootpw --plaintext tritondatacenter
 
-reboot --eject
+reboot
 
 
 %packages --inst-langs=en
@@ -60,4 +69,6 @@ usermode
 %post --erroronfail
 # permit root login via SSH with password authetication
 echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/01-permitrootlogin.conf
+dnf install -y grub2-efi-x64-modules grub2-pc-modules
+grub2-install --target=i386-pc /dev/sda
 %end
