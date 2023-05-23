@@ -3,8 +3,8 @@
  */
 
 locals {
-  rocky_9_iso_url      = "https://dl.rockylinux.org/stg/rocky/9.1/isos/x86_64/Rocky-9.1-x86_64-boot.iso"
-  rocky_9_iso_checksum = "file:https://dl.rockylinux.org/stg/rocky/9.1/isos/x86_64/CHECKSUM"
+  rocky_9_iso_url      = "https://dl.rockylinux.org/stg/rocky/9.2/isos/x86_64/Rocky-9.2-x86_64-boot.iso"
+  rocky_9_iso_checksum = "file:https://dl.rockylinux.org/stg/rocky/9.2/isos/x86_64/CHECKSUM"
 
   rocky_9_boot_command = [
     "<tab> inst.text biosdevname=0 net.ifnames=0 inst.gpt inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rocky-9.smartos-x86_64.ks<enter><wait>"
@@ -12,7 +12,7 @@ locals {
 
   rocky_9_boot_command_uefi = [
     "c<wait>",
-    "linuxefi /images/pxeboot/vmlinuz inst.stage2=hd:LABEL=Rocky-9-1-x86_64-dvd ro ",
+    "linuxefi /images/pxeboot/vmlinuz inst.repo=cdrom ",
     "inst.text biosdevname=0 net.ifnames=0 ",
     "inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rocky-9.smartos-x86_64.ks<enter>",
     "initrdefi /images/pxeboot/initrd.img<enter>",
@@ -46,7 +46,7 @@ source "qemu" "rocky-9-smartos-x86_64" {
   memory             = var.memory
   net_device         = "virtio-net"
   qemu_binary        = var.qemu_binary
-  vm_name            = "rocky-9.1-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
+  vm_name            = "rocky-9.2-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
   boot_wait          = var.boot_wait
   boot_command       = local.rocky_9_boot_command
   qemuargs = [
@@ -78,7 +78,7 @@ source "qemu" "rocky-9-smartos-uefi-x86_64" {
   memory             = var.memory
   net_device         = "virtio-net"
   qemu_binary        = var.qemu_binary
-  vm_name            = "rocky-9.1-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
+  vm_name            = "rocky-9.2-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
   boot_wait          = var.boot_wait
   boot_command       = local.rocky_9_boot_command_uefi
   qemuargs = [
