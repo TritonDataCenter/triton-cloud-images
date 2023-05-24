@@ -11,6 +11,7 @@ locals {
     "e<wait>",
     "<down><down><down><end>",
     " console=tty0 console=ttyS0,115200n8 autoinstall ds=\"nocloud-net;seedfrom=http://{{.HTTPIP}}:{{.HTTPPort}}/ubuntu/20.04/\"",
+    " tsc=reliable",
     "<f10>"
   ]
 
