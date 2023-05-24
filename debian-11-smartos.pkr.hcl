@@ -22,6 +22,7 @@ locals {
     "passwd/user-password-again=${var.ssh_password} ",
     "passwd/username=${var.ssh_username} ",
     "console=tty0 console=ttyS0,115200n8 verbose",
+    "tsc=reliable ",
     "<f10><wait> "
   ]
 
