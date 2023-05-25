@@ -80,6 +80,69 @@ This was tested on a baremetal Ubuntu 22.04 server.  Other variations might beha
 * [EDK II](https://github.com/tianocore/tianocore.github.io/wiki/OVMF) (for UEFI supported `x86_64`)
 
 
+## Building with Bhyve and packer on SmartOS
+
+A [packer plugin for SmartOS and bhyve](https://github.com/TritonDataCenter/packer-plugin-bhyve) has been developed, and is still in development. Please report any issues.  
+
+** If building in zone with packer-plugin-bhyve ** 
+
+Some additional zone setup is required if building withing a native zone
+
+```
+zonecfg -z <uuid>
+set limitpriv=default,proc_clock_highres,sys_dl_config
+add device
+  set match="/dev/viona"
+end
+add device
+  set match="/dev/vmm*"
+end
+commit
+exit
+```
+
+** Configure network interfaces **
+
+dhcp0 runs isc-dhcpd and hosts the packer http server, and then packer0 is what bhyve uses for the VM.
+
+```
+dladm create-etherstub -t images0
+dladm create-vnic -t -l images0 dhcp0
+dladm create-vnic -t -l images0 packer0
+ifconfig dhcp0 plumb up
+ifconfig packer0 plumb 
+ifconfig dhcp0 10.0.0.1 netmask 255.255.255.0
+```
+
+** Configure NAT **
+```
+# cat > /etc/ipf/ipnat.conf <<EOF
+map net0 10.0.0.10/32 -> 0/32
+EOF
+# routeadm -u -e ipv4-forwarding
+# svcadm enable ipfilter
+# ipnat -l
+```
+
+** Setup dhcp server **
+
+/opt/local/etc/dhcp/dhcpd.conf:
+
+```
+authoritative;
+
+subnet 10.0.0.0 netmask 255.255.255.0 {
+        option routers 10.0.0.1;
+        option domain-name-servers 1.1.1.1;
+        range 10.0.0.10 10.0.0.20;
+}
+```
+
+** Build process **
+
+packer build -only=bhyve.almalinux-8-smartos-x86_64,bhyve.rocky-8-smartos-x86_64,bhyve.rocky-9-smartos-x86_64 -var vnc_bind_address=0.0.0.0 -var host_nic=dhcp0 -parallel-builds=1 .
+
+
 ## FAQ:
 
 
