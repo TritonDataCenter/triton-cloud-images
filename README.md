@@ -84,7 +84,7 @@ This was tested on a baremetal Ubuntu 22.04 server.  Other variations might beha
 
 A [packer plugin for SmartOS and bhyve](https://github.com/TritonDataCenter/packer-plugin-bhyve) has been developed, and is still in development. Please report any issues.  
 
-** If building in zone with packer-plugin-bhyve ** 
+### If building in zone with packer-plugin-bhyve ###
 
 Some additional zone setup is required if building withing a native zone
 
@@ -101,7 +101,7 @@ commit
 exit
 ```
 
-** Configure network interfaces **
+### Configure network interfaces ###
 
 dhcp0 runs isc-dhcpd and hosts the packer http server, and then packer0 is what bhyve uses for the VM.
 
@@ -114,7 +114,7 @@ ifconfig packer0 plumb
 ifconfig dhcp0 10.0.0.1 netmask 255.255.255.0
 ```
 
-** Configure NAT **
+### Configure NAT ###
 ```
 # cat > /etc/ipf/ipnat.conf <<EOF
 map net0 10.0.0.10/32 -> 0/32
@@ -124,7 +124,7 @@ EOF
 # ipnat -l
 ```
 
-** Setup dhcp server **
+### Setup dhcp server ###
 
 /opt/local/etc/dhcp/dhcpd.conf:
 
@@ -138,9 +138,11 @@ subnet 10.0.0.0 netmask 255.255.255.0 {
 }
 ```
 
-** Build process **
+### Build process ###
 
+```
 packer build -only=bhyve.almalinux-8-smartos-x86_64,bhyve.rocky-8-smartos-x86_64,bhyve.rocky-9-smartos-x86_64 -var vnc_bind_address=0.0.0.0 -var host_nic=dhcp0 -parallel-builds=1 .
+```
 
 
 ## FAQ:
