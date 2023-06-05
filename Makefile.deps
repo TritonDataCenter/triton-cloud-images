@@ -1,37 +1,31 @@
-PACKAGES = rust py310-pip unzip
+PACKAGES = packer py310-pip unzip
 #PACKAGES = rust py310-virtualenv py310-pip unzip
 
 ifeq ($(shell uname -s),SunOS)
 	OS=solaris
-else ($(shell uname -s),Linux)
+else ifeq ($(shell uname -s),Linux)
 	OS=linux
 endif
 
-PACKER_VER=1.8.5
+PACKER_VER=1.8.7
 PACKER_URL= https://releases.hashicorp.com/packer/${PACKER_VER}/packer_${PACKER_VER}_${OS}_amd64.zip
 
-.PHONY: py-ansible-deps
+.PHONY: packages py-ansible-deps
 
-deps: packages py-venv ansible-deps packer
+deps: 0-packages-stamp py-venv ansible-deps
 
-packer: deps/packer
-
-deps/packer: packages
-	[[ -f deps/packer ]] || { cd deps ;\
-	curl -LO ${PACKER_URL} ;\
-	ls ;\
-	unzip packer_${PACKER_VER}_solaris_amd64.zip ;\
-	}
-
-packages:
+0-packages-stamp:
+	mkdir deps || true
 	pkgin -y in $(PACKAGES)
+	touch $@
+
 
 py-venv: deps/py-venv
-deps/py-venv: packages
-	! [[ -d deps/py-venv ]] && virtualenv deps/py-venv
+deps/py-venv: 0-packages-stamp
+	[[ -d deps/py-venv ]] || virtualenv deps/py-venv
 	source deps/py-venv/bin/activate ; pip install -r requirements.txt
 	@touch $@
-	: ; command -V ansible
+	: ; echo $(PATH) ; command -V ansible
 	: ; command -V ansible-galaxy
 
 ansible-deps: ansible-roles ansible/collections
