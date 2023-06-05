@@ -1,0 +1,48 @@
+PACKAGES = rust py310-pip unzip
+#PACKAGES = rust py310-virtualenv py310-pip unzip
+
+ifeq ($(shell uname -s),SunOS)
+	OS=solaris
+else ($(shell uname -s),Linux)
+	OS=linux
+endif
+
+PACKER_VER=1.8.5
+PACKER_URL= https://releases.hashicorp.com/packer/${PACKER_VER}/packer_${PACKER_VER}_${OS}_amd64.zip
+
+.PHONY: py-ansible-deps
+
+deps: packages py-venv ansible-deps packer
+
+packer: deps/packer
+
+deps/packer: packages
+	[[ -f deps/packer ]] || { cd deps ;\
+	curl -LO ${PACKER_URL} ;\
+	ls ;\
+	unzip packer_${PACKER_VER}_solaris_amd64.zip ;\
+	}
+
+packages:
+	pkgin -y in $(PACKAGES)
+
+py-venv: deps/py-venv
+deps/py-venv: packages
+	! [[ -d deps/py-venv ]] && virtualenv deps/py-venv
+	source deps/py-venv/bin/activate ; pip install -r requirements.txt
+	@touch $@
+	: ; command -V ansible
+	: ; command -V ansible-galaxy
+
+ansible-deps: ansible-roles ansible/collections
+
+ansible-roles: ansible/roles/ezamriy.vbox_guest
+ansible/roles/ezamriy.vbox_guest:
+	: ; ansible-galaxy install -r ansible/requirements.yml -p ansible/roles
+
+ansible/collections:
+	: ; ansible-galaxy collection install -r ansible/requirements.yml -p ansible/collections
+
+
+clean-deps:
+	rm -rf ansible/collections ansible/roles/ezamriy.vbox_guest deps py-venv

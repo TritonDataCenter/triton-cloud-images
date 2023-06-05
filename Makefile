@@ -1,43 +1,37 @@
-export PATH:=$(PWD)/wrappers:$(PWD)/deps/py-venv/bin/:$(PATH)
+STAMP       = $(shell date +%Y%m%d)
 
-PACKER_LOG=1
-PACKAGES = rust py310-virtualenv py310-pip unzip
+ALMA_V	    = almalinux-8 almalinux-9
+DEBIAN_V    = debian-11
+ROCKY_V	    = rocky-8 rocky-9
+UBUNTU_V    = ubuntu-20.04 ubuntu-22.04
 
-PACKER_VER=1.8.5
-PACKER_URL= https://releases.hashicorp.com/packer/${PACKER_VER}/packer_${PACKER_VER}_solaris_amd64.zip
+ifeq ($(shell uname -s),SunOS)
+        PACKER_EXTRA_ARGS = 
+	OUTPUT_TYPE       = zfs
+else ($(shell uname -s),Linux)
+        PACKER_EXTRA_ARGS = 
+	OUTPUT_TYPE       = raw
+endif
+SUFFIX      = smartos-$(STAMP).x86_64.$(OUTPUT_TYPE).gz
 
-.PHONY: py-ansible-deps
+.PHONY: all $(DISTROS) %
+.PRECIOUS: output/%-$(SUFFIX)
 
-deps: packages py-venv ansible-deps packer
+include Makefile.deps
 
-packer: deps/packer
+all: deps almalinux debian rocky ubuntu
 
-deps/packer: packages
-	[[ -f deps/packer ]] || { cd deps ;\
-	curl -LO ${PACKER_URL} ;\
-	ls ;\
-	unzip packer_${PACKER_VER}_solaris_amd64.zip ;\
-	}
+almalinux: $(ALMA_V)
+debian: $(DEBIAN_V)
+rocky: $(ROCKY_V)
+ubuntu: $(UBUNTU_V)
 
-packages:
-	pkgin -y in $(PACKAGES)
-
-py-venv: deps/py-venv
-deps/py-venv: packages
-	! [[ -d deps/py-venv ]] && virtualenv-3.10 deps/py-venv
-	source deps/py-venv/bin/activate ; pip install -r requirements.txt
+output/%-$(SUFFIX): %-smartos.pkr.hcl
+	@mkdir output 2>/dev/null || true
 	@touch $@
-	: ; command -V ansible
-	: ; command -V ansible-galaxy
 
-ansible-deps: ansible-roles ansible/collections
+%: output/%-$(SUFFIX)
+	@echo "create $<"
 
-ansible-roles: ansible/roles/ezamriy.vbox_guest
-ansible/roles/ezamriy.vbox_guest:
-	: ; ansible-galaxy install -r ansible/requirements.yml -p ansible/roles
-
-ansible/collections:
-	: ; ansible-galaxy collection install -r ansible/requirements.yml -p ansible/collections
-
-all:
-	./deps/packer build -only=qemu.almalinux-8-smartos-x86_64 .
+clean:
+	rm -rf output
