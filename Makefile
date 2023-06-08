@@ -1,3 +1,13 @@
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+#
+# Copyright 2023 MNX Cloud, Inc.
+#
+
 export PATH := $(PATH):$(PWD)/deps/py-venv/bin
 
 STAMP       = $(shell date +%Y%m%d)
@@ -8,10 +18,10 @@ ROCKY_V	    = rocky-8 rocky-9
 UBUNTU_V    = ubuntu-20.04 ubuntu-22.04
 
 ifeq ($(shell uname -s),SunOS)
-        PACKER_EXTRA_ARGS = 
+	PACKER_EXTRA_ARGS =
 	OUTPUT_TYPE       = zfs
 else ifeq ($(shell uname -s),Linux)
-        PACKER_EXTRA_ARGS = 
+	PACKER_EXTRA_ARGS =
 	OUTPUT_TYPE       = raw
 endif
 SUFFIX      = smartos-$(STAMP).x86_64.$(OUTPUT_TYPE)
@@ -42,6 +52,9 @@ output/%-$(SUFFIX).gz: output/%-$(SUFFIX)
 
 %: output/%-$(SUFFIX).gz
 	@ :
+
+check:
+	packer validate .
 
 clean:
 	rm -rf output
