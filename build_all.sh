@@ -175,11 +175,11 @@ packer_init () {
 # Build any images passed on the command line, or all.
 if (( BASH_ARGC > 0 )); then
     for i in "$@"; do
-        echo packer build --only="${vmm}.${i}-smartos-x86_64" .
+        packer build --only="${vmm}.${i}-smartos-x86_64" .
         generate_manifest "$i"
     done
 else
-    echo packer build .
+    packer build .
     generate_all_manifests
 fi
 
