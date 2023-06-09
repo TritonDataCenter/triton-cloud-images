@@ -15,7 +15,7 @@ STAMP       = $(shell date +%Y%m%d)
 ALMA_V	    = almalinux-8 almalinux-9
 DEBIAN_V    = debian-11
 ROCKY_V	    = rocky-8 rocky-9
-UBUNTU_V    = ubuntu-20.04 ubuntu-22.04
+UBUNTU_V    = ubuntu-2004 ubuntu-2204
 
 ifeq ($(shell uname -s),SunOS)
 	PACKER_EXTRA_ARGS =
