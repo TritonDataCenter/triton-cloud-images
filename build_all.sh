@@ -110,18 +110,18 @@ generate_all_manifests () {
 }
 
 packer_init () {
-    case $SYSTYPE in
-        illumos)
-            ln -sf versions.pkr.hcl.smartos versions.pkr.hcl
-            ;;
-        *Linux)
-            ln -sf versions.pkr.hcl.linux versions.pkr.hcl
-            ;;
-        *)
-            printf 'Somehow we got to packer init on an unsupported system.\n'
-            exit 99
-            ;;
-    esac
+    # case $SYSTYPE in
+    #     illumos)
+    #         ln -sf versions.pkr.hcl.smartos versions.pkr.hcl
+    #         ;;
+    #     *Linux)
+    #         ln -sf versions.pkr.hcl.linux versions.pkr.hcl
+    #         ;;
+    #     *)
+    #         printf 'Somehow we got to packer init on an unsupported system.\n'
+    #         exit 99
+    #         ;;
+    # esac
     packer init .
 }
 

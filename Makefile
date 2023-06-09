@@ -50,8 +50,8 @@ ubuntu: $(UBUNTU_V)
 # 	@echo "create $@"
 # 	@gzip $<
 
-%: deps %-smartos.pkr.hcl # output/%-$(SUFFIX).gz
-	./build_all.sh $@
+# %: deps %-smartos.pkr.hcl # output/%-$(SUFFIX).gz
+# 	./build_all.sh $@
 
 check:
 	packer validate .
