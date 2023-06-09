@@ -41,17 +41,17 @@ debian: $(DEBIAN_V)
 rocky: $(ROCKY_V)
 ubuntu: $(UBUNTU_V)
 
-output/%-$(SUFFIX): %-smartos.pkr.hcl
-	@echo "create $@"
-	@mkdir output 2>/dev/null || true
-	@touch $@
+# output/%-$(SUFFIX): %-smartos.pkr.hcl
+# 	@echo "create $@"
+# 	@mkdir output 2>/dev/null || true
+# 	@touch $@
+#
+# output/%-$(SUFFIX).gz: output/%-$(SUFFIX)
+# 	@echo "create $@"
+# 	@gzip $<
 
-output/%-$(SUFFIX).gz: output/%-$(SUFFIX)
-	@echo "create $@"
-	@gzip $<
-
-%: output/%-$(SUFFIX).gz
-	@ :
+%: deps # output/%-$(SUFFIX).gz
+	./build_all.sh $@
 
 check:
 	packer validate .
