@@ -10,6 +10,48 @@
 # Copyright 2023 MNX Cloud, Inc.
 #
 
+if [[ -n "$TRACE" ]]; then
+    export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+    set -o xtrace
+fi
+
+function stack_trace
+{
+    set +o xtrace
+
+    (( cnt = ${#FUNCNAME[@]} ))
+    (( i = 0 ))
+    while (( i < cnt )); do
+        printf '  [%3d] %s\n' "${i}" "${FUNCNAME[i]}"
+        if (( i > 0 )); then
+            line="${BASH_LINENO[$((i - 1))]}"
+        else
+            line="${LINENO}"
+        fi
+        printf '        (file "%s" line %d)\n' "${BASH_SOURCE[i]}" "${line}"
+        (( i++ ))
+    done
+}
+
+function fatal
+{
+    # Disable error traps from here on:
+    set +o xtrace
+    set +o errexit
+    set +o errtrace
+    trap '' ERR
+
+    echo "$(basename $0): fatal error: $*" >&2
+    stack_trace
+    exit 1
+}
+
+function trap_err
+{
+    st=$?
+    fatal "exit status ${st} at line ${BASH_LINENO[0]}"
+}
+
 set -o pipefail
 set -o errexit
 
