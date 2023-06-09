@@ -8,7 +8,7 @@
 # Copyright 2023 MNX Cloud, Inc.
 #
 
-PACKAGES = rust py310-virtualenv py310-pip unzip
+PACKAGES = rust packer py310-virtualenv py310-pip unzip
 
 ifeq ($(shell uname -s),SunOS)
 	OS=solaris
@@ -21,20 +21,20 @@ PACKER_URL= https://releases.hashicorp.com/packer/${PACKER_VER}/packer_${PACKER_
 
 .PHONY: packages py-ansible-deps
 
-deps: 0-packages-stamp py-venv ansible-deps packer
-packer: deps/packer
+deps: 0-packages-stamp py-venv ansible-deps #packer
+#packer: deps/packer
 
 0-packages-stamp:
 	mkdir deps || true
 	pkgin -y in $(PACKAGES)
 	touch $@
 
-deps/packer: 0-packages-stamp
-	[[ -f deps/packer ]] || { cd deps ;\
-	curl -LO ${PACKER_URL} ;\
-	ls ;\
-	unzip packer_${PACKER_VER}_${OS}_amd64.zip ;\
-	}
+# s/packer: 0-packages-stamp
+# 	[[ -f deps/packer ]] || { cd deps ;\
+# 	curl -LO ${PACKER_URL} ;\
+# 	ls ;\
+# 	unzip packer_${PACKER_VER}_${OS}_amd64.zip ;\
+# 	}
 
 py-venv: deps/py-venv
 
