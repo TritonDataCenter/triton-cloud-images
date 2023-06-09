@@ -14,7 +14,9 @@ set -o pipefail
 set -o errexit
 
 # shellcheck disable=SC2164
-TOP=$(cd "$(dirname "$0")/../"; pwd)
+TOP=$(cd "$(dirname "$0")/"; pwd)
+
+export PATH="${TOP}/deps:${TOP}/deps/py-venv/bin:$PATH"
 
 # We currently only support generating images on illumos and Linux.
 # Here we really need to make sure we're using *illumos* and not Solaris so
@@ -24,7 +26,7 @@ TOP=$(cd "$(dirname "$0")/../"; pwd)
 SYSTYPE=$(uname -o || uname -s)
 case $SYSTYPE in
     illumos)
-        if ! [[ -f /dev/viona ]] || ! [[ -f /dev/vmmctl ]] || \
+        if ! [[ -c /dev/viona ]] || ! [[ -c /dev/vmmctl ]] || \
            ! [[ -d /dev/vmm ]]; then
             printf 'WARNING: Bhyve not available. See the README.md for zone\n'
             printf 'requirements.\n'
@@ -32,12 +34,18 @@ case $SYSTYPE in
         else
             vmm=bhyve
         fi
-        if [[ -z $vmm ]] && ! [[ -f /dev/kvm ]]; then
-            printf 'WARNING: KVM not available. See the README.md for zone\n'
-            printf 'requirements.\n'
-            export QEMU=false
-        else
-            vmm=qemu
+        if [[ -z $vmm ]]; then
+            if ! [[ -c /dev/kvm ]]; then
+                printf 'WARNING: KVM not available. See the README.md for zone\n'
+                printf 'requirements.\n'
+                export QEMU=false
+            else
+                vmm=qemu
+            fi
+        fi
+        if [[ -z $vmm ]]; then
+            printf 'Cannot create vms'
+            exit 1
         fi
         ;;
     *Linux) # Can be GNU/Linux or just Linux
@@ -56,6 +64,8 @@ esac
 # Enable debug logging output from packer
 export PACKER_LOG=1
 export PACKER_PLUGIN_PATH=${TOP}/packer_plugins/
+export PACKER_CONFIG_DIR=${TOP}/packer_config/
+export PACKER_CACHE_DIR=${TOP}/packer_cache/
 export CHECKPOINT_DISABLE=1
 
 IMG_VERSION=$(date +%Y%m%d)
@@ -102,10 +112,10 @@ generate_all_manifests () {
 packer_init () {
     case $SYSTYPE in
         illumos)
-            ln -s versions.pkr.hcl.smartos versions.pkr.hcl
+            ln -sf versions.pkr.hcl.smartos versions.pkr.hcl
             ;;
         *Linux)
-            ln -s versions.pkr.hcl.linux versions.pkr.hcl
+            ln -sf versions.pkr.hcl.linux versions.pkr.hcl
             ;;
         *)
             printf 'Somehow we got to packer init on an unsupported system.\n'
