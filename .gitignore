@@ -1,5 +1,6 @@
 0-packages-stamp
 packer_cache
+packer_plugins
 ansible/collections/
 ansible/roles/ezamriy*
 output*

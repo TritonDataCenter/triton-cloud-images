@@ -165,8 +165,8 @@ function ensure_services
     if ! svcs -H image-networking; then
         mkdir -p /opt/custom/smf || true
         cp smf/smf.xml /opt/custom/smf/image-networking.xml
-        cp smf/method.sh /opt/custom/smf/image-networking.sh
-        chmod +x /opt/custom/smf/image-networking.sh
+        cp smf/method.sh /opt/custom/smf/imgnet.sh
+        chmod +x /opt/custom/smf/imgnet.sh
         svccfg import /opt/custom/smf/image-networking.xml
     fi
     # This may be overly fragile. If we're going to change the contents of the
@@ -175,8 +175,8 @@ function ensure_services
         printf 'map net0 10.0.0.10/32 -> 0/32\n' > /etc/ipf/ipnat.conf
         svcadm restart ipfilter
     fi
-    if ! digest -a sha1 /opt/local/etc/dhcpd.conf | grep dcc4ad69a192ddf1b82be50b315a531ddeaa41ac ; then
-        cp smf/dhcpd.conf /opt/local/etc/dhcpd.conf
+    if ! digest -a sha1 /opt/local/etc/dhcp/dhcpd.conf | grep dcc4ad69a192ddf1b82be50b315a531ddeaa41ac ; then
+        cp smf/dhcpd.conf /opt/local/etc/dhcp/dhcpd.conf
         svcadm restart isc-dhcpd
     fi
     # Despite earlier restarts, services may not yet be running for the first
