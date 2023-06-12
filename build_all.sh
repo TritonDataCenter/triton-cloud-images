@@ -112,7 +112,8 @@ export CHECKPOINT_DISABLE=1
 
 IMG_VERSION=$(date +%Y%m%d)
 
-generate_manifest () {
+function generate_manifest
+{
     if [[ $OSTYPE != 'solaris2.11' ]]; then
         printf 'Image %s output is not SmartOS compatible ZFS data stream.\n' "$1"
         printf 'Skipping manifest.\n'
@@ -142,7 +143,8 @@ generate_manifest () {
         manifest.in > "output/${1}-${IMG_VERSION}.json"
 }
 
-generate_all_manifests () {
+function generate_all_manifests
+{
     # Get the list of images...
     mapfile -t all_images < <(json -f imgconfigs.json -Ma key)
     # ...and Bob's your uncle
@@ -151,26 +153,52 @@ generate_all_manifests () {
     done
 }
 
-packer_init () {
-    # case $SYSTYPE in
-    #     illumos)
-    #         ln -sf versions.pkr.hcl.smartos versions.pkr.hcl
-    #         ;;
-    #     *Linux)
-    #         ln -sf versions.pkr.hcl.linux versions.pkr.hcl
-    #         ;;
-    #     *)
-    #         printf 'Somehow we got to packer init on an unsupported system.\n'
-    #         exit 99
-    #         ;;
-    # esac
+function packer_init
+{
+    printf 'Initializing packer...'
     packer init .
+}
+
+function ensure_services
+{
+    printf 'Setting up SMF services...\n'
+    if ! svcs -H image-networking; then
+        mkdir -p /opt/custom/smf || true
+        cp smf/smf.xml /opt/custom/smf/image-networking.xml
+        cp smf/method.sh /opt/custom/smf/image-networking.sh
+        chmod +x /opt/custom/smf/image-networking.sh
+        svccfg import /opt/custom/smf/image-networking.xml
+    fi
+    # This may be overly fragile. If we're going to change the contents of the
+    # file then we'll need to recalculate the checksum.
+    if ! digest -a sha1 /etc/ipf/ipnat.conf | grep dfe9e37e04cc20ff27518c05e7a25f644be15e86 ; then
+        printf 'map net0 10.0.0.10/32 -> 0/32\n' > /etc/ipf/ipnat.conf
+        svcadm restart ipfilter
+    fi
+    if ! digest -a sha1 /opt/local/etc/dhcpd.conf | grep dcc4ad69a192ddf1b82be50b315a531ddeaa41ac ; then
+        cp smf/dhcpd.conf /opt/local/etc/dhcpd.conf
+        svcadm restart isc-dhcpd
+    fi
+    # Despite earlier restarts, services may not yet be running for the first
+    # time. If services are already enabled, these will be a nop.
+    svcadm enable -r image-networking
+    svcadm enable -r ipfilter
+    svcadm enable -r isc-dhcpd
+    svcadm enable -r ipv4-forwarding
 }
 
 # Check all valid
 #packer validate .
 
+if [[ $1 == "list" ]]; then
+    printf 'The followng image targets are available:\n\n'
+    awk '/^source / {printf("    %s.%s\n", $2, $3)}' *.hcl | tr -d '"' | sort
+    exit
+fi
+
 [[ -d $PACKER_PLUGIN_PATH ]] || packer_init
+
+ensure_services
 
 # Build any images passed on the command line, or all.
 if (( BASH_ARGC > 0 )); then
@@ -182,4 +210,3 @@ else
     packer build .
     generate_all_manifests
 fi
-

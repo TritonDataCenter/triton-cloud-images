@@ -69,10 +69,10 @@ function do_start {
     ipadm create-if -t dhcp0
     ipadm create-if -t packer0
     ipadm create-addr -t -T static -a local=10.0.0.1/24 dhcp0/a
+    svcadm enable -r ipv4-forwarding
 }
 
 function do_stop {
-    stat="$SMF_EXIT_OK"
     # If things are out of alignment, we'll just try to take everything down
     # without regard for previous errors but we'll still emit a code
     set +o errexit
@@ -82,8 +82,8 @@ function do_stop {
     ipadm delete-addr dhcp0/a || warn "$?" "addr dhcp0/a"
     ipadm delete-if dhcp0 || warn "$?" "if dhcp0"
     ipadm delete-if packer0 || warn "$?" "vnic packer0"
-    set +o errexit
-    return "$stat"
+    set -o errexit
+    return 0
 }
 
 trap trap_err ERR
