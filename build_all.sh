@@ -41,7 +41,7 @@ function fatal
     set +o errtrace
     trap '' ERR
 
-    echo "$(basename $0): fatal error: $*" >&2
+    echo "$(basename "$0"): fatal error: $*" >&2
     stack_trace
     exit 1
 }
@@ -192,7 +192,7 @@ function ensure_services
 
 if [[ $1 == "list" ]]; then
     printf 'The followng image targets are available:\n\n'
-    awk '/^source / {printf("    %s.%s\n", $2, $3)}' *.hcl | tr -d '"' | sort
+    awk '/^source / {print $3}' ./*.hcl | tr -d '"' | sed 's/-smartos.*//' | sort -u
     exit
 fi
 
