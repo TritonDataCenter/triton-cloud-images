@@ -76,12 +76,12 @@ function do_stop {
     # If things are out of alignment, we'll just try to take everything down
     # without regard for previous errors but we'll still emit a code
     set +o errexit
-    dladm delete-vnic dhcp0 || warn "$?" "vnic dhcp0"
-    dladm delete-vnic packer0 || warn "$?" "vnic packer0"
-    dladm delete-etherstub images0 || warn "$?" "etherstub images0"
     ipadm delete-addr dhcp0/a || warn "$?" "addr dhcp0/a"
     ipadm delete-if dhcp0 || warn "$?" "if dhcp0"
     ipadm delete-if packer0 || warn "$?" "vnic packer0"
+    dladm delete-vnic dhcp0 || warn "$?" "vnic dhcp0"
+    dladm delete-vnic packer0 || warn "$?" "vnic packer0"
+    dladm delete-etherstub images0 || warn "$?" "etherstub images0"
     set -o errexit
     return 0
 }

@@ -1,9 +1,0 @@
-{
-  "ident": "image-networking",
-  "label": "Configure networking for bhyve guest image creation",
-  "user": "root",
-  "group": "root",
-  "start": "/opt/custom/smf/imgnet.sh start",
-  "stop": "/opt/custom/smf/imgnet.sh stop",
-  "enabled": true
-}
