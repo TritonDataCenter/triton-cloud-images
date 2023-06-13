@@ -8,7 +8,7 @@ variables {
   memory                = 4096
   post_cpus             = 2
   post_memory           = 2048
-  host_nic              = "net0"
+  host_nic              = "dhcp0"
   http_directory        = "http"
   ssh_timeout           = "3600s"
   root_shutdown_command = "/sbin/shutdown -hP now"
