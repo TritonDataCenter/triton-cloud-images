@@ -35,7 +35,9 @@ source "bhyve" "ubuntu-2004-smartos-x86_64" {
   ssh_username       = var.ssh_username
   vm_name            = "ubuntu-20.04-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
   vnc_bind_address   = var.vnc_bind_address
-  vnc_use_password   = true
+  vnc_use_password   = var.vnc_use_password
+  vnc_port_min       = var.vnc_port_min
+  vnc_port_max       = var.vnc_port_max
 }
 
 source "qemu" "ubuntu-2004-smartos-x86_64" {

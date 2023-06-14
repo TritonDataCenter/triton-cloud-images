@@ -18,6 +18,7 @@ variables {
   ovmf_vars             = "/usr/share/OVMF/OVMF_VARS.ms.fd"
   aavmf_code            = "/usr/share/AAVMF/AAVMF_CODE.fd"
   vnc_bind_address      = "127.0.0.1"
+  vnc_use_password      = true
   vnc_port_min          = 5900
   vnc_port_max          = 6000
 
