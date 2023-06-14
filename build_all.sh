@@ -203,7 +203,11 @@ ensure_services
 # Build any images passed on the command line, or all.
 if (( BASH_ARGC > 0 )); then
     for i in "$@"; do
-        packer build --only="${vmm}.${i}-smartos-x86_64" .
+        build_uuid=$(uuid -v 4)
+        zfs create zones/$(zonename)/data/${build_uuid}
+        packer build --only="${vmm}.${i}-smartos-x86_64" -var disk_use_zvol=true -var disk_zpool="zones/$(zonename)/data/${build_uuid}" .
+        zfs destroy zones/$(zonename)/data/${build_uuid}
+
         generate_manifest "$i"
     done
 else
