@@ -172,7 +172,7 @@ function ensure_services
     # This may be overly fragile. If we're going to change the contents of the
     # file then we'll need to recalculate the checksum.
     if ! digest -a sha1 /etc/ipf/ipnat.conf | grep dfe9e37e04cc20ff27518c05e7a25f644be15e86 ; then
-        printf 'map net0 10.0.0.10/32 -> 0/32\n' > /etc/ipf/ipnat.conf
+        printf 'map net0 10.0.0.0/24 -> 0/32\n' > /etc/ipf/ipnat.conf
         svcadm restart ipfilter
     fi
     if ! digest -a sha1 /opt/local/etc/dhcp/dhcpd.conf | grep dcc4ad69a192ddf1b82be50b315a531ddeaa41ac ; then
