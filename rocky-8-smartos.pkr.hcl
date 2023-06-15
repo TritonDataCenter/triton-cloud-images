@@ -42,7 +42,7 @@ source "bhyve" "rocky-8-smartos-x86_64" {
   ssh_password       = var.ssh_password
   ssh_timeout        = var.ssh_timeout
   ssh_username       = var.ssh_username
-  vm_name            = "rocky-8.8-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
+  vm_name            = "rocky-8-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.zfs"
   vnc_bind_address   = var.vnc_bind_address
   vnc_use_password   = var.vnc_use_password
   vnc_port_min       = var.vnc_port_min
@@ -70,7 +70,7 @@ source "qemu" "rocky-8-smartos-x86_64" {
   memory             = var.memory
   net_device         = "virtio-net"
   qemu_binary        = var.qemu_binary
-  vm_name            = "rocky-8.8-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
+  vm_name            = "rocky-8-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
   boot_wait          = var.boot_wait
   boot_command       = local.rocky_8_boot_command
 }
@@ -99,7 +99,7 @@ source "qemu" "rocky-8-smartos-uefi-x86_64" {
   memory             = var.memory
   net_device         = "virtio-net"
   qemu_binary        = var.qemu_binary
-  vm_name            = "rocky-8.8-smartos-uefi-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
+  vm_name            = "rocky-8-smartos-uefi-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
   boot_wait          = var.boot_wait
   boot_command       = local.rocky_8_boot_command_uefi
 }

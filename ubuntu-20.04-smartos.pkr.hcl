@@ -17,7 +17,7 @@ locals {
 
 }
 
-source "bhyve" "ubuntu-2004-smartos-x86_64" {
+source "bhyve" "ubuntu-20.04-smartos-x86_64" {
   boot_command       = local.ubuntu_2004_boot_command
   boot_wait          = var.boot_wait
   cpus               = var.cpus
@@ -40,7 +40,7 @@ source "bhyve" "ubuntu-2004-smartos-x86_64" {
   vnc_port_max       = var.vnc_port_max
 }
 
-source "qemu" "ubuntu-2004-smartos-x86_64" {
+source "qemu" "ubuntu-20.04-smartos-x86_64" {
   iso_url            = local.ubuntu_2004_iso_url
   iso_checksum       = local.ubuntu_2004_iso_checksum
   shutdown_command   = var.root_shutdown_command
@@ -67,7 +67,7 @@ source "qemu" "ubuntu-2004-smartos-x86_64" {
   boot_command       = local.ubuntu_2004_boot_command
 }
 
-source "qemu" "ubuntu-2004-smartos-uefi-x86_64" {
+source "qemu" "ubuntu-20.04-smartos-uefi-x86_64" {
   iso_url            = local.ubuntu_2004_iso_url
   iso_checksum       = local.ubuntu_2004_iso_checksum
   shutdown_command   = var.root_shutdown_command
