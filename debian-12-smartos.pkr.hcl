@@ -4,7 +4,7 @@
 
 locals {
   debian_12_iso_url      = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.0.0-amd64-netinst.iso"
-  debian_12_iso_checksum = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS"
+  debian_12_iso_checksum = "file:https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS"
 
   debian_12_boot_command = [
     "<wait><down>e<wait>",

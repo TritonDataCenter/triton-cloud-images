@@ -4,7 +4,7 @@
 
 locals {
   debian_11_iso_url      = "https://cdimage.debian.org/cdimage/archive/11.7.0/amd64/iso-cd/debian-11.7.0-amd64-netinst.iso"
-  debian_11_iso_checksum = "https://cdimage.debian.org/cdimage/archive/11.7.0/amd64/iso-cd/SHA256SUMS"
+  debian_11_iso_checksum = "file:https://cdimage.debian.org/cdimage/archive/11.7.0/amd64/iso-cd/SHA256SUMS"
 
   debian_11_boot_command = [
     "<wait><down>e<wait>",
