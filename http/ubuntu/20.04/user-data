@@ -22,10 +22,10 @@ autoinstall:
       - arches: [default]
         uri: http://ports.ubuntu.com/ubuntu-ports
 
-# parted -s -a optimal /dev/sda -- mkpart biosboot 1MiB 2MiB set 1 bios_grub on
-# parted -s -a optimal /dev/sda -- mkpart '"EFI System Partition"' fat32 2MiB 258MiB set 2 esp on
-# parted -s -a optimal /dev/sda -- mkpart boot xfs 258MiB 1058MiB
-# parted -s -a optimal /dev/sda -- mkpart primary 1058MiB 100%
+# parted -s -a optimal /dev/vda -- mkpart biosboot 1MiB 2MiB set 1 bios_grub on
+# parted -s -a optimal /dev/vda -- mkpart '"EFI System Partition"' fat32 2MiB 258MiB set 2 esp on
+# parted -s -a optimal /dev/vda -- mkpart boot xfs 258MiB 1058MiB
+# parted -s -a optimal /dev/vda -- mkpart primary 1058MiB 100%
 
   storage:
     swap:
@@ -34,7 +34,7 @@ autoinstall:
         reorder_uefi: false
     config:
       - {ptable: gpt, preserve false, name: '', grub_device: true, type: disk, id: disk0, wipe: superblock-recursive, match: { "size": "largest" } }
-      - {device: disk0, size: 1MB, flag: bios_grub, number: 1, flag: linux, preserve: false, type: partition, id: disk0p1}
+      - {device: disk0, size: 1MB, flag: bios_grub, number: 1, preserve: false, type: partition, id: disk0p1}
       - {device: disk0, size: 256MB, flag: esp, number: 2, preserve: false, grub_device: true, type: partition, id: disk0p2}
       - {device: disk0, size: 800MB, flag: linux, number: 3, preserve: false, type: partition, id: disk0p3}
       - {device: disk0, size: -1, flag: linux, number: 4, preserve: false, type: partition, id: disk0p4}
@@ -82,9 +82,9 @@ autoinstall:
   late-commands:
     - sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /target/etc/ssh/sshd_config
     - sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/g' /target/etc/ssh/sshd_config
-    - parted /dev/sda set 1 bios_grub on
-    - parted /dev/sda set 2 esp on
-    - curtin in-target --target=/target -- grub-install --target=i386-pc /dev/sda
+    - parted /dev/vda set 1 bios_grub on
+    - parted /dev/vda set 2 esp on
+    - curtin in-target --target=/target -- grub-install --target=i386-pc /dev/vda
     - curtin in-target --target=/target -- apt-get update
     - curtin in-target --target=/target -- apt-get dist-upgrade --yes
     - |
