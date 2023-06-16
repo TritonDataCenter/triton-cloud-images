@@ -49,7 +49,7 @@ source "bhyve" "debian-11-smartos-x86_64" {
   vnc_use_password   = var.vnc_use_password
   vnc_port_min       = var.vnc_port_min
   vnc_port_max       = var.vnc_port_max
-
+}
 
 source "qemu" "debian-11-smartos-x86_64" {
   iso_url            = local.debian_11_iso_url
