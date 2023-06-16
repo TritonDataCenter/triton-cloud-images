@@ -23,10 +23,32 @@ locals {
     "passwd/username=${var.ssh_username} ",
     "console=tty0 console=ttyS0,115200n8 verbose",
     "tsc=reliable ",
-    "<f10><wait> "
+    "<f10><wait>"
   ]
 
 }
+
+source "bhyve" "debian-11-smartos-x86_64" {
+  boot_command       = local.debian_11_boot_command
+  boot_wait          = var.boot_wait
+  cpus               = var.cpus
+  disk_size          = var.disk_size
+  disk_use_zvol      = var.disk_use_zvol
+  disk_zpool         = var.disk_zpool
+  host_nic           = var.host_nic
+  http_directory     = var.http_directory
+  iso_checksum       = local.debian_11_iso_checksum
+  iso_url            = local.debian_11_iso_url
+  memory             = var.memory
+  shutdown_command   = var.root_shutdown_command
+  ssh_password       = var.ssh_password
+  ssh_timeout        = var.ssh_timeout
+  ssh_username       = var.ssh_username
+  vm_name            = "debian-11-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
+  vnc_bind_address   = var.vnc_bind_address
+  vnc_use_password   = var.vnc_use_password
+  vnc_port_min       = var.vnc_port_min
+  vnc_port_max       = var.vnc_port_max
 
 
 source "qemu" "debian-11-smartos-x86_64" {
@@ -87,6 +109,7 @@ source "qemu" "debian-11-smartos-uefi-x86_64" {
 
 build {
   sources = [
+    "bhyve.debian-11-smartos-x86_64",
     "qemu.debian-11-smartos-x86_64",
     "qemu.debian-11-smartos-uefi-x86_64"
   ]
