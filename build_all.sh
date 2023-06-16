@@ -15,6 +15,11 @@ if [[ -n "$TRACE" ]]; then
     set -o xtrace
 fi
 
+if ! uname -o | grep -q illumos || ! uname -v | grep -q joyent; then
+    printf 'Sorry, only SmartOS is currently supported.'
+    exit 1
+fi
+
 function stack_trace
 {
     set +o xtrace
@@ -121,12 +126,15 @@ function generate_manifest
     fi
     local published_at os sha1 size desc home imagefile
 
-    imagefile="output/${1}-smartos-${IMG_VERSION}.x86_64.zfs"
+    output_stub="output-${1}-smartos-x86_64/${1}-smartos-${IMG_VERSION}"
+    imagefile="${output_stub}.x86_64.zfs"
+    imagegz="${imagefile}.gz"
+    manifestfile="${output_stub}.json"
 
     published_at=$(date +%FT%T%Z)
     os=$(json -f imgconfigs.json "${1}.os" )
     sha1=$(digest -a sha1 "$imagefile")
-    size=$(stat -c %s "${imagefile}")
+    size=$(stat -c %s "${imagegz}")
     desc=$(json -f imgconfigs.json "${1}.desc" )
     home=$(json -f imgconfigs.json "${1}.homepage" )
 
@@ -140,7 +148,7 @@ function generate_manifest
         -e 's/@SIZE@/'"${size}"'/g' \
         -e 's/@DESCRIPTION@/'"${desc}"'/g' \
         -e 's/@HOMEPAGE@/'"${home}"'/g' \
-        manifest.in > "output/${1}-${IMG_VERSION}.json"
+        manifest.in > "$manifestfile"
 }
 
 function generate_all_manifests
@@ -171,7 +179,7 @@ function ensure_services
     fi
     # This may be overly fragile. If we're going to change the contents of the
     # file then we'll need to recalculate the checksum.
-    if ! digest -a sha1 /etc/ipf/ipnat.conf | grep dfe9e37e04cc20ff27518c05e7a25f644be15e86 ; then
+    if ! digest -a sha1 /etc/ipf/ipnat.conf | grep b0d746f5e40bfaf78d08e265dcb6fbed086b5572 ; then
         printf 'map net0 10.0.0.0/24 -> 0/32\n' > /etc/ipf/ipnat.conf
         svcadm restart ipfilter
     fi
@@ -204,9 +212,10 @@ ensure_services
 if (( BASH_ARGC > 0 )); then
     for i in "$@"; do
         build_uuid=$(uuid -v 4)
-        zfs create zones/$(zonename)/data/${build_uuid}
+
+        zfs create "zones/$(zonename)/data/${build_uuid}"
         packer build --only="${vmm}.${i}-smartos-x86_64" -var disk_use_zvol=true -var disk_zpool="zones/$(zonename)/data/${build_uuid}" .
-        zfs destroy zones/$(zonename)/data/${build_uuid}
+        zfs destroy "zones/$(zonename)/data/${build_uuid}"
 
         generate_manifest "$i"
     done

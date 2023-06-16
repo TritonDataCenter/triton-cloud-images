@@ -3,8 +3,12 @@ variables {
   headless              = true
   boot_wait             = "10s"
   cpus                  = 4
-  disk_use_zvol         = false
+  /*
+   * disk_zpool must already exist be overridden in the packer command line as
+   * `-var disk_zpool=zones/$(zonename)/data/<uuid>`
+   */
   disk_zpool            = "zones"
+  disk_use_zvol         = true
   memory                = 4096
   post_cpus             = 2
   post_memory           = 2048
@@ -22,10 +26,10 @@ variables {
   vnc_port_min          = 5900
   vnc_port_max          = 6000
 
-  disk_size    = "10G"
-  ssh_username = "root"
-  ssh_password = "tritondatacenter"
+  disk_size             = "10G"
+  ssh_username          = "root"
+  ssh_password          = "tritondatacenter"
 
-  kickstart_file     = "anaconda.ks"
-  kickstart_url      = "http://{{ .HTTPIP }}:{{ .HTTPPort }}/anaconda.ks"
+  kickstart_file        = "anaconda.ks"
+  kickstart_url         = "http://{{ .HTTPIP }}:{{ .HTTPPort }}/anaconda.ks"
 }
