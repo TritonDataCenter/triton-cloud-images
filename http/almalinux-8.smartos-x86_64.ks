@@ -28,7 +28,7 @@ parted -s -a optimal /dev/vda -- mklabel gpt
 parted -s -a optimal /dev/vda -- mkpart biosboot 1MiB 2MiB set 1 bios_grub on
 parted -s -a optimal /dev/vda -- mkpart '"EFI System Partition"' fat32 2MiB 258MiB set 2 esp on
 parted -s -a optimal /dev/vda -- mkpart boot xfs 258MiB 1058MiB
-varted -s -a optimal /dev/vda -- mkpart primary 1058MiB 100%
+parted -s -a optimal /dev/vda -- mkpart primary 1058MiB 100%
 
 %end
 
