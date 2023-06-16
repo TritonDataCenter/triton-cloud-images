@@ -131,15 +131,17 @@ function generate_manifest
     imagegz="${imagefile}.gz"
     manifestfile="${output_stub}.json"
 
+    gzip "$imagefile"
+
     published_at=$(date +%FT%T%Z)
     os=$(json -f imgconfigs.json "${1}.os" )
-    sha1=$(digest -a sha1 "$imagefile")
+    sha1=$(digest -a sha1 "$imagegz")
     size=$(stat -c %s "${imagegz}")
     desc=$(json -f imgconfigs.json "${1}.desc" )
     home=$(json -f imgconfigs.json "${1}.homepage" )
 
     sed \
-        -e 's/@UUID@/'"$(uuid -4)"'/g' \
+        -e 's/@UUID@/'"$(uuid -v 4)"'/g' \
         -e 's/@NAME@/'"${1}"'/g' \
         -e 's/@VERSION@/'"${IMG_VERSION}"'/g' \
         -e 's/@PUBLISHED_AT@/'"${published_at}"'/g' \
@@ -147,7 +149,7 @@ function generate_manifest
         -e 's/@SHA1@/'"${sha1}"'/g' \
         -e 's/@SIZE@/'"${size}"'/g' \
         -e 's/@DESCRIPTION@/'"${desc}"'/g' \
-        -e 's/@HOMEPAGE@/'"${home}"'/g' \
+        -e 's#@HOMEPAGE@#'"${home}"'#g' \
         manifest.in > "$manifestfile"
 }
 
