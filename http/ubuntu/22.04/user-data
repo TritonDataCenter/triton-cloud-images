@@ -77,7 +77,7 @@ autoinstall:
     - wget
     - tasksel
     - grub-pc-bin
-    - linux-image-virtual-hwe-22.04
+    - linux-image-generic-hwe-22.04
 
   late-commands:
     - sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /target/etc/ssh/sshd_config
