@@ -12,6 +12,3 @@
   ansible.builtin.apt:
     autoremove: yes
 
-- name: Remove cached deb files
-  apt:
-    clean: yes

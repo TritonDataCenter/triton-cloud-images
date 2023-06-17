@@ -25,20 +25,3 @@
 - name: Remove dependencies that are no longer required
   ansible.builtin.apt:
     autoremove: yes
-
-- name: Remove cached deb files
-  apt:
-    clean: yes
-
-- name: Find sources cache
-  find:
-    paths: "/var/lib/apt/lists/"
-    patterns: "us.archive.ubuntu.com_ubuntu_dists_*"
-    use_regex: yes
-  register: src_cache
-
-- name: Remove apt sources cache
-  ansible.builtin.file:
-     path: "{{item.path}}"
-     state: absent
-  loop: '{{src_cache.files}}'

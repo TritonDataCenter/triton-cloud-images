@@ -20,7 +20,7 @@
     owner: root
     group: root
 
-- name: Triton sdcvmtools lib/smartdc
+- name: Triton sdcvmtools mdata-client
   copy:
     src: "{{ item }}"
     dest: /usr/sbin/
@@ -32,7 +32,7 @@
 
 
 #ln -s /usr/sbin/mdata-get /lib/smartdc/mdata-get
-- name: Triton symlink mdata
+- name: Triton symlink mdata-get
   file:
     src: /usr/sbin/mdata-get
     dest: /lib/smartdc/mdata-get
@@ -40,7 +40,6 @@
     group: root
     state: link
     force: true
-
 
 - name: setup motd
   template:
@@ -50,7 +49,7 @@
     group: root
     mode: 0644
 
-- name: link /etc/motd to /etc/issue.net
+- name: link /etc/motd to /etc/issue
   file:
     src: /etc/motd
     dest: /etc/issue

@@ -22,9 +22,33 @@
   shell: dnf remove -y $(dnf repoquery --installonly --latest-limit=-1 -q)
   when: ansible_os_family == "RedHat"
 
+- name: Remove old kernels
+  shell: apt-get purge -y $(dpkg --get-selections | grep ^linux-.*-5.* | grep -v $(uname -r) | awk '{print $1}')
+  when: ansible_os_family == "Debian"
+
 - name: Delete DNF cache
   command: dnf clean all
   when: ansible_os_family == "RedHat"
+
+- name: Delete APT cache
+  apt:
+    clean: yes
+  when: ansible_os_family == "Debian"
+
+- name: Find APT sources cache
+  find:
+    paths: "/var/lib/apt/lists/"
+    patterns: "*_dists_*"
+    use_regex: yes
+  register: src_cache
+  when: ansible_os_family == "Debian"
+
+- name: Remove APT sources cache
+  ansible.builtin.file:
+     path: "{{item.path}}"
+     state: absent
+  loop: '{{src_cache.files}}'
+  when: ansible_os_family == "Debian"
 
 - name: Find temporary files
   find:
@@ -41,7 +65,7 @@
     state: absent
   loop: "{{ tmp_files.files }}"
 
-- name: Remove SSH host keys
+- name: Remove SSH host keys block
   block:
     - name: Find SSH host keys
       find:
@@ -102,7 +126,7 @@
     patterns: '*log,*.old,*.log.gz,*.[0-9],*.gz,*-????????'
   register: log_files
 
-- name: Remove log files
+- name: Remove log files in log dirs that must exist
   file:
     path: "{{ item.path }}"
     state: absent
