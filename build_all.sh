@@ -263,9 +263,12 @@ if (( BASH_ARGC > 0 )); then
         build_uuid=$(uuid -v 4)
 
         zfs create "zones/$(zonename)/data/${build_uuid}"
+        start=$(date -u +%s)
         packer build "${debug_args[@]}" --only="bhyve.${i//.}-smartos-x86_64" -var disk_use_zvol=true -var disk_zpool="zones/$(zonename)/data/${build_uuid}" .
+        end=$(date -u +%s)
         zfs destroy "zones/$(zonename)/data/${build_uuid}"
 
+        printf 'Image creation took %ds\n' "$(( end - start ))"
         generate_manifest "$i"
     done
 else
