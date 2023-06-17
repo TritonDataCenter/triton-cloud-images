@@ -44,7 +44,7 @@ source "bhyve" "ubuntu-2204-smartos-x86_64" {
 
 build {
   sources = [
-    "bhyve.ubuntu-22-smartos-x86_64"
+    "bhyve.ubuntu-2204-smartos-x86_64"
   ]
 
   provisioner "ansible" {

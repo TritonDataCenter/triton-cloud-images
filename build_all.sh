@@ -186,7 +186,7 @@ function ensure_deps
             errs=( "${errs[@]}" 'Bhyve not available.\n' )
             printf 'requirements.\n'
     fi
-    if zfs list | grep -q "zones/$(zonename)/data" ; then
+    if ! zfs list | grep -q "zones/$(zonename)/data" ; then
         errs=( "${errs[@]}" 'Delegated dataset not vailable.\n' )
     fi
     if (( ${#errs} > 0 )); then
