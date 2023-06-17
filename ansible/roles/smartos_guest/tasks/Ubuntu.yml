@@ -5,7 +5,7 @@
     name: "{{ item }}"
     state: absent
   loop:
-    - snap
+    - snapd
     - linux-headers-generic
     - linux-headers-*
     - linux-firmware
