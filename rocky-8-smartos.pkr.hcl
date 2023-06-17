@@ -49,65 +49,9 @@ source "bhyve" "rocky-8-smartos-x86_64" {
   vnc_port_max       = var.vnc_port_max
 }
 
-source "qemu" "rocky-8-smartos-x86_64" {
-  iso_url            = local.rocky_8_iso_url
-  iso_checksum       = local.rocky_8_iso_checksum
-  shutdown_command   = var.root_shutdown_command
-  accelerator        = "kvm"
-  http_directory     = var.http_directory
-  ssh_username       = var.ssh_username
-  ssh_password       = var.ssh_password
-  ssh_timeout        = var.ssh_timeout
-  cpus               = var.cpus
-  disk_interface     = "virtio-scsi"
-  disk_size          = var.disk_size
-  disk_cache         = "unsafe"
-  disk_discard       = "unmap"
-  disk_detect_zeroes = "unmap"
-  disk_compression   = true
-  format             = "raw"
-  headless           = var.headless
-  memory             = var.memory
-  net_device         = "virtio-net"
-  qemu_binary        = var.qemu_binary
-  vm_name            = "rocky-8-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
-  boot_wait          = var.boot_wait
-  boot_command       = local.rocky_8_boot_command
-}
-
-source "qemu" "rocky-8-smartos-uefi-x86_64" {
-  iso_url            = local.rocky_8_iso_url
-  iso_checksum       = local.rocky_8_iso_checksum
-  shutdown_command   = var.root_shutdown_command
-  accelerator        = "kvm"
-  http_directory     = var.http_directory
-  ssh_username       = var.ssh_username
-  ssh_password       = var.ssh_password
-  ssh_timeout        = var.ssh_timeout
-  cpus               = var.cpus
-  efi_firmware_code  = var.ovmf_code
-  efi_firmware_vars  = var.ovmf_vars
-  disk_interface     = "virtio-scsi"
-  disk_size          = var.disk_size
-  disk_cache         = "unsafe"
-  disk_discard       = "unmap"
-  disk_detect_zeroes = "unmap"
-  disk_compression   = true
-  format             = "raw"
-  headless           = var.headless
-  machine_type       = "q35"
-  memory             = var.memory
-  net_device         = "virtio-net"
-  qemu_binary        = var.qemu_binary
-  vm_name            = "rocky-8-smartos-uefi-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
-  boot_wait          = var.boot_wait
-  boot_command       = local.rocky_8_boot_command_uefi
-}
-
 build {
   sources = [
-    "bhyve.rocky-8-smartos-x86_64",
-    "qemu.rocky-8-smartos-uefi-x86_64"
+    "bhyve.rocky-8-smartos-x86_64"
   ]
 
   provisioner "ansible" {

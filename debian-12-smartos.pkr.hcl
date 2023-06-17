@@ -51,67 +51,9 @@ source "bhyve" "debian-12-smartos-x86_64" {
   vnc_port_max       = var.vnc_port_max
 }
 
-source "qemu" "debian-12-smartos-x86_64" {
-  iso_url            = local.debian_12_iso_url
-  iso_checksum       = local.debian_12_iso_checksum
-  shutdown_command   = var.root_shutdown_command
-  accelerator        = "kvm"
-  http_directory     = var.http_directory
-  ssh_username       = var.ssh_username
-  ssh_password       = var.ssh_password
-  ssh_timeout        = var.ssh_timeout
-  cpus               = var.cpus
-  disk_interface     = "virtio-scsi"
-  disk_size          = var.disk_size
-  disk_cache         = "unsafe"
-  disk_discard       = "unmap"
-  disk_detect_zeroes = "unmap"
-  disk_compression   = true
-  format             = "raw"
-  headless           = var.headless
-  memory             = var.memory
-  net_device         = "virtio-net"
-  qemu_binary        = var.qemu_binary
-  vm_name            = "debian-12-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
-  boot_wait          = var.boot_wait
-  boot_command       = local.debian_12_boot_command
-}
-
-source "qemu" "debian-12-smartos-uefi-x86_64" {
-  iso_url            = local.debian_12_iso_url
-  iso_checksum       = local.debian_12_iso_checksum
-  shutdown_command   = var.root_shutdown_command
-  accelerator        = "kvm"
-  http_directory     = var.http_directory
-  ssh_username       = var.ssh_username
-  ssh_password       = var.ssh_password
-  ssh_timeout        = var.ssh_timeout
-  cpus               = var.cpus
-  efi_firmware_code  = var.ovmf_code
-  efi_firmware_vars  = var.ovmf_vars
-  disk_interface     = "virtio-scsi"
-  disk_size          = var.disk_size
-  disk_cache         = "unsafe"
-  disk_discard       = "unmap"
-  disk_detect_zeroes = "unmap"
-  disk_compression   = true
-  format             = "raw"
-  headless           = var.headless
-  machine_type       = "q35"
-  memory             = var.memory
-  net_device         = "virtio-net"
-  qemu_binary        = var.qemu_binary
-  vm_name            = "debian-12-smartos-uefi-${formatdate("YYYYMMDD", timestamp())}.x86_64.raw"
-  boot_wait          = "10s"
-  boot_command       = local.debian_12_boot_command
-}
-
-
 build {
   sources = [
-    "bhyve.debian-12-smartos-x86_64",
-    "qemu.debian-12-smartos-x86_64",
-    "qemu.debian-12-smartos-uefi-x86_64"
+    "bhyve.debian-12-smartos-x86_64"
   ]
 
   provisioner "ansible" {

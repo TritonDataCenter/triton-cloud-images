@@ -16,8 +16,13 @@ if [[ -n "$TRACE" ]]; then
 fi
 
 if ! uname -o | grep -q illumos || ! uname -v | grep -q joyent; then
-    printf 'Sorry, only SmartOS is currently supported.'
+    printf 'Sorry, only SmartOS is currently supported.\n'
     exit 1
+fi
+
+debug_args=()
+if [[ -n $DEBUG ]]; then
+    debug_args=( '--on-error=abort' )
 fi
 
 function stack_trace
@@ -46,6 +51,8 @@ function fatal
     set +o errtrace
     trap '' ERR
 
+    [[ -z $DEBUG ]] && cleanup
+
     echo "$(basename "$0"): fatal error: $*" >&2
     stack_trace
     exit 1
@@ -55,6 +62,13 @@ function trap_err
 {
     st=$?
     fatal "exit status ${st} at line ${BASH_LINENO[0]}"
+}
+
+function cleanup
+{
+    if [[ -n $build_uuid ]] && [[ -d "/zones/$(zonename)/data/${build_uuid}" ]]; then
+        zfs destroy "zones/$(zonename)/data/${build_uuid}"
+    fi
 }
 
 set -o pipefail
@@ -73,14 +87,6 @@ export PATH="${TOP}/deps:${TOP}/deps/py-venv/bin:$PATH"
 SYSTYPE=$(uname -o || uname -s)
 case $SYSTYPE in
     illumos)
-        if ! [[ -c /dev/viona ]] || ! [[ -c /dev/vmmctl ]] || \
-           ! [[ -d /dev/vmm ]]; then
-            printf 'WARNING: Bhyve not available. See the README.md for zone\n'
-            printf 'requirements.\n'
-            export BHYVE=false
-        else
-            vmm=bhyve
-        fi
         if [[ -z $vmm ]]; then
             if ! [[ -c /dev/kvm ]]; then
                 printf 'WARNING: KVM not available. See the README.md for zone\n'
@@ -126,14 +132,14 @@ function generate_manifest
     fi
     local published_at os sha1 size desc home imagefile
 
-    output_stub="output-${1}-smartos-x86_64/${1}-smartos-${IMG_VERSION}"
+    output_stub="output-${i//.}-smartos-x86_64/${i}-smartos-${IMG_VERSION}"
     imagefile="${output_stub}.x86_64.zfs"
     imagegz="${imagefile}.gz"
     manifestfile="${output_stub}.json"
 
     gzip "$imagefile"
 
-    published_at=$(date +%FT%T%Z)
+    published_at=$(date -u +%FT%TZ)
     os=$(json -f imgconfigs.json "${1}.os" )
     sha1=$(digest -a sha1 "$imagegz")
     size=$(stat -c %s "${imagegz}")
@@ -169,6 +175,27 @@ function packer_init
     packer init .
 }
 
+function ensure_deps
+{
+    ## TEST THIS
+    printf 'Checking for packages that need to be installed...\n'
+    errs=()
+    pkgin -y in isc-dhcpd packer ansible
+    if ! [[ -c /dev/viona ]] || ! [[ -c /dev/vmmctl ]] || \
+           ! [[ -d /dev/vmm ]]; then
+            errs=( "${errs[@]}" 'Bhyve not available.\n' )
+            printf 'requirements.\n'
+    fi
+    if zfs list | grep -q "zones/$(zonename)/data" ; then
+        errs=( "${errs[@]}" 'Delegated dataset not vailable.\n' )
+    fi
+    if (( ${#errs} > 0 )); then
+        printf '%s\n' "${errs[@]}"
+        printf 'See the README.md for zone requirements.\n'
+        exit 1
+    fi
+}
+
 function ensure_services
 {
     printf 'Setting up SMF services...\n'
@@ -185,7 +212,7 @@ function ensure_services
         printf 'map net0 10.0.0.0/24 -> 0/32\n' > /etc/ipf/ipnat.conf
         svcadm restart ipfilter
     fi
-    if ! digest -a sha1 /opt/local/etc/dhcp/dhcpd.conf | grep dcc4ad69a192ddf1b82be50b315a531ddeaa41ac ; then
+    if ! digest -a sha1 /opt/local/etc/dhcp/dhcpd.conf | grep 0d9d644926d450c047fb4a76f637a99a5e7d58a7 ; then
         cp smf/dhcpd.conf /opt/local/etc/dhcp/dhcpd.conf
         svcadm restart isc-dhcpd
     fi
@@ -208,6 +235,26 @@ fi
 
 [[ -d $PACKER_PLUGIN_PATH ]] || packer_init
 
+case "$1" in
+    *deps)
+        # Q: Why do this here and also below, outside of the case statement?
+        # A: So that someone can *just* do the dependencies, but we will always
+        #    ensure dependencies before attempting to build an image.
+        ensure_deps
+        ensure_services
+        exit $?
+        ;;
+    *validate)
+        ensure_deps
+        packer validate .
+        exit $?
+        ;;
+    *)
+        # continue
+        : ;;
+esac
+
+ensure_deps
 ensure_services
 
 # Build any images passed on the command line, or all.
@@ -216,7 +263,7 @@ if (( BASH_ARGC > 0 )); then
         build_uuid=$(uuid -v 4)
 
         zfs create "zones/$(zonename)/data/${build_uuid}"
-        packer build --only="${vmm}.${i}-smartos-x86_64" -var disk_use_zvol=true -var disk_zpool="zones/$(zonename)/data/${build_uuid}" .
+        packer build "${debug_args[@]}" --only="bhyve.${i//.}-smartos-x86_64" -var disk_use_zvol=true -var disk_zpool="zones/$(zonename)/data/${build_uuid}" .
         zfs destroy "zones/$(zonename)/data/${build_uuid}"
 
         generate_manifest "$i"

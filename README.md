@@ -25,18 +25,9 @@ This peoject uses [Packer](https://www.packer.io/) templates and and Ansible for
 
 ## Requirements
 
-Only building on SmartOS is supported. When building on SmartOS, the build script will ensure any necessary dependencies are correctly installed.
+Only building on SmartOS with bhyve is supported. When building on SmartOS, the build script will ensure any necessary dependencies are correctly installed.
 
-It is possible to partially build images using Linux. This will produce `raw` images, which must be then moved to SmartOS, written to a zvol, and then `zfs send`. Using Linux is generally only used for quick iterative development when bootstrapping new image types when SmartOS is not convenient (e.g., developer workstations). ZFS on Linux will *not* produce images usable by SmartOS.
-
-In order to build on Linux you will need the following components.
-
-* [Packer](https://www.packer.io/) `>= 1.7.0`
-* [Ansible](https://www.ansible.com/) `>= 2.12`
-* [QEMU](https://www.qemu.org/)
-* [EDK II](https://github.com/tianocore/tianocore.github.io/wiki/OVMF) (for UEFI supported `x86_64`)
-
-Ensuring these are installed and configured properly for Linux partial builds is up to the user.
+Images produced should be usable with KVM as well as Bhyve.
 
 ## Building with Bhyve and packer on SmartOS
 
@@ -46,9 +37,9 @@ Building images requires additional services to be installed, running, and prope
 
 ### Granting permission for a zone to use Bhyve
 
-You must use a `joyent` brand zone `base-64-lts@22.4.0` or later, with a delegated dataset.
+You must use a `joyent` brand zone `base-64-lts@22.4.0` or later, with a delegated dataset. And the nic will need `"allow_ip_spoofing": true`. If you are using a stand-alone SmartOS server, add this to the JSON when creating the zone. If you are using Triton, you will need to add it via NAPI (AdminUI can also be used).
 
-After provisioning some additional zone setup is required.
+After provisioning some additional zone setup is required to grant the zone access to the bhyve devices. This is *not* something you should grant to untrusted tenants.
 
 ```sh
 zonecfg -z <uuid> <<EOF
@@ -110,116 +101,9 @@ subnet 10.0.0.0 netmask 255.255.255.0 {
 }
 ```
 
-## Building with Qemu (KVM) and packer on SmartOS
-
-There are currently issues with `packer-plugin-qemu` on SmartOS. First, Hashicorp does not build that binary by default. This should be [addressed soon](https://github.com/hashicorp/packer-plugin-qemu/pull/127). Once binaries are available, the second issue is that packer's iterface to qemu doesn't support the version supplied by SmartOS. You'll need to use the supplied [`wrappers`](./wrappers).
-
-### Granting permission for a zone to use Qemu
-
-You must use a `joyent` brand zone `base-64-lts@22.4.0` or later, with a delegated dataset.
-
-After provisioning some additional zone setup is required.
-
-```sh
-zonecfg -z <uuid> <<EOF
-add fs
-set dir=/smartdc
-set special=/smartdc
-set type=lofs
-set options=ro
-end
-add device
-set match=kvm
-end
-EOF
-```
-
-Qemu automatically handles DHCP/NAT/Routing onbehalf of guests.
-
-## Usage
-
-Install or Update installed Packer plugins:
-
-```sh
-packer init -upgrade .
-```
-
-### Triton DataCenter / SmartOS images
-
-#### Build All Images
-
-```sh
-packer build .
-```
-
-#### AlmaLinux OS 8 only
-
-```sh
-packer build -only=qemu.almalinux-8-smartos-x86_64 .
-```
-
-#### AlmaLinux OS 9 only
-
-```sh
-packer build -only=qemu.almalinux-9-smartos-x86_64 .
-```
-
-#### Debian 11 only
-
-```sh
-packer build -only=qemu.debian-11-smartos-x86_64 .
-```
-
-#### Rocky Linux 8 only
-
-```sh
-packer build -only=qemu.rocky-8-smartos-x86_64 .
-```
-
-#### Rocky Linux 9 only
-
-```sh
-packer build -only=qemu.rocky-9-smartos-x86_64 .
-```
-
-### Build process
-
-```sh
-packer build -only=bhyve.almalinux-8-smartos-x86_64,bhyve.rocky-8-smartos-x86_64,bhyve.rocky-9-smartos-x86_64 -var vnc_bind_address=0.0.0.0 -var host_nic=dhcp0 -parallel-builds=1 .
-```
+### Generating an image
 
 ## FAQ
-
-### Nothing happens after invoking the packer command
-
-The [cracklib-dicts's](https://sourceforge.net/projects/cracklib/) `/usr/sbin/packer` takes precedence over Hashicorp's `/usr/bin/packer` in the `$PATH`.
-Use `packer.io` instead of the `packer`. See: [Packer Troubleshooting](https://learn.hashicorp.com/tutorials/packer/get-started-install-cli#troubleshooting)
-
-```sh
-ln -s /usr/bin/packer /usr/bin/packer.io
-```
-
-### "qemu-system-x86_64": executable file not found in $PATH
-
-Output:
-
-`Failed creating Qemu driver: exec: "qemu-system-x86_64": executable file not found in $PATH`
-
-By default, Packer looks for QEMU binary as `qemu-system-x86_64`. If it is different in your system, You can set your qemu binary with the `qemu_binary` Packer variable.
-
-on EL - `/usr/libexec/qemu-kvm`
-
-```sh
-packer build -var qemu_binary="/usr/libexec/qemu-kvm" -only=qemu.almalinux-8-gencloud-x86_64 .
-```
-
-or set the `qemu_binary` Packer variable in `.auto.pkrvars.hcl` file:
-
-`qemu_on_el.auto.pkrvars.hcl`
-
-```hcl
-qemu_binary = "/usr/libexec/qemu-kvm"
-```
 
 ### Failed to connect to the host via scp with OpenSSH >= 9.0/9.0p1 and EL9
 
