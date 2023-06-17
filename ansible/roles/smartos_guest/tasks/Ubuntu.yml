@@ -4,6 +4,7 @@
   ansible.builtin.apt:
     name: "{{ item }}"
     state: absent
+    purge: true
   loop:
     - snapd
     - linux-headers-generic
@@ -29,7 +30,15 @@
   apt:
     clean: yes
 
+- name: Find sources cache
+  find:
+    paths: "/var/lib/apt/lists/"
+    patterns: "us.archive.ubuntu.com_ubuntu_dists_*"
+    use_regex: yes
+  register: src_cache
+
 - name: Remove apt sources cache
   ansible.builtin.file:
-    path: /var/lib/apt/lists/us.archive.ubuntu.com_ubuntu_dists_*
-    state: absent
+     path: "{{item.path}}"
+     state: absent
+  loop: '{{result.files}}'
