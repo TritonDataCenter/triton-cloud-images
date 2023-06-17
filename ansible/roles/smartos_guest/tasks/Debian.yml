@@ -6,4 +6,12 @@
     owner: root
     group: root
     mode: 0644
+  when: ansible_distribution != "Ubuntu"
 
+- name: Remove dependencies that are no longer required
+  ansible.builtin.apt:
+    autoremove: yes
+
+- name: Remove cached deb files
+  apt:
+    clean: yes
