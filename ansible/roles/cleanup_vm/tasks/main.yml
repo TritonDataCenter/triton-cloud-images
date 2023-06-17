@@ -37,7 +37,8 @@
 
 - name: Find APT sources cache
   find:
-    paths: "/var/lib/apt/lists/"
+    paths:
+      - /var/lib/apt/lists
     patterns: "*_dists_*"
     use_regex: yes
   register: src_cache
