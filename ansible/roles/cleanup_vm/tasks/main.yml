@@ -39,7 +39,7 @@
   find:
     paths:
       - /var/lib/apt/lists
-    patterns: "*_dists_*"
+    patterns: ".*_dists_.*"
     use_regex: yes
   register: src_cache
   when: ansible_os_family == "Debian"
@@ -48,7 +48,7 @@
   ansible.builtin.file:
      path: "{{item.path}}"
      state: absent
-  loop: '{{src_cache.files}}'
+  loop: '{{ src_cache.files }}'
   when: ansible_os_family == "Debian"
 
 - name: Find temporary files
