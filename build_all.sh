@@ -79,41 +79,6 @@ TOP=$(cd "$(dirname "$0")/"; pwd)
 
 export PATH="${TOP}/deps:${TOP}/deps/py-venv/bin:$PATH"
 
-# We currently only support generating images on illumos and Linux.
-# Here we really need to make sure we're using *illumos* and not Solaris so
-# we need to first check `uname -o`. But not all systems support `-o` (e.g.,
-# NetBSD) so we'll fall back to `-s` so that there's *some* value in SYSTYPE
-# before we do the system check.
-SYSTYPE=$(uname -o || uname -s)
-case $SYSTYPE in
-    illumos)
-        if [[ -z $vmm ]]; then
-            if ! [[ -c /dev/kvm ]]; then
-                printf 'WARNING: KVM not available. See the README.md for zone\n'
-                printf 'requirements.\n'
-                export QEMU=false
-            else
-                vmm=qemu
-            fi
-        fi
-        if [[ -z $vmm ]]; then
-            printf 'Cannot create vms'
-            exit 1
-        fi
-        ;;
-    *Linux) # Can be GNU/Linux or just Linux
-        printf 'WARNING: Linux can be used for development, but will only\n'
-        printf 'create RAW images. In order to use the image you will need to\n'
-        # shellcheck disable=SC2016
-        printf '`dd` the raw image to a zvol on SmartOS, then `zfs send` it.\n'
-        vmm=qemu
-        ;;
-    *)
-        printf 'Building on %s is not currently supported\n' "$OSTYPE"
-        exit 1
-        ;;
-esac
-
 # Enable debug logging output from packer
 export PACKER_LOG=1
 export PACKER_PLUGIN_PATH=${TOP}/packer_plugins/
@@ -181,10 +146,13 @@ function ensure_deps
     printf 'Checking for packages that need to be installed...\n'
     errs=()
     pkgin -y in isc-dhcpd packer ansible
+    if ! mdata-get sdc:nics | json -a -c 'this.primary===true' allow_ip_spoofing | grep true; then
+        errs=( "${errs[@]}" "External interface does not have allow_ip_spoofing")
+
+    fi
     if ! [[ -c /dev/viona ]] || ! [[ -c /dev/vmmctl ]] || \
            ! [[ -d /dev/vmm ]]; then
             errs=( "${errs[@]}" 'Bhyve not available.\n' )
-            printf 'requirements.\n'
     fi
     if ! zfs list | grep -q "zones/$(zonename)/data" ; then
         errs=( "${errs[@]}" 'Delegated dataset not vailable.\n' )
