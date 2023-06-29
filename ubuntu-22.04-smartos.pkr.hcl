@@ -2,6 +2,16 @@
  * Ubuntu 22.04 Packer template for building SmartOS / Triton DataCenter images
  */
 
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/*
+ * Copyright 2023 MNX Cloud, Inc.
+ */
+
 locals {
   ubuntu_22_iso_url      = "https://cdimage.ubuntu.com/ubuntu-server/jammy/daily-live/current/jammy-live-server-amd64.iso"
   ubuntu_22_iso_checksum = "file:https://cdimage.ubuntu.com/ubuntu-server/jammy/daily-live/current/SHA256SUMS"

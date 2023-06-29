@@ -2,6 +2,16 @@
  * Ubuntu 20.04 Packer template for building SmartOS / Triton DataCenter images
  */
 
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/*
+ * Copyright 2023 MNX Cloud, Inc.
+ */
+
 locals {
   ubuntu_20_iso_url      = "https://releases.ubuntu.com/focal/ubuntu-20.04.6-live-server-amd64.iso"
   ubuntu_20_iso_checksum = "file:https://releases.ubuntu.com/focal/SHA256SUMS"

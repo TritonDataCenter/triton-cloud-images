@@ -1,4 +1,14 @@
-# AlmaLinux 8 kickstart file for Generic Cloud (OpenStack) image
+# Rocky 8 kickstart file for TritonDataCenter image
+
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+#
+# Copyright 2023 MNX Cloud, Inc.
+#
 
 url --url https://download.rockylinux.org/stg/rocky/8/BaseOS/x86_64/os/
 repo --name="BaseOS" --baseurl=http://dl.rockylinux.org/pub/rocky/8/BaseOS/x86_64/os/
