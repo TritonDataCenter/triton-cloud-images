@@ -73,3 +73,11 @@
     group: root
     state: link
     force: true
+
+- name: fstrim cron job
+  file:
+    src: fstrim.cron.sh
+    dest: /etc/cron.daily/fstrim
+    owner: root
+    group: root
+    mode: 0644
