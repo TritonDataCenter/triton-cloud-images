@@ -8,7 +8,7 @@
 # Copyright 2023 MNX Cloud, Inc.
 #
 
-PACKAGES = rust packer py310-virtualenv py310-pip unzip isc-dhcpd
+PACKAGES = isc-dhcpd packer ansible
 
 ifeq ($(shell uname -s),SunOS)
 	OS=solaris
