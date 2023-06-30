@@ -73,6 +73,7 @@ reboot --eject
 
 %post --erroronfail
 dnf install -y grub2-efi-x64-modules grub2-pc-modules
+grub2-mkconfig -o /boot/grub2/grub.cfg
 grub2-install --target=i386-pc /dev/vda
 %end
 
