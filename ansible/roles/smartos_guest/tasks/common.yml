@@ -75,7 +75,7 @@
     force: true
 
 - name: fstrim cron job
-  file:
+  copy:
     src: fstrim.cron.sh
     dest: /etc/cron.daily/fstrim
     owner: root
