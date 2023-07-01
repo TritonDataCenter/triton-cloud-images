@@ -45,7 +45,9 @@ parted -s -a optimal /dev/vda -- mkpart primary 1058MiB 100%
 part biosboot  --fstype=biosboot --onpart=vda1
 part /boot/efi --fstype=efi --onpart=vda2
 part /boot     --fstype=xfs --onpart=vda3
-part /         --fstype=xfs --onpart=vda4
+part pv.01     --onpart=vda4
+volgroup rootvg pv.01
+logvol / --vgname=rootvg --size=5000 --name=rootlv --grow
 
 rootpw --plaintext tritondatacenter
 
