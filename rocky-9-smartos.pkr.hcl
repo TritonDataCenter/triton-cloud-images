@@ -28,7 +28,7 @@ locals {
     "boot<enter><wait>"
   ]
 
-  rocky_9_kickstart_template = "${path.root}/http/rocky-9.smartos-x86_64.ks"
+  rocky_9_kickstart_template = "${path.root}/http/rocky-9.ks"
 }
 
 source "bhyve" "rocky-9-smartos-x86_64" {

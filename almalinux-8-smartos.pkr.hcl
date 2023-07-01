@@ -28,7 +28,7 @@ locals {
     "boot<enter><wait>"
   ]
 
-  almalinux_8_kickstart_template = "${path.root}/http/almalinux-8.smartos-x86_64.ks"
+  almalinux_8_kickstart_template = "${path.root}/http/almalinux-8.ks"
 }
 
 source "bhyve" "almalinux-8-smartos-x86_64" {
