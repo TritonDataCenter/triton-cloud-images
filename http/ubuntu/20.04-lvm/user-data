@@ -43,9 +43,12 @@ autoinstall:
       - {device: disk0, size: 800MB, flag: linux, number: 3, preserve: false, type: partition, id: disk0p3}
       - {device: disk0, size: -1, flag: linux, number: 4, preserve: false, type: partition, id: disk0p4}
 
+      - {name: rootvg, devices: [disk0p4], preserve: false, type: lvm_volgroup, id: rootvg}
+      - {name: rootlv, volgroup: rootvg, size: 100%, preserve: false, type: lvm_partition, id: lvm-partition-rootlv}
+
       - {fstype: vfat, volume: disk0p2, preserve: false, type: format, id: format-efi}
       - {fstype: ext4, volume: disk0p3, preserve: false, type: format, id: format-bios}
-      - {fstype: ext4, volume: disk0p4, preserve: false, type: format, id: format-root}
+      - {fstype: ext4, volume: lvm-partition-rootlv, preserve: false, type: format, id: format-root}
 
       - {device: format-root, path: /, type: mount, id: mount-2}
       - {device: format-bios, path: /boot, type: mount, id: mount-1}
