@@ -34,12 +34,12 @@
     "desc": "Rocky 9 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
     "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
   },
-  "ubuntu-2004": {
+  "ubuntu-20.04": {
     "os": "linux",
     "desc": "Ubuntu 20.04 LTS. Built to run on bhyve or KVM virtual machines.",
     "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
   },
-  "ubuntu-2204": {
+  "ubuntu-22.04": {
     "os": "linux",
     "desc": "Ubuntu 20.04 LTS. Built to run on bhyve or KVM virtual machines.",
     "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
