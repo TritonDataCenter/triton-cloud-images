@@ -9,7 +9,7 @@
   "public": true,
   "published_at": "@PUBLISHED_AT@",
   "type": "zvol",
-  "os": "linux",
+  "os": "@OS@",
   "files": [
     {
       "sha1": "@SHA1@",
@@ -18,7 +18,7 @@
     }
   ],
   "description": "@DESCRIPTION@",
-  "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux",
+  "homepage": "@HOMEPAGE@",
   "requirements": {
     "networks": [
       {
