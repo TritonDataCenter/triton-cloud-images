@@ -105,11 +105,11 @@ function generate_manifest
     gzip "$imagefile"
 
     published_at=$(date -u +%FT%TZ)
-    os=$(json -f imgconfigs.json "${1}.os" )
+    os=$(json -f imgconfigs.json "${1//.}.os" )
     sha1=$(digest -a sha1 "$imagegz")
     size=$(stat -c %s "${imagegz}")
-    desc=$(json -f imgconfigs.json "${1}.desc" )
-    home=$(json -f imgconfigs.json "${1}.homepage" )
+    desc=$(json -f imgconfigs.json "${1//.}.desc" )
+    home=$(json -f imgconfigs.json "${1//.}.homepage" )
 
     sed \
         -e 's/@UUID@/'"$(uuid -v 4)"'/g' \
@@ -229,6 +229,8 @@ ensure_services
 if (( BASH_ARGC > 0 )); then
     for i in "$@"; do
         build_uuid=$(uuid -v 4)
+
+        printf 'Beginning build for %s %s\n' "$i" "$build_uuid"
 
         zfs create "zones/$(zonename)/data/${build_uuid}"
         packer build "${debug_args[@]}" --only="bhyve.${i//.}-smartos-x86_64" -var disk_use_zvol=true -var disk_zpool="zones/$(zonename)/data/${build_uuid}" .
