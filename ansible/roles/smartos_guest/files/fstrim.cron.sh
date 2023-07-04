@@ -10,4 +10,4 @@
 # Copyright 2023 MNX Cloud, Inc.
 #
 
-fstrim -a
+/usr/sbin/fstrim -a
