@@ -27,6 +27,7 @@
     - plymouth-theme-ubuntu-text
     - powermgmt-base
     - publicsuffix
+    - open-vm-tools
 
 - name: Remove dependencies that are no longer required
   ansible.builtin.apt:
