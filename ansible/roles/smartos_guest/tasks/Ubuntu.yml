@@ -12,22 +12,31 @@
     state: absent
     purge: true
   loop:
-    - snapd
-    - linux-headers-generic
-    - linux-headers-*
-    - linux-firmware
+    - amd64-microcode
+    - binutils
+    - binutils-common
+    - binutils-x86-64-linux-gnu
     - byobu
     - eatmydata
     - fonts-ubuntu-console
     - fwupd
     - fwupd-signed
+    - iucode-tool
     - landscape-common
     - laptop-detect
+    - linux-firmware
+    - linux-headers-*
+    - linux-headers-generic
+    - open-vm-tools
     - plymouth
     - plymouth-theme-ubuntu-text
     - powermgmt-base
     - publicsuffix
-    - open-vm-tools
+    - snapd
+    - thermald
+    - upower
+    - usbmuxd
+    - wireless-regdb
 
 - name: Remove dependencies that are no longer required
   ansible.builtin.apt:
