@@ -51,6 +51,10 @@
   file:
     src: /lib/systemd/system/triton-guest.service
     dest: "{{ item }}/triton-guest.service"
+    owner: root
+    group: root
+    state: link
+    force: true
   loop:
     - /etc/systemd/system
     - /etc/systemd/system/multi-user.target.wants
