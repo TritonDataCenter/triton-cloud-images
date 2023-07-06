@@ -14,9 +14,9 @@ This peoject uses [Packer](https://www.packer.io/) templates and and Ansible for
 
 ## Build details
 
-* All Linux instances are currently built with LVM on the primary disk with a single logical volume (rootlv) for the root partition.
 * Swap is disabled in all kickstarts, and preseed configurations.
 * cloud-init will look for /dev/vdb and mount it under /data (ext4).
+* `triton-guest` systemd service will set hostid and root password from generated metadata
 
 ## Available Images
 
@@ -33,9 +33,9 @@ This peoject uses [Packer](https://www.packer.io/) templates and and Ansible for
 
 ## Requirements
 
-Only building on SmartOS with bhyve is supported. When building on SmartOS, the build script will ensure any necessary dependencies are correctly installed.
+Only building on SmartOS with bhyve is supported. When building on SmartOS, the build script will ensure any necessary dependencies are correctly installed. Building with Linux using the [qemu plugin](https://github.com/hashicorp/packer-plugin-qemu) is theoretically possible, but the build script cannot be used. Also due to divergences in ZFS on Linux and illumos ZFS, zfs datasets from Linux cannot be imported to SmartOS.
 
-Images produced should be usable with KVM as well as Bhyve.
+Images produced will be usable with KVM as well as Bhyve.
 
 ## Building with Bhyve and packer on SmartOS
 
@@ -45,7 +45,7 @@ Building images requires additional services to be installed, running, and prope
 
 ### Granting permission for a zone to use Bhyve
 
-You must use a `joyent` brand zone `base-64-lts@22.4.0` or later, with a delegated dataset. And the nic will need `"allow_ip_spoofing": true`. If you are using a stand-alone SmartOS server, add this to the JSON when creating the zone. If you are using Triton, you will need to add it via NAPI (AdminUI can also be used).
+You must use a `joyent` brand zone `base-64-lts@22.4.0` or later, with a delegated dataset. The nic will need `"allow_ip_spoofing": true`. If you are using a stand-alone SmartOS server, add this to the JSON when creating the zone. If you are using Triton, you will need to add it via NAPI (AdminUI can also be used).
 
 After provisioning some additional zone setup is required to grant the zone access to the bhyve devices. This is *not* something you should grant to untrusted tenants.
 
@@ -65,11 +65,14 @@ EOF
 
 The build script will handle configuring networking, NAT, and routing.
 
-### Configure network interfaces
+### Build Guest Network Configuration
 
-**Note:** This will be handled for you by the build script. This is for reference only.
+**Note:** This will be handled for you by the build script. This is for reference only and is intended to help understand how networking behaves. In the event that something goes wrong, this may help you diagnose the issue.
 
-dhcp0 runs isc-dhcpd and hosts the packer http server, and then packer0 is what bhyve uses for the VM.
+#### Interface Configuration
+
+isc-dhcpd listens on `dhcp0` and hosts the packer http server, and then packer0 is what bhyve uses for the VM. **Note:** isdc-dhcpd may go into maintenance when the zone boots
+if the `dhcp0` interface isn't present.
 
 ```sh
 dladm create-etherstub -t images0
@@ -80,9 +83,7 @@ ifconfig packer0 plumb
 ifconfig dhcp0 10.0.0.1 netmask 255.255.255.0
 ```
 
-### Configure NAT
-
-**Note:** This will be handled for you by the build script. This is for reference only.
+#### NAT Configuration
 
 ```sh
 # cat > /etc/ipf/ipnat.conf <<EOF
@@ -93,7 +94,7 @@ EOF
 # ipnat -l
 ```
 
-### Setup dhcp server
+#### dhcp server configuration
 
 **Note:** This will be handled for you by the build script. This is for reference only.
 
@@ -109,76 +110,22 @@ subnet 10.0.0.0 netmask 255.255.255.0 {
 }
 ```
 
-### Generating an image
+### Generate Images
 
-## FAQ
-
-### Failed to connect to the host via scp with OpenSSH >= 9.0/9.0p1 and EL9
-
-OpenSSH `>= 9.0/9.0p1` and EL9 support was added in [scp_90](https://github.com/AlmaLinux/cloud-images/tree/scp_90) branch instead of the `main` for backward compatibility. Please switch to this branch with `git checkout scp_90`
-
-The Ansible's `ansible.builtin.template` module gives error on EL9 and >= OpenSSH 9.0/9.0p1 (2022-04-08) Host OS.
-
-Error output:
+The available build targets can be discovered with:
 
 ```sh
-fatal: [default]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via scp: bash: line 1: /usr/lib/sftp-server: No such file or directory\nConnection closed\r\n", "unreachable": true}
+./build_all.sh list
 ```
 
-EL9 and OpenSSH >=9.0 deprecated the SCP protocol. Use the new `-O` flag until Ansible starts to use SFTP directly.
-
-From [OpenSSH 9.0/9.0p1 \(2022-04-08\) release note:](https://www.openssh.com/txt/release-9.0)
-
-> In case of incompatibility, the `scp(1)` client may be instructed to use
-the legacy scp/rcp using the `-O` flag.
-
-See: [OpenSSH SCP deprecation in RHEL 9: What you need to know](https://www.redhat.com/en/blog/openssh-scp-deprecation-rhel-9-what-you-need-know)
-
-Add `extra_arguments  = [ "--scp-extra-args", "'-O'" ]` to the Packer's Ansible Provisioner Block:
-
-```hcl
-  provisioner "ansible" {
-    playbook_file    = "./ansible/gencloud.yml"
-    galaxy_file      = "./ansible/requirements.yml"
-    roles_path       = "./ansible/roles"
-    collections_path = "./ansible/collections"
-    extra_arguments  = [ "--scp-extra-args", "'-O'" ]
-    ansible_env_vars = [
-      "ANSIBLE_PIPELINING=True",
-      "ANSIBLE_REMOTE_TEMP=/tmp",
-      "ANSIBLE_SSH_ARGS='-o ControlMaster=no -o ControlPersist=180s -o ServerAliveInterval=120s -o TCPKeepAlive=yes'"
-    ]
-  }
-```
-
-### Packer's Ansible Plugin can't connect via SSH on SHA1 disabled system
-
-Error output:
+To generate images for all targets, run:
 
 ```sh
-fatal: [default]: UNREACHABLE! => {"changed": false, "msg": "Data could not be sent to remote host \"127.0.0.1\". Make sure this host can be reached over ssh: ssh_dispatch_run_fatal: Connection to 127.0.0.1 port 43729: error in libcrypto\r\n", "unreachable": true}
+./build_all.sh
 ```
 
-Enable the `SHA1` on the system's default crypto policy until Packer's Ansible Plugin use a stronger key types and signature algorithms(`rsa-sha2-256`, `rsa-sha2-512`, `ecdsa-sha2-nistp256`, `ssh-ed25519`) than `ssh-rsa`.
-
-Fedora and EL:
+To generate images for a subset of targets, pass only targets you wish to create:
 
 ```sh
-update-crypto-policies --set DEFAULT:SHA1
+./build_all.sh <target1> <target2>
 ```
-
-### How to build AlmaLinux OS cloud images on EL
-
-**EL8**:
-
-See:
-
-* ["qemu-system-x86_64": executable file not found in $PATH](https://github.com/AlmaLinux/cloud-images#qemu-system-x86_64-executable-file-not-found-in-path)
-
-**EL9**:
-
-See:
-
-* ["qemu-system-x86_64": executable file not found in $PATH](https://github.com/AlmaLinux/cloud-images#qemu-system-x86_64-executable-file-not-found-in-path)
-* [Packer's Ansible Plugin can't connect via SSH on SHA1 disabled system](https://github.com/AlmaLinux/cloud-images#packers-ansible-plugin-cant-connect-via-ssh-on-sha1-disabled-system)
-* [Failed to connect to the host via scp with OpenSSH >= 9.0/9.0p1 and EL9](https://github.com/AlmaLinux/cloud-images#failed-to-connect-to-the-host-via-scp-with-openssh--9090p1-and-el9)

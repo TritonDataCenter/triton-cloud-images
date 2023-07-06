@@ -126,10 +126,7 @@ function generate_manifest
 
 function generate_all_manifests
 {
-    # Get the list of images...
-    mapfile -t all_images < <(json -f imgconfigs.json -Ma key)
-    # ...and Bob's your uncle
-    for img in "${all_images[@]}"; do
+    for img in "${all_targets[@]}"; do
         generate_manifest "$img"
     done
 }
@@ -197,7 +194,7 @@ function ensure_services
 
 if [[ $1 == "list" ]]; then
     printf 'The followng image targets are available:\n\n'
-    awk '/^source / {print $3}' ./*.hcl | tr -d '"' | sed 's/-smartos.*//' | sort -u
+    json -f imgconfigs.json -ka | sort -u
     exit
 fi
 
@@ -222,23 +219,26 @@ case "$1" in
         : ;;
 esac
 
+targets=()
+mapfile -t all_targets < <(json -f imgconfigs.json -ka)
+if (( BASH_ARGC > 0 )); then
+    targets=( "$@" )
+else
+    targets=( "${all_targets[@]}" )
+fi
+
 ensure_deps
 ensure_services
 
 # Build any images passed on the command line, or all.
-if (( BASH_ARGC > 0 )); then
-    for i in "$@"; do
-        build_uuid=$(uuid -v 4)
+for i in "${targets[@]}"; do
+    build_uuid=$(uuid -v 4)
 
-        printf 'Beginning build for %s %s\n' "$i" "$build_uuid"
+    printf 'Beginning build for %s %s\n' "$i" "$build_uuid"
 
-        zfs create "zones/$(zonename)/data/${build_uuid}"
-        packer build "${debug_args[@]}" --only="bhyve.${i//.}-smartos-x86_64" -var disk_use_zvol=true -var disk_zpool="zones/$(zonename)/data/${build_uuid}" .
-        zfs destroy "zones/$(zonename)/data/${build_uuid}"
+    zfs create "zones/$(zonename)/data/${build_uuid}"
+    packer build "${debug_args[@]}" --only="bhyve.${i//.}-smartos-x86_64" -var disk_use_zvol=true -var disk_zpool="zones/$(zonename)/data/${build_uuid}" .
+    zfs destroy "zones/$(zonename)/data/${build_uuid}"
 
-        generate_manifest "$i"
-    done
-else
-    packer build .
-    generate_all_manifests
-fi
+    generate_manifest "$i"
+done
