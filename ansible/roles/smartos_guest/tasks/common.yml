@@ -47,7 +47,15 @@
     state: link
     force: true
 
-- name: Triton Guest systemd service
+- name: Define Triton Guest systemd service
+  copy:
+    src: lib/systemd/system/triton-guest.service
+    dest: /lib/systemd/system/triton-guest.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Enable Triton Guest systemd service
   file:
     src: /lib/systemd/system/triton-guest.service
     dest: "{{ item }}/triton-guest.service"
