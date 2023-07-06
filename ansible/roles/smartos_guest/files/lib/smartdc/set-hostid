@@ -1,18 +1,26 @@
 #!/usr/bin/env bash
 
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
 # Copyright 2014, Joyent Inc. All rights reserved
+# Copyright 2023 MNX Cloud, Inc.
 # Explicitly set hostid.
 
 # load common functions and vars
+# shellcheck disable=SC1091
 . /lib/smartdc/lib_smartdc_scripts.cfg
 
-lib_smartdc_info "Start of $(basename $0) script"
+lib_smartdc_info "Start of $(basename "$0") script"
 
 # ** This script must be run once at provision via firstboot **
 # Without this, /usr/bin/hostid will always return 00000000 under the Joyent
 # KVM virutalized environement (see IMAGE-441)
-printf $($MDATA_GET_BIN sdc:uuid | awk \
+printf '%s' "$(${MDATA_GET_BIN:?} sdc:uuid | awk \
   '{ print substr($0,7,2)substr($0,5,2)substr($0,3,2)substr($0,1,2) }' | \
-    sed 's/../\\x&/g') > /etc/hostid
+    sed 's/../\\x&/g')" > /etc/hostid
 
 lib_smartdc_info "/etc/hostid created"

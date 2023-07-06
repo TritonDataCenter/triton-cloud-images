@@ -25,6 +25,7 @@
     dest: /lib
     owner: root
     group: root
+    mode: 0755
 
 - name: Triton sdcvmtools mdata-client
   copy:
@@ -36,7 +37,6 @@
   with_fileglob:
     - "usr/sbin/mdata-*"
 
-
 #ln -s /usr/sbin/mdata-get /lib/smartdc/mdata-get
 - name: Triton symlink mdata-get
   file:
@@ -46,6 +46,14 @@
     group: root
     state: link
     force: true
+
+- name: Triton Guest systemd service
+  file:
+    src: /lib/systemd/system/triton-guest.service
+    dest: "{{ item }}/triton-guest.service"
+  loop:
+    - /etc/systemd/system
+    - /etc/systemd/system/multi-user.target.wants
 
 - name: setup motd
   template:

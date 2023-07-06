@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
+
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
 #
 # Copyright (c) 2014 Joyent Inc., All rights reserved.
+# Copyright 2023 MNX Cloud, Inc.
 #
 
 # load common functions and vars
+# shellcheck disable=SC1091
 . /lib/smartdc/lib_smartdc_scripts.cfg
 
 # set system host name in this order
@@ -11,24 +20,24 @@
 # 2) use Mdata hostname if set
 # 3) use what is set in DHCP via /sbin/dhclient-script
 
-lib_smartdc_info "Start of $(basename $0) script"
+lib_smartdc_info "Start of $(basename "$0") script"
 
 # if /etc/hostname is set then we always use that first
 if [[ -f /etc/hostname && -s /etc/hostname ]]; then
-   out=$(grep "^[[:alnum:]].*$" /etc/hostname | wc -l)
-   if [[ $out -eq 1 ]]; then
+   out=$(grep -c "^[[:alnum:]].*$" /etc/hostname)
+   if (( out == 1 )); then
       out=$(cat /etc/hostname)
       lib_smartdc_info "Using /etc/hostname to set system hostname to $out"
       hostname "$out"
       exit 0
    else
       lib_smartdc_info "/etc/hostname does not have a valid hostname"
-   fi 
+   fi
 fi
 
-mdata_hostname=$($MDATA_GET_BIN "hostname" 2>>/dev/console)
+mdata_hostname=$(${MDATA_GET_BIN:?} "hostname" 2>>/dev/console)
 
-if [[ $? -eq 0 && ! -z "$mdata_hostname" ]]; then  
+if (( $? == 0 )) && [[ -n "$mdata_hostname" ]]; then
    lib_smartdc_info "Metadata hostname set to $mdata_hostname"
    lib_smartdc_info "Setting hostname to $mdata_hostname"
    hostname "$mdata_hostname"
