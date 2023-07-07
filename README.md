@@ -10,7 +10,7 @@
 
 The Triton DataCenter and SmartOS cloud images repo was based on [AlmaLinux cloud-images](https://github.com/AlmaLinux/cloud-images) repo.
 
-This peoject uses [Packer](https://www.packer.io/) templates and and Ansible for building the images.
+This project uses [Packer](https://www.packer.io/) templates and and Ansible for building the images.
 
 ## Build details
 
