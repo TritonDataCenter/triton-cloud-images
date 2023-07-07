@@ -55,7 +55,7 @@ uuid=$(uuid)
 published_at=$(date '+%Y-%m-%dT%H:%M:%SZ')
 sha1=$(shasum ${imagefile} | awk '{print $1}')
 size=$(ls -l ${imagefile} | awk '{print $5}')
-# Extract e.g. "20230516" from "almalinux-8.7-smartos-20230516.x86_64.raw.gz"
+# Extract e.g. "20230516" from "almalinux-8-20230516.x86_64.raw.gz"
 version=${imagename##*-}
 version=${version%%.*}
 

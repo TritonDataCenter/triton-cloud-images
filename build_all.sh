@@ -97,7 +97,7 @@ function generate_manifest
     fi
     local published_at os sha1 size desc home imagefile
 
-    output_stub="output-${i//.}-smartos-x86_64/${i}-smartos-${IMG_VERSION}"
+    output_stub="output-${i//.}-x86_64/${i}-${IMG_VERSION}"
     imagefile="${output_stub}.x86_64.zfs"
     imagegz="${imagefile}.gz"
     manifestfile="${output_stub}.json"
@@ -237,7 +237,7 @@ for i in "${targets[@]}"; do
     printf 'Beginning build for %s %s\n' "$i" "$build_uuid"
 
     zfs create "zones/$(zonename)/data/${build_uuid}"
-    packer build "${debug_args[@]}" --only="bhyve.${i//.}-smartos-x86_64" -var disk_use_zvol=true -var disk_zpool="zones/$(zonename)/data/${build_uuid}" .
+    packer build "${debug_args[@]}" --only="bhyve.${i//.}-x86_64" -var disk_use_zvol=true -var disk_zpool="zones/$(zonename)/data/${build_uuid}" .
     zfs destroy "zones/$(zonename)/data/${build_uuid}"
 
     generate_manifest "$i"

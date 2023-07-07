@@ -31,7 +31,7 @@ locals {
   almalinux_8_kickstart_template = "${path.root}/http/almalinux-8.ks"
 }
 
-source "bhyve" "almalinux-8-smartos-x86_64" {
+source "bhyve" "almalinux-8-x86_64" {
   boot_command       = local.almalinux_8_boot_command_uefi
   boot_wait          = var.boot_wait
   cpus               = var.cpus
@@ -51,7 +51,7 @@ source "bhyve" "almalinux-8-smartos-x86_64" {
   ssh_password       = var.ssh_password
   ssh_timeout        = var.ssh_timeout
   ssh_username       = var.ssh_username
-  vm_name            = "almalinux-8-smartos-${formatdate("YYYYMMDD", timestamp())}.x86_64.zfs"
+  vm_name            = "almalinux-8-${formatdate("YYYYMMDD", timestamp())}.x86_64.zfs"
   vnc_bind_address   = var.vnc_bind_address
   vnc_use_password   = var.vnc_use_password
   vnc_port_min       = var.vnc_port_min
@@ -60,7 +60,7 @@ source "bhyve" "almalinux-8-smartos-x86_64" {
 
 build {
   sources = [
-    "bhyve.almalinux-8-smartos-x86_64"
+    "bhyve.almalinux-8-x86_64"
   ]
 
   provisioner "ansible" {
