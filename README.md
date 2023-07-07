@@ -14,6 +14,8 @@ This project uses [Packer](https://www.packer.io/) templates and and Ansible for
 
 ## Build details
 
+* Images are produce using `packer` and the distro's native installer automation mechanism.
+* `ansible` is used to prepare the image contents.
 * Swap is disabled in all kickstarts, and preseed configurations.
 * cloud-init is used for provision-time guest configuration.
 * `triton-guest` systemd service will set hostid and root password from generated metadata.
