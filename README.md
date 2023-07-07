@@ -15,8 +15,8 @@ This project uses [Packer](https://www.packer.io/) templates and and Ansible for
 ## Build details
 
 * Swap is disabled in all kickstarts, and preseed configurations.
-* cloud-init will look for /dev/vdb and mount it under /data (ext4).
-* `triton-guest` systemd service will set hostid and root password from generated metadata
+* cloud-init is used for provision-time guest configuration.
+* `triton-guest` systemd service will set hostid and root password from generated metadata.
 
 ## Available Images
 
