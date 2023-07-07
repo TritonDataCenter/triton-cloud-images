@@ -7,8 +7,4 @@
 ---
 collections:
   - ansible.posix
-  - almalinux.ci
   - community.general
-
-roles:
-  - name: ezamriy.vbox_guest

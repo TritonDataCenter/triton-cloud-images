@@ -135,6 +135,7 @@ function packer_init
 {
     printf 'Initializing packer...'
     packer init .
+    ansible-galaxy collection install -r ansible/requirements.yml -p ansible/collections
 }
 
 function ensure_deps
