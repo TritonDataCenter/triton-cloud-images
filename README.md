@@ -45,9 +45,13 @@ Building images requires additional services to be installed, running, and prope
 
 ### Granting permission for a zone to use Bhyve
 
-You must use a `joyent` brand zone `base-64-lts@22.4.0` or later, with a delegated dataset. The nic will need `"allow_ip_spoofing": true`. If you are using a stand-alone SmartOS server, add this to the JSON when creating the zone. If you are using Triton, you will need to add it via NAPI (AdminUI can also be used).
+You must use a `joyent` brand zone `base-64-lts@22.4.0` or later, with a delegated dataset. The nic will need `"allow_ip_spoofing": true`. If you are using a stand-alone SmartOS server, add this to the JSON when creating the zone. If you are using Triton, you will need to add it via NAPI (AdminUI can also be used). For example:
 
-After provisioning some additional zone setup is required to grant the zone access to the bhyve devices. This is *not* something you should grant to untrusted tenants.
+```sh
+sdc-napi /nics/00:53:37:aa:bb:cc -X PUT -d '{"allow_ip_spoofing": true}'
+```
+
+After provisioning some additional zone setup is required to grant the zone access to the bhyve devices. This must be done on the *compute node* and is *not* something you should grant to untrusted tenants.
 
 ```sh
 zonecfg -z <uuid> <<EOF
