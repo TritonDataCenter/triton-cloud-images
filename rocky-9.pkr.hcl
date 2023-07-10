@@ -16,14 +16,11 @@ locals {
   rocky_9_iso_url      = "https://dl.rockylinux.org/stg/rocky/9.2/isos/x86_64/Rocky-9.2-x86_64-boot.iso"
   rocky_9_iso_checksum = "file:https://dl.rockylinux.org/stg/rocky/9.2/isos/x86_64/CHECKSUM"
 
-  rocky_9_boot_command = [
-    "<tab> inst.text biosdevname=0 net.ifnames=0 inst.gpt inst.ks=${var.kickstart_url}<enter><wait>"
-  ]
   rocky_9_boot_command_uefi = [
     "c<wait>",
     "linuxefi /images/pxeboot/vmlinuz inst.repo=cdrom ",
     "inst.text biosdevname=0 net.ifnames=0 ",
-    "inst.ks=${var.kickstart_url}<enter>",
+    "inst.ks=${var.base_url}/rocky-9.ks<enter>",
     "initrdefi /images/pxeboot/initrd.img<enter>",
     "boot<enter><wait>"
   ]
@@ -37,7 +34,7 @@ source "bhyve" "rocky-9-x86_64" {
   disk_use_zvol      = var.disk_use_zvol
   disk_zpool         = var.disk_zpool
   host_nic           = var.host_nic
-  http_content       = "${var.http_directory}/http/rocky-9.ks"
+  http_directory     = var.http_directory
   iso_checksum       = local.rocky_9_iso_checksum
   iso_url            = local.rocky_9_iso_url
   memory             = var.memory

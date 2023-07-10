@@ -16,14 +16,11 @@ locals {
   almalinux_8_iso_url      = "https://repo.almalinux.org/almalinux/8.8/isos/x86_64/AlmaLinux-8.8-x86_64-boot.iso"
   almalinux_8_iso_checksum = "file:https://repo.almalinux.org/almalinux/8.8/isos/x86_64/CHECKSUM"
 
-  almalinux_8_boot_command = [
-    "<tab> inst.text net.ifnames=0 inst.gpt inst.ks=${var.kickstart_url}<enter><wait>"
-  ]
   almalinux_8_boot_command_uefi = [
     "c<wait>",
     "linuxefi /images/pxeboot/vmlinuz inst.repo=cdrom ",
     "inst.text biosdevname=0 net.ifnames=0 ",
-    "inst.ks=${var.kickstart_url}<enter>",
+    "inst.ks=${var.base_url}/almalinux-8.ks<enter>",
     "initrdefi /images/pxeboot/initrd.img<enter>",
     "boot<enter><wait>"
   ]
@@ -37,7 +34,7 @@ source "bhyve" "almalinux-8-x86_64" {
   disk_use_zvol      = var.disk_use_zvol
   disk_zpool         = var.disk_zpool
   host_nic           = var.host_nic
-  http_content       = "${var.http_directory}/almalinux-8.ks"
+  http_directory     = var.http_directory
   iso_checksum       = local.almalinux_8_iso_checksum
   iso_url            = local.almalinux_8_iso_url
   memory             = var.memory

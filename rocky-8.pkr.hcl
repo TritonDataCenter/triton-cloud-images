@@ -16,15 +16,12 @@ locals {
   rocky_8_iso_url      = "https://dl.rockylinux.org/stg/rocky/8.8/isos/x86_64/Rocky-8.8-x86_64-boot.iso"
   rocky_8_iso_checksum = "file:https://dl.rockylinux.org/stg/rocky/8.8/isos/x86_64/CHECKSUM"
 
-  rocky_8_boot_command = [
-    "<tab> inst.text net.ifnames=0 inst.gpt inst.ks=${var.kickstart_url}<enter><wait>"
-  ]
   rocky_8_boot_command_uefi = [
     "c<wait>",
     "linuxefi /images/pxeboot/vmlinuz inst.repo=cdrom ",
     "inst.text ",
     "inst.nompath ",
-    "inst.ks=${var.kickstart_url}<enter>",
+    "inst.ks=${var.base_url}/rocky-8.hcl<enter>",
     "initrdefi /images/pxeboot/initrd.img<enter>",
     "boot<enter><wait>"
   ]
@@ -38,7 +35,7 @@ source "bhyve" "rocky-8-x86_64" {
   disk_use_zvol      = var.disk_use_zvol
   disk_zpool         = var.disk_zpool
   host_nic           = var.host_nic
-  http_content       = "${var.http_directory}/http/rocky-8.ks"
+  http_directory     = var.http_directory
   iso_checksum       = local.rocky_8_iso_checksum
   iso_url            = local.rocky_8_iso_url
   memory             = var.memory

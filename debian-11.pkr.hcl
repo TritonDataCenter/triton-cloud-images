@@ -20,7 +20,7 @@ locals {
     "<wait><down>e<wait>",
     "<down><down><down><end>",
     "install <wait>",
-    "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian-11.preseed.cfg ",
+    "url=${var.base_url}/debian-11.preseed.cfg ",
     "debian-installer=en_US locale=en_US keymap=us ",
     "auto ",
     "efi=runtime ",
