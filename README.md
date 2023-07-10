@@ -41,7 +41,7 @@ Images produced will be usable with KVM as well as Bhyve.
 
 ## Building with Bhyve and packer on SmartOS
 
-We have created a [packer plugin for bhyve](https://github.com/TritonDataCenter/packer-plugin-bhyve) that works with SmartOS. Please report any issues that you find.
+We have created a [packer plugin for bhyve](https://github.com/TritonDataCenter/packer-plugin-bhyve) that works with SmartOS (and should be compatible with other illumos distributions). Please report any issues that you find.
 
 Building images requires additional services to be installed, running, and properly configured. The build script will attempt to make the proper modifications to the build environment. Because of this, building images should be done in a zone dedicated for this purpose, and not general purpose dev environments.
 
@@ -73,7 +73,9 @@ The build script will handle configuring networking, NAT, and routing.
 
 ### Build Guest Network Configuration
 
-**Note:** This will be handled for you by the build script. This is for reference only and is intended to help understand how networking behaves. In the event that something goes wrong, this may help you diagnose the issue.
+Appreciate the note, but I think it could be a bit more explicit with some reordering and rewording:
+
+**Note:** This entire section is for reference only. Network configuration and services are handled by the build script but it is included here to help readers understand how networking is configured for the image creation process. This section may help diagnose any networking problems encountered during image generation.
 
 #### Interface Configuration
 
