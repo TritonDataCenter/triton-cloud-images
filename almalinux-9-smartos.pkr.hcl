@@ -27,8 +27,6 @@ locals {
     "initrdefi /images/pxeboot/initrd.img<enter>",
     "boot<enter><wait>"
   ]
-
-  almalinux_9_kickstart_template = "${path.root}/http/almalinux-9.ks"
 }
 
 source "bhyve" "almalinux-9-x86_64" {
@@ -39,11 +37,7 @@ source "bhyve" "almalinux-9-x86_64" {
   disk_use_zvol      = var.disk_use_zvol
   disk_zpool         = var.disk_zpool
   host_nic           = var.host_nic
-  http_content       = {
-    "/${var.kickstart_file}" = templatefile(local.almalinux_9_kickstart_template, {
-      disk_device = "vda"
-    })
-  }
+  http_content       = "${var.http_directory}/http/almalinux-9.ks"
   iso_checksum       = local.almalinux_9_iso_checksum
   iso_url            = local.almalinux_9_iso_url
   memory             = var.memory

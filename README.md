@@ -73,8 +73,6 @@ The build script will handle configuring networking, NAT, and routing.
 
 ### Build Guest Network Configuration
 
-Appreciate the note, but I think it could be a bit more explicit with some reordering and rewording:
-
 **Note:** This entire section is for reference only. Network configuration and services are handled by the build script but it is included here to help readers understand how networking is configured for the image creation process. This section may help diagnose any networking problems encountered during image generation.
 
 #### Interface Configuration
