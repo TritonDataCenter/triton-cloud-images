@@ -1,12 +1,20 @@
 #!/usr/bin/env bash
+
 #
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
 # Copyright (c) 2014 Joyent Inc., All rights reserved.
+# Copyright 2023 MNX Cloud, Inc.
 #
 # Get metadata user-data (via mdata-get)
 # This script is executed every boot and must be executed
 # before script "run-user-script"
 
 # load common functions and vars
+# shellcheck disable=SC1091
 . /lib/smartdc/lib_smartdc_scripts.cfg
 
 lib_smartdc_info "Retrieving metadata user-data"
@@ -15,7 +23,7 @@ if [[ ! -d /var/db ]]; then
     mkdir -p /var/db
 fi
 
-$MDATA_GET_BIN user-data >/var/db/mdata-user-data.new
+${MDATA_GET_BIN:?} user-data >/var/db/mdata-user-data.new
 case $? in
   0)
     lib_smartdc_info "Metadata user-data successfuly retrieved."

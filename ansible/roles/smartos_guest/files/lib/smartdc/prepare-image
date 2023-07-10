@@ -1,14 +1,23 @@
 #!/usr/bin/env bash
+
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
 #
 # Copyright (c) 2014 Joyent Inc., All rights reserved.
+# Copyright 2023 MNX Cloud, Inc.
 #
 
 WARNING=""
 
 addwarn() {
-  WARNING="${WARNING}(warning) $@\n"
+  WARNING="${WARNING}(warning) $*\n"
 }
 
+# shellcheck disable=SC2317
 fatal() {
   printf "(fatal) %s\n" "$@"
   exit 1
@@ -27,16 +36,14 @@ warn() {
 }
 
 separator() {
-  for i in {1..78} ; do
-    printf "="
-  done
+  printf "%0.s=" {1..78}
   printf "\n"
 }
 
 check_root() {
   if [[ $EUID != 0 ]] ; then
     echo "You must be root to run this command"
-    echo "try again with 'sudo `basename $`'"
+    echo "try again with 'sudo $(basename "$0")'"
     exit 1
   fi
 }
@@ -52,7 +59,7 @@ cleanup_cloudinit() {
 
 cleanup_logs() {
   info "cleaning up logs"
-  find /var/log -type f | xargs rm -f
+  find /var/log -type f -exec rm -f {} +
   touch /var/log/wtmp
 }
 
@@ -70,7 +77,7 @@ cleanup_root() {
 
 cleanup_ssh() {
   info "cleaning up ssh"
-  find /etc/ssh -type f -name "ssh_host_*" | xargs rm -f    
+  find /etc/ssh -type f -name "ssh_host_*" -exec rm -f {} +
   rm -f /root/.ssh/authorized_keys
 }
 
@@ -83,21 +90,21 @@ cleanup_metadata() {
 # Redhat / CentOS specific commands go here
 prepare_redhat() {
   info "cleaning up network devices"
-  
+
   rm -f /etc/udev/rules.d/70-persistent-net.rules
-  find /etc/sysconfig/network-scripts -name "ifcfg-eth*" | xargs rm -f
-  find /var/lib/dhclient -type f | xargs rm -f 
+  find /etc/sysconfig/network-scripts -name "ifcfg-eth*" -exec rm -f {} +
+  find /var/lib/dhclient -type f -exec rm -f {} +
 
   info "cleaning up package cache"
   out=$(yum clean packages)
-  
-  if [[ -z `which arping` ]] ; then
+
+  if ! command -v arping >/dev/null ; then
     addwarn "arping not found!"
     addwarn "to install arping run 'yum install arping'"
   fi
 
   local rpmbin
-  rpmbin=$(which rpm 2>/dev/null)
+  rpmbin=$(command -v rpm 2>/dev/null)
   if [[ -e ${rpmbin} ]] ; then
     out=$($rpmbin -qa acpid)
     if [[ -z ${out} ]]; then
@@ -115,32 +122,34 @@ prepare_debian() {
     rm -f /etc/udev/rules.d/70-persistent-net.rules
   fi
 
-  if [[ -d /var/lib/dhcp3 ]] ; then 
-    find /var/lib/dhcp3 -type f -name "*.leases" | xargs rm -f
+  if [[ -d /var/lib/dhcp3 ]] ; then
+    find /var/lib/dhcp3 -type f -name "*.leases" -exec rm -f {} +
   elif [[ -d /var/lib/dhcp ]] ; then
-    find /var/lib/dhcp -type f -name "*.leases" | xargs rm -f
+    find /var/lib/dhcp -type f -name "*.leases" -exec rm -f {} +
   fi
 
   if [[ -f /etc/network/interfaces ]] ; then
     rm -f /etc/network/interfaces
     out=$(dpkg-reconfigure ifupdown 2>&1 > /dev/null)
-    echo "" >> /etc/network/interfaces
-    echo "auto eth0" >> /etc/network/interfaces
-    echo "iface eth0 inet dhcp" >> /etc/network/interfaces
+    {
+      echo ""
+      echo "auto eth0"
+      echo "iface eth0 inet dhcp"
+    } >> /etc/network/interfaces
   fi
-  
+
   info "cleaning up package cache"
   out=$(apt-get clean)
 
-  if [[ -z `which arping` ]] ; then
+  if ! command -v arping >/dev/null ; then
     addwarn "arping not found!"
     addwarn "to install arping run 'apt-get install arping'."
   fi
-  
+
   local dpkgbin
-  dpkgbin=$(which dpkg 2>/dev/null)
+  dpkgbin=$(command -v dpkg 2>/dev/null)
   if [[ -e ${dpkgbin} ]] ; then
-    out=$($dpkgbin -l acpid | grep ^ii | wc -l)
+    out=$($dpkgbin -l acpid | grep -c ^ii)
     if [[ ${out} == "0" ]]; then
       addwarn "ACPID not found. Lifecycle management will be degraded!"
       addwarn "To install acpid run 'apt-get install acpid'."
@@ -150,11 +159,13 @@ prepare_debian() {
 
 ## MAIN ##
 
+check_root
+
 separator
 printf "Prepare-image\n"
 separator
 
-case `uname -s` in
+case $(uname -s) in
   Linux)
     if [[ -f /etc/redhat-release ]] ; then
       prepare_redhat
@@ -176,7 +187,7 @@ esac
 if [[ ${WARNING} != "" ]] ; then
   printf "\n"
   separator
-  printf "${WARNING}"
+  printf '%s' "${WARNING}"
   separator
   printf "\n\n"
   exit 1

@@ -1,3 +1,9 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+# Copyright 2023 MNX Cloud, Inc.
+
 ---
 
 - name: Disable root login
@@ -19,8 +25,9 @@
     dest: /lib
     owner: root
     group: root
+    mode: 0755
 
-- name: Triton sdcvmtools lib/smartdc
+- name: Triton sdcvmtools mdata-client
   copy:
     src: "{{ item }}"
     dest: /usr/sbin/
@@ -30,9 +37,8 @@
   with_fileglob:
     - "usr/sbin/mdata-*"
 
-
 #ln -s /usr/sbin/mdata-get /lib/smartdc/mdata-get
-- name: Triton symlink mdata
+- name: Triton symlink mdata-get
   file:
     src: /usr/sbin/mdata-get
     dest: /lib/smartdc/mdata-get
@@ -41,6 +47,25 @@
     state: link
     force: true
 
+- name: Define Triton Guest systemd service
+  copy:
+    src: lib/systemd/system/triton-guest.service
+    dest: /lib/systemd/system/triton-guest.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Enable Triton Guest systemd service
+  file:
+    src: /lib/systemd/system/triton-guest.service
+    dest: "{{ item }}/triton-guest.service"
+    owner: root
+    group: root
+    state: link
+    force: true
+  loop:
+    - /etc/systemd/system
+    - /etc/systemd/system/multi-user.target.wants
 
 - name: setup motd
   template:
@@ -50,7 +75,7 @@
     group: root
     mode: 0644
 
-- name: link /etc/motd to /etc/issue.net
+- name: link /etc/motd to /etc/issue
   file:
     src: /etc/motd
     dest: /etc/issue
@@ -68,3 +93,11 @@
     group: root
     state: link
     force: true
+
+- name: fstrim cron job
+  copy:
+    src: fstrim.cron.sh
+    dest: /etc/cron.daily/fstrim
+    owner: root
+    group: root
+    mode: 0644

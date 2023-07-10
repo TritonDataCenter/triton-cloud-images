@@ -1,20 +1,28 @@
 #!/usr/bin/env bash
+
 #
-# Copyright (c) 2013 Joyent Inc., All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
+#
+# Copyright (c) 2013 Joyent Inc., All rights reserved.
+# Copyright 2023 MNX Cloud, Inc.
+#
+
+# shellcheck disable=SC1091
 . /lib/smartdc/lib_smartdc_scripts.cfg
 
 SCRIPT=/tmp/.operator-script
 rm -f $SCRIPT
-$MDATA_GET_BIN sdc:operator-script >$SCRIPT
-if [[ $? -eq 0 && -f $SCRIPT ]] ; then
+if ${MDATA_GET_BIN:?} sdc:operator-script >$SCRIPT && [[ -f $SCRIPT ]] ; then
     chmod +x $SCRIPT
     lib_smartdc_info "executing sdc:operator-script"
     # TODO: is this abnormally aborting with 'set -e' active?
     $SCRIPT
     operator_script_exit=$?
-    if [[ ${operator_script_exit} -gt 0 ]]; then
+    if (( operator_script_exit == 0 )); then
         lib_smartdc_info "WARNING: operator-script failed: exited \
           ${operator_script_exit}"
     fi
