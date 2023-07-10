@@ -111,8 +111,6 @@ function generate_manifest
     desc=$(json -f imgconfigs.json '["'"${1}"'"].desc' )
     home=$(json -f imgconfigs.json '["'"${1}"'"].homepage' )
 
-json -f imgconfigs.json '["'"${1}"'"].os'
-
     sed \
         -e 's/@UUID@/'"$(uuid -v 4)"'/g' \
         -e 's/@NAME@/'"${1}"'/g' \
