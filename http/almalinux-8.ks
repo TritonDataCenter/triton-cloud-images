@@ -1,5 +1,15 @@
 # AlmaLinux 8 kickstart file for Generic Cloud (OpenStack) image
 
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+#
+# Copyright 2023 MNX Cloud, Inc.
+#
+
 url --url https://repo.almalinux.org/almalinux/8/BaseOS/x86_64/kickstart/
 repo --name=BaseOS --baseurl=https://repo.almalinux.org/almalinux/8/BaseOS/x86_64/os/
 repo --name=AppStream --baseurl=https://repo.almalinux.org/almalinux/8/AppStream/x86_64/os/
@@ -24,21 +34,19 @@ bootloader --append="console=ttyS0,115200n8 console=tty0 crashkernel=auto net.if
 # Partition stuff
 %pre --erroronfail
 
-parted -s -a optimal /dev/sda -- mklabel gpt
-parted -s -a optimal /dev/sda -- mkpart biosboot 1MiB 2MiB set 1 bios_grub on
-parted -s -a optimal /dev/sda -- mkpart '"EFI System Partition"' fat32 2MiB 258MiB set 2 esp on
-parted -s -a optimal /dev/sda -- mkpart boot xfs 258MiB 1058MiB
-parted -s -a optimal /dev/sda -- mkpart primary 1058MiB 100%
+parted -s -a optimal /dev/vda -- mklabel gpt
+parted -s -a optimal /dev/vda -- mkpart biosboot 1MiB 2MiB set 1 bios_grub on
+parted -s -a optimal /dev/vda -- mkpart '"EFI System Partition"' fat32 2MiB 258MiB set 2 esp on
+parted -s -a optimal /dev/vda -- mkpart boot xfs 258MiB 1058MiB
+parted -s -a optimal /dev/vda -- mkpart primary 1058MiB 100%
 
 %end
 
 
-part biosboot  --fstype=biosboot --onpart=sda1
-part /boot/efi --fstype=efi --onpart=sda2
-part /boot     --fstype=xfs --onpart=sda3
-part pv.01     --onpart=sda4
-volgroup rootvg pv.01
-logvol / --vgname=rootvg --size=5000 --name=rootlv --grow
+part biosboot  --fstype=biosboot --onpart=vda1
+part /boot/efi --fstype=efi --onpart=vda2
+part /boot     --fstype=xfs --onpart=vda3
+part /         --fstype=xfs --onpart=vda4
 
 rootpw --plaintext tritondatacenter
 
@@ -63,6 +71,7 @@ reboot --eject
 
 %post --erroronfail
 dnf install -y grub2-efi-x64-modules grub2-pc-modules
-grub2-install --target=i386-pc /dev/sda
+grub2-mkconfig -o /boot/grub2/grub.cfg
+grub2-install --target=i386-pc /dev/vda
 %end
 

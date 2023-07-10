@@ -1,25 +1,34 @@
 #!/usr/bin/env bash
+
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
 #
 # Copyright (c) 2012 Joyent Inc., All rights reserved.
+# Copyright 2023 MNX Cloud, Inc.
 #
 # Per JPC-527 and NET-145:
-# CentOS and other RHEL based systems don't send a gratuitous arp packet if 
+# CentOS and other RHEL based systems don't send a gratuitous arp packet if
 # they're started with DHCP and don't have a lease.
 #
 # This script sends gratuitous arp packets to force an arp cache update
 
 # load common functions and vars
+# shellcheck disable=SC1091
 . /lib/smartdc/lib_smartdc_scripts.cfg
 
 set -o errexit
 set -o pipefail
 
 device=$(ip route list | grep ^default | cut -d ' ' -f 5)
-ipaddr=$(ifconfig $device | grep 'inet addr:' | cut -d: -f2 | cut -d ' ' -f1)
+ipaddr=$(ifconfig "$device" | grep 'inet addr:' | cut -d: -f2 | cut -d ' ' -f1)
 
 # We send both kinds of ARP updates, to be ultra verbose
-which arping >/dev/null 2>&1 || lib_smartdc_fatal "arping not found"
-arping -q -c 2 -A -I $device $ipaddr
-arping -q -c 2 -U -I $device $ipaddr
+command -v arping >/dev/null 2>&1 || lib_smartdc_fatal "arping not found"
+arping -q -c 2 -A -I "$device" "$ipaddr"
+arping -q -c 2 -U -I "$device" "$ipaddr"
 
 exit 0

@@ -1,0 +1,43 @@
+{
+  "v": 2,
+  "uuid": "@UUID@",
+  "owner": "00000000-0000-0000-0000-000000000000",
+  "name": "@NAME@",
+  "version": "@VERSION@",
+  "state": "active",
+  "disabled": false,
+  "public": true,
+  "published_at": "@PUBLISHED_AT@",
+  "type": "zvol",
+  "os": "@OS@",
+  "files": [
+    {
+      "sha1": "@SHA1@",
+      "size": @SIZE@,
+      "compression": "gzip"
+    }
+  ],
+  "description": "@DESCRIPTION@",
+  "homepage": "@HOMEPAGE@",
+  "requirements": {
+    "networks": [
+      {
+        "name": "net0",
+        "description": "public"
+      }
+    ],
+    "ssh_key": true
+  },
+  "users": [
+    {
+      "name": "root"
+    }
+  ],
+  "nic_driver": "virtio",
+  "disk_driver": "virtio",
+  "cpu_type": "host",
+  "image_size": 10240,
+  "tags": {
+    "role": "os"
+  }
+}
