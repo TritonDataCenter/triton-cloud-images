@@ -105,11 +105,13 @@ function generate_manifest
     gzip "$imagefile"
 
     published_at=$(date -u +%FT%TZ)
-    os=$(json -f imgconfigs.json "${1//.}.os" )
+    os=$(json -f imgconfigs.json '["'"${1}"'"].os')
     sha1=$(digest -a sha1 "$imagegz")
     size=$(stat -c %s "${imagegz}")
-    desc=$(json -f imgconfigs.json "${1//.}.desc" )
-    home=$(json -f imgconfigs.json "${1//.}.homepage" )
+    desc=$(json -f imgconfigs.json '["'"${1}"'"].desc' )
+    home=$(json -f imgconfigs.json '["'"${1}"'"].homepage' )
+
+json -f imgconfigs.json '["'"${1}"'"].os'
 
     sed \
         -e 's/@UUID@/'"$(uuid -v 4)"'/g' \
