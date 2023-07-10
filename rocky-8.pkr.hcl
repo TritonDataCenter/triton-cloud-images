@@ -21,7 +21,7 @@ locals {
     "linuxefi /images/pxeboot/vmlinuz inst.repo=cdrom ",
     "inst.text ",
     "inst.nompath ",
-    "inst.ks=${var.base_url}/rocky-8.hcl<enter>",
+    "inst.ks=${var.base_url}/rocky-8.ks<enter>",
     "initrdefi /images/pxeboot/initrd.img<enter>",
     "boot<enter><wait>"
   ]
