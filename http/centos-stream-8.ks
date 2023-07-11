@@ -10,9 +10,9 @@
 # Copyright 2023 MNX Cloud, Inc.
 #
 
-url --url https://mirror.stream.centos.org/8-stream/BaseOS/x86_64/os/
-repo --name=BaseOS --baseurl=https://mirror.stream.centos.org/8-stream/BaseOS/x86_64/os/
-repo --name=AppStream --baseurl=https://mirror.stream.centos.org/8-stream/AppStream/x86_64/os/
+url --url http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/
+repo --name=BaseOS --baseurl=http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/
+repo --name=AppStream --baseurl=http://mirror.centos.org/centos/8-stream/AppStream/x86_64/os/
 
 
 text
