@@ -1,4 +1,4 @@
-# AlmaLinux 8 kickstart file for SmartOS
+# CentOS Stream 8 kickstart file for SmartOS
 
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
@@ -10,9 +10,10 @@
 # Copyright 2023 MNX Cloud, Inc.
 #
 
-url --url https://repo.almalinux.org/almalinux/8/BaseOS/x86_64/kickstart/
-repo --name=BaseOS --baseurl=https://repo.almalinux.org/almalinux/8/BaseOS/x86_64/os/
-repo --name=AppStream --baseurl=https://repo.almalinux.org/almalinux/8/AppStream/x86_64/os/
+url --url https://mirror.stream.centos.org/8-stream/BaseOS/x86_64/os/
+repo --name=BaseOS --baseurl=https://mirror.stream.centos.org/8-stream/BaseOS/x86_64/os/
+repo --name=AppStream --baseurl=https://mirror.stream.centos.org/8-stream/AppStream/x86_64/os/
+
 
 text
 skipx
@@ -46,9 +47,7 @@ parted -s -a optimal /dev/vda -- mkpart primary 1058MiB 100%
 part biosboot  --fstype=biosboot --onpart=vda1
 part /boot/efi --fstype=efi --onpart=vda2
 part /boot     --fstype=xfs --onpart=vda3
-part pv.01     --onpart=vda4
-volgroup rootvg pv.01
-logvol / --vgname=rootvg --size=5000 --name=rootlv --grow
+part /         --fstype=xfs --onpart=vda4
 
 rootpw --plaintext tritondatacenter
 

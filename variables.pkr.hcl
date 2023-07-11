@@ -19,7 +19,7 @@ variables {
    */
   disk_zpool            = "zones"
   disk_use_zvol         = true
-  memory                = 4096
+  memory                = 2048
   post_cpus             = 2
   post_memory           = 2048
   host_nic              = "dhcp0"

@@ -1,4 +1,4 @@
-# AlmaLinux 8 kickstart file for Generic Cloud (OpenStack) image
+# AlmaLinux 8 kickstart file for SmartOS
 
 #
 # This Source Code Form is subject to the terms of the Mozilla Public

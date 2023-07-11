@@ -1,4 +1,4 @@
-# AlmaLinux 8 kickstart file for SmartOS
+# AlmaLinux 9 kickstart file for Generic Cloud (OpenStack) x86_64-v2 image
 
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
@@ -10,28 +10,28 @@
 # Copyright 2023 MNX Cloud, Inc.
 #
 
-url --url https://repo.almalinux.org/almalinux/8/BaseOS/x86_64/kickstart/
-repo --name=BaseOS --baseurl=https://repo.almalinux.org/almalinux/8/BaseOS/x86_64/os/
-repo --name=AppStream --baseurl=https://repo.almalinux.org/almalinux/8/AppStream/x86_64/os/
+url --url https://mirror.stream.centos.org/9-stream/BaseOS/x86_64/os/
+repo --name=BaseOS --baseurl=https://mirror.stream.centos.org/9-stream/BaseOS/x86_64/os/
+repo --name=AppStream --baseurl=https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/
 
 text
 skipx
 eula --agreed
 firstboot --disabled
 
-lang en_US.UTF-8
+lang C.UTF-8
 keyboard us
-timezone UTC --isUtc
+timezone UTC --utc
 
 network --bootproto=dhcp
 firewall --enabled --service=ssh
 services --disabled="kdump" --enabled="chronyd,rsyslog,sshd"
 selinux --enforcing
 
-# TODO: remove "console=tty0" from here
-bootloader --append="console=ttyS0,115200n8 console=tty0 crashkernel=auto net.ifnames=0 tsc=reliable no_timer_check" --location=mbr --timeout=1
+bootloader --timeout=1 --location=mbr --append="console=ttyS0,115200n8 no_timer_check crashkernel=auto tsc=reliable net.ifnames=0"
 
 # Partition stuff
+
 %pre --erroronfail
 
 parted -s -a optimal /dev/vda -- mklabel gpt
@@ -46,24 +46,27 @@ parted -s -a optimal /dev/vda -- mkpart primary 1058MiB 100%
 part biosboot  --fstype=biosboot --onpart=vda1
 part /boot/efi --fstype=efi --onpart=vda2
 part /boot     --fstype=xfs --onpart=vda3
-part pv.01     --onpart=vda4
-volgroup rootvg pv.01
-logvol / --vgname=rootvg --size=5000 --name=rootlv --grow
+part /         --fstype=xfs --onpart=vda4
 
 rootpw --plaintext tritondatacenter
 
-reboot --eject
+reboot
 
 
-%packages
+%packages --inst-langs=en
 @core
+dracut-config-generic
+usermode
 -biosdevname
--open-vm-tools
--plymouth
 -dnf-plugin-spacewalk
--rhn*
+-dracut-config-rescue
 -iprutils
 -iwl*-firmware
+-langpacks-*
+-mdadm
+-open-vm-tools
+-plymouth
+-rhn*
 %end
 
 
@@ -72,8 +75,8 @@ reboot --eject
 %end
 
 %post --erroronfail
+# permit root login via SSH with password authetication
+echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/01-permitrootlogin.conf
 dnf install -y grub2-efi-x64-modules grub2-pc-modules
-grub2-mkconfig -o /boot/grub2/grub.cfg
 grub2-install --target=i386-pc /dev/vda
 %end
-

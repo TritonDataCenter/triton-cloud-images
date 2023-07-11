@@ -9,6 +9,11 @@
     "desc": "AlmaLinux 9 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
     "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
   },
+  "centos-stream-9": {
+    "os": "linux",
+    "desc": "CentOS Stream 9 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
+    "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
+  },
   "debian-11": {
     "os": "linux",
     "desc": "Debian 11 (bullseye) 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
