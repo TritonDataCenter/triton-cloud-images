@@ -13,7 +13,7 @@
  */
 
 locals {
-  centos_stream_8_iso_url      = "http://mirror.facebook.net/centos/8-stream/isos/x86_64/CentOS-Stream-8-x86_64-latest-dvd1.iso"
+  centos_stream_8_iso_url      = "http://mirror.facebook.net/centos/8-stream/isos/x86_64/CentOS-Stream-8-x86_64-latest-boot.iso"
   centos_stream_8_iso_checksum = "file:http://mirror.facebook.net/centos/8-stream/isos/x86_64/CHECKSUM"
 
   centos_stream_8_boot_command_uefi = [
