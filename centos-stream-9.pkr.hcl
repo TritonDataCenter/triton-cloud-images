@@ -13,8 +13,8 @@
  */
 
 locals {
-  centos_stream_9_iso_url      = "https://mirror.facebook.net/centos-stream/9-stream/BaseOS/x86_64/iso/CentOS-Stream-9-latest-x86_64-boot.iso"
-  centos_stream_9_iso_checksum = "file:https://mirror.facebook.net/centos-stream/9-stream/BaseOS/x86_64/iso/CentOS-Stream-9-latest-x86_64-dvd1.iso.SHA256SUM"
+  centos_stream_9_iso_url      = "https://mirror.stream.centos.org/9-stream/BaseOS/x86_64/iso/CentOS-Stream-9-latest-x86_64-boot.iso"
+  centos_stream_9_iso_checksum = "file:https://mirror.stream.centos.org/9-stream/BaseOS/x86_64/iso/CentOS-Stream-9-latest-x86_64-boot.iso.SHA256SUM"
 
   centos_stream_9_boot_command_uefi = [
     "c<wait>",
