@@ -20,6 +20,12 @@
   ignore_errors: true
   #when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'focal'
 
+- name: Remove netplan installer networking
+  file:
+    path: /etc/netplan/00-installer-config.yaml
+    state: absent
+  ignore_errors: true
+
 - name: run cloud-init clean
   command: cloud-init clean
   ignore_errors: true
