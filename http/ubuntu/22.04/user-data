@@ -73,12 +73,12 @@ autoinstall:
     - openssh-server
     - open-vm-tools
     - cloud-init
-    - whois
-    - zsh
-    - wget
     - tasksel
     - grub-pc-bin
     - linux-image-generic-hwe-22.04
+    - net-tools
+    - nft
+    - iptables
 
   late-commands:
     - sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /target/etc/ssh/sshd_config
@@ -86,6 +86,8 @@ autoinstall:
     - parted /dev/vda set 1 bios_grub on
     - parted /dev/vda set 2 esp on
     - curtin in-target --target=/target -- grub-install --target=i386-pc /dev/vda
+    - curtin in-target --target=/target -- apt-get update
+    - curtin in-target --target=/target -- apt-get dist-upgrade --yes
     - |
       if [ -d /sys/firmware/efi ]; then
         apt-get install -y efibootmgr

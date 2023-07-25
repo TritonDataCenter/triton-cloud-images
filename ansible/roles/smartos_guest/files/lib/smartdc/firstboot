@@ -23,6 +23,27 @@ lib_smartdc_info "Start of $(basename "$0") script"
 # Set hostid
 (/lib/smartdc/set-hostid)
 
+#
+# Make sure the localhost has a hostname alias in the zone's
+# /etc/hosts file
+#
+lib_smartdc_info "Ensuring /etc/hosts contains $HOSTNAME"
+hname=$HOSTNAME
+hostfile=/etc/hosts
+tmpfile=$(mktemp /dev/shm/hosts.XXXXXX)
+if [[ -f $hostfile && ! -h $hostfile ]]; then
+	# use awk to search and append to loopback in one command
+	awk -v hname="$hname" '{
+	    if ($1 ~ /^127\./ && index($0, hname) == 0) {
+		printf("%s %s\n", $0, hname);
+	    } else {
+		print $0
+	    }
+	}' $hostfile > "$tmpfile"
+	mv "$tmpfile" "$hostfile"
+	chmod 644 $hostfile
+fi
+
 # Disable firstboot once all scripts are run
 lib_smartdc_info "Disabling firstboot"
 touch /lib/smartdc/.firstboot-complete-do-not-delete
