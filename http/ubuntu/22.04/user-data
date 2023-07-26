@@ -73,11 +73,10 @@ autoinstall:
     - openssh-server
     - open-vm-tools
     - cloud-init
-    - tasksel
     - grub-pc-bin
     - linux-image-generic-hwe-22.04
     - net-tools
-    - nft
+    - nftables
     - iptables
 
   late-commands:

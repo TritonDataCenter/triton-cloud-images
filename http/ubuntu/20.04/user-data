@@ -73,11 +73,8 @@ autoinstall:
     - openssh-server
     - open-vm-tools
     - cloud-init
-    - tasksel
     - grub-pc-bin
     - linux-image-generic-hwe-20.04
-    - net-tools
-    - nft
     - iptables
 
   late-commands:
