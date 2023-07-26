@@ -69,6 +69,9 @@ autoinstall:
     install-server: true
     allow-pw: true
 
+  debconf-selections: |
+    cloud-init	cloud-init/datasources	multiselect	SmartOS
+
   packages:
     - openssh-server
     - open-vm-tools
@@ -85,6 +88,7 @@ autoinstall:
     - curtin in-target --target=/target -- grub-install --target=i386-pc /dev/vda
     - curtin in-target --target=/target -- apt-get update
     - curtin in-target --target=/target -- apt-get dist-upgrade --yes
+    - sed -ie 's/ds=nocloud.* //' /target/etc/default/grub
     - |
       if [ -d /sys/firmware/efi ]; then
         apt-get install -y efibootmgr
