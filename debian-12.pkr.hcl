@@ -13,7 +13,7 @@
  */
 
 locals {
-  debian_12_iso_url      = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.0.0-amd64-netinst.iso"
+  debian_12_iso_url      = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.1.0-amd64-netinst.iso"
   debian_12_iso_checksum = "file:https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS"
 
   debian_12_boot_command = [
@@ -31,7 +31,7 @@ locals {
     "passwd/user-password=${var.ssh_password} ",
     "passwd/user-password-again=${var.ssh_password} ",
     "passwd/username=${var.ssh_username} ",
-    "console=tty0 console=ttyS0,115200n8 verbose",
+    "console=tty0 console=ttyS0,115200n8 verbose ",
     "tsc=reliable ",
     "<f10><wait>"
   ]
