@@ -13,7 +13,7 @@
  */
 
 locals {
-  rocky_8_ver          = "8.8"
+  rocky_8_ver          = "8.9"
   rocky_8_iso_url      = "https://dl.rockylinux.org/stg/rocky/${local.rocky_8_ver}/isos/x86_64/Rocky-${local.rocky_8_ver}-x86_64-boot.iso"
   rocky_8_iso_checksum = "file:https://dl.rockylinux.org/stg/rocky/${local.rocky_8_ver}/isos/x86_64/CHECKSUM"
 
