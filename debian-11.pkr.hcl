@@ -13,8 +13,9 @@
  */
 
 locals {
-  debian_11_iso_url      = "https://cdimage.debian.org/cdimage/archive/11.7.0/amd64/iso-cd/debian-11.7.0-amd64-netinst.iso"
-  debian_11_iso_checksum = "file:https://cdimage.debian.org/cdimage/archive/11.7.0/amd64/iso-cd/SHA256SUMS"
+  debian_11_ver          = "11.8.0"
+  debian_11_iso_url      = "https://cdimage.debian.org/cdimage/archive/${local.debian_11_ver}/amd64/iso-cd/debian-${local.debian_11_ver}-amd64-netinst.iso"
+  debian_11_iso_checksum = "file:https://cdimage.debian.org/cdimage/archive/${local.debian_11_ver}/amd64/iso-cd/SHA256SUMS"
 
   debian_11_boot_command = [
     "<wait><down>e<wait>",

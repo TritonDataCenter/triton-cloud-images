@@ -13,8 +13,9 @@
  */
 
 locals {
-  rocky_9_iso_url      = "https://dl.rockylinux.org/stg/rocky/9.2/isos/x86_64/Rocky-9.2-x86_64-boot.iso"
-  rocky_9_iso_checksum = "file:https://dl.rockylinux.org/stg/rocky/9.2/isos/x86_64/CHECKSUM"
+  rocky_9_ver          = "9.3"
+  rocky_9_iso_url      = "https://dl.rockylinux.org/stg/rocky/${rocky_9_ver}/isos/x86_64/Rocky-${rocky_9_ver}-x86_64-boot.iso"
+  rocky_9_iso_checksum = "file:https://dl.rockylinux.org/stg/rocky/${rocky_9_ver}/isos/x86_64/CHECKSUM"
 
   rocky_9_boot_command_uefi = [
     "c<wait>",
