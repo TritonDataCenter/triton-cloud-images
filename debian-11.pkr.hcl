@@ -1,5 +1,5 @@
 /*
- * Devian 11 Packer template for building Triton DataCenter/SmartOS images
+ * Debian 11 Packer template for building Triton DataCenter/SmartOS images
  */
 
 /*
