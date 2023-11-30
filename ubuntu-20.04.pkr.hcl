@@ -13,7 +13,8 @@
  */
 
 locals {
-  ubuntu_20_iso_url      = "https://releases.ubuntu.com/focal/ubuntu-20.04.6-live-server-amd64.iso"
+  ubuntu_20_ver          = "20.04.6"
+  ubuntu_20_iso_url      = "https://releases.ubuntu.com/focal/ubuntu-${local.ubuntu_20_ver}-live-server-amd64.iso"
   ubuntu_20_iso_checksum = "file:https://releases.ubuntu.com/focal/SHA256SUMS"
 
   ubuntu_20_boot_command = [

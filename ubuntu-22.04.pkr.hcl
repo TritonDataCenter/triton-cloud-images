@@ -13,8 +13,9 @@
  */
 
 locals {
-  ubuntu_22_iso_url      = "https://cdimage.ubuntu.com/ubuntu-server/jammy/daily-live/current/jammy-live-server-amd64.iso"
-  ubuntu_22_iso_checksum = "file:https://cdimage.ubuntu.com/ubuntu-server/jammy/daily-live/current/SHA256SUMS"
+  ubuntu_22_ver          = "22.04.3"
+  ubuntu_22_iso_url      = "https://releases.ubuntu.com/jammy/ubuntu-${local.ubuntu_22_ver}-live-server-amd64.iso"
+  ubuntu_22_iso_checksum = "file:https://releases.ubuntu.com/jammy/SHA256SUMS"
 
   ubuntu_22_boot_command = [
     "c<wait>",

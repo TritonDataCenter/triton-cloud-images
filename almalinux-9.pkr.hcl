@@ -13,8 +13,9 @@
  */
 
 locals {
-  almalinux_9_iso_url      = "https://repo.almalinux.org/almalinux/9.2/isos/x86_64/AlmaLinux-9.2-x86_64-boot.iso"
-  almalinux_9_iso_checksum = "file:https://repo.almalinux.org/almalinux/9.2/isos/x86_64/CHECKSUM"
+  almalinux_9_ver          = "9.3"
+  almalinux_9_iso_url      = "https://repo.almalinux.org/almalinux/${local.almalinux_9_ver}/isos/x86_64/AlmaLinux-${local.almalinux_9_ver}-x86_64-boot.iso"
+  almalinux_9_iso_checksum = "file:https://repo.almalinux.org/almalinux/${local.almalinux_9_ver}/isos/x86_64/CHECKSUM"
 
   almalinux_9_boot_command_uefi = [
     "c<wait>",
