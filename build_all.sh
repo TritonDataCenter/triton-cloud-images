@@ -143,7 +143,7 @@ function ensure_deps
     ## TEST THIS
     printf 'Checking for packages that need to be installed...\n'
     errs=()
-    pkgin -y in isc-dhcpd packer ansible
+    pkgin -y in isc-dhcpd packer ansible cdrtools
     if ! mdata-get sdc:nics | json -a -c 'this.primary===true' allow_ip_spoofing | grep true; then
         errs=( "${errs[@]}" "External interface does not have allow_ip_spoofing")
 
