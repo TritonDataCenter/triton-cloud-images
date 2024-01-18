@@ -28,6 +28,7 @@ This project uses [Packer](https://www.packer.io/) templates and and Ansible for
 | AlmaLinux   | 9       |
 | Debian      | 11      |
 | Debian      | 12      |
+| Oracle Linux| 8.9     |
 | Rocky Linux | 8       |
 | Rocky Linux | 9       |
 | Ubuntu      | 20.04   |
