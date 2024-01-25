@@ -38,5 +38,10 @@
     "os": "linux",
     "desc": "Ubuntu 20.04 LTS (Focal Fossa). Built to run on bhyve or KVM virtual machines.",
     "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
+  },
+  "windows-2019": {
+    "os": "windows",
+    "desc": "Windows images.  Built to run on bhyve only",
+    "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/windows"
   }
 }

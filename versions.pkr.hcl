@@ -12,7 +12,7 @@ packer {
   required_version = ">= 1.7.0"
   required_plugins {
     bhyve = {
-      version = ">= 0.0.0"
+      version = ">= 0.0.1"
       source  = "github.com/TritonDataCenter/bhyve"
     }
     ansible = {
