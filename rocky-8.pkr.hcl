@@ -61,11 +61,13 @@ build {
     galaxy_file      = "./ansible/requirements.yml"
     roles_path       = "./ansible/roles"
     collections_path = "./ansible/collections"
-    extra_arguments  = [ "--scp-extra-args", "'-O '" ]
+    extra_arguments  = [
+      "--scp-extra-args", "'-O '",
+      "--ssh-extra-args", "-o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa -o ControlMaster=no -o ControlPersist=180s -o ServerAliveInterval=120s -o TCPKeepAlive=yes"
+    ]
     ansible_env_vars = [
       "ANSIBLE_PIPELINING=True",
       "ANSIBLE_REMOTE_TEMP=/tmp",
-      "ANSIBLE_SSH_ARGS='-o ControlMaster=no -o ControlPersist=180s -o ServerAliveInterval=120s -o TCPKeepAlive=yes -oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa'"
     ]
   }
 }
