@@ -238,8 +238,16 @@ for i in "${targets[@]}"; do
     printf 'Beginning build for %s %s\n' "$i" "$build_uuid"
 
     zfs create "zones/$(zonename)/data/${build_uuid}"
+    set +o errexit
+    set -o xtrace
     packer build "${debug_args[@]}" --only="bhyve.${i//.}-x86_64" -var disk_use_zvol=true -var disk_zpool="zones/$(zonename)/data/${build_uuid}" .
+    r=$?
+    set +o xtrace
+    set -o errexit
     zfs destroy "zones/$(zonename)/data/${build_uuid}"
-
-    generate_manifest "$i"
+    if (( r == 0 )); then
+        generate_manifest "$i"
+    else
+        printf 'packer command failed with exit code %s\n' "$r"
+    fi
 done
