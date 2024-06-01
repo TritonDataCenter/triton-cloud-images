@@ -32,6 +32,7 @@ This project uses [Packer](https://www.packer.io/) templates and and Ansible for
 | Rocky Linux | 9       |
 | Ubuntu      | 20.04   |
 | Ubuntu      | 22.04   |
+| Ubuntu      | 24.04   |
 
 ## Requirements
 
