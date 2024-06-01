@@ -1,0 +1,100 @@
+#cloud-config
+
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+#
+# Copyright 2023 MNX Cloud, Inc.
+#
+
+# To change the password, you can use this command:
+# # echo 'tritondatacenter' | mkpasswd -m sha-512 --stdin
+# $6$VZxrbar1ns0msHfg$R4jV5M41VgyvSRYTVBJcvX5ftBSfYes8bIg52Ll1z8SvTDjqYiTmxx/acxqRUl0yaunsi3t/n.COsjSy9DVkS1
+
+autoinstall:
+  version: 1
+  apt:
+    geoip: true
+    disable_components: []
+    preserve_sources_list: false
+    primary:
+      - arches: [amd64, i386]
+        uri: http://us.archive.ubuntu.com/ubuntu
+      - arches: [default]
+        uri: http://ports.ubuntu.com/ubuntu-ports
+
+  storage:
+    swap:
+        size: 0
+    grub:
+        reorder_uefi: false
+    config:
+      - {ptable: gpt, preserve false, name: '', grub_device: true, type: disk, id: disk0, wipe: superblock-recursive, match: { "size": "largest" } }
+      - {device: disk0, size: 1MB, flag: bios_grub, number: 1, preserve: false, type: partition, id: disk0p1}
+      - {device: disk0, size: 256MB, flag: esp, number: 2, preserve: false, grub_device: true, type: partition, id: disk0p2}
+      - {device: disk0, size: 800MB, flag: linux, number: 3, preserve: false, type: partition, id: disk0p3}
+      - {device: disk0, size: -1, flag: linux, number: 4, preserve: false, type: partition, id: disk0p4}
+
+      - {fstype: vfat, volume: disk0p2, preserve: false, type: format, id: format-efi}
+      - {fstype: ext4, volume: disk0p3, preserve: false, type: format, id: format-bios}
+      - {fstype: ext4, volume: disk0p4, preserve: false, type: format, id: format-root}
+
+      - {device: format-root, path: /, type: mount, id: mount-2}
+      - {device: format-bios, path: /boot, type: mount, id: mount-1}
+      - {device: format-efi, path: /boot/efi, type: mount, id: mount-3}
+
+  early-commands:
+    - sudo systemctl stop ssh
+
+  locale: en_US
+  keyboard:
+    layout: us
+
+  user-data:
+    disable_root: false
+    timezone: UTC
+    users:
+      - name: root
+        hashed_passwd: $6$PoeuPl9INRKg51ib$yZcI0ipo4vxa6GA2yI7DhOgY7qnkNQastH0GmtlhD9d57nbaxUh0elFz2OQYtxdEPLnb1V7BS4ke6dvBDHLdR1
+
+  identity:
+    hostname: noble-daily
+    username: root
+    password: $6$PoeuPl9INRKg51ib$yZcI0ipo4vxa6GA2yI7DhOgY7qnkNQastH0GmtlhD9d57nbaxUh0elFz2OQYtxdEPLnb1V7BS4ke6dvBDHLdR1
+
+  ssh:
+    install-server: true
+    allow-pw: true
+
+  debconf-selections: |
+    cloud-init	cloud-init/datasources	multiselect	SmartOS
+
+  packages:
+    - openssh-server
+    - open-vm-tools
+    - cloud-init
+    - grub-pc-bin
+    - linux-image-generic-hwe-24.04
+    - net-tools
+    - nftables
+    - iptables
+
+  late-commands:
+    - sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /target/etc/ssh/sshd_config
+    - sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/g' /target/etc/ssh/sshd_config
+    - parted /dev/vda set 1 bios_grub on
+    - parted /dev/vda set 2 esp on
+    - curtin in-target --target=/target -- grub-install --target=i386-pc /dev/vda
+    - curtin in-target --target=/target -- apt-get update
+    - curtin in-target --target=/target -- apt-get dist-upgrade --yes
+    - sed -ie 's/ds=nocloud.* //' /target/etc/default/grub
+    - |
+      if [ -d /sys/firmware/efi ]; then
+        apt-get install -y efibootmgr
+        # note upper-case U
+        efibootmgr -o $(efibootmgr | perl -n -e '/Boot(.+)\* Ubuntu/ && print $1')
+      fi
+

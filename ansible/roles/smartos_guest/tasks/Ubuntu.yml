@@ -54,3 +54,10 @@
   file:
     dest: /root/snap
     state: absent
+
+# for some reason the 24.04 installer doesn't run this meaning a stale
+# ds=nocloud-net persists
+- name: Run update-grub2
+  shell: update-grub2
+  ignore_errors: true
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'noble'
