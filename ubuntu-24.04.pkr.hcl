@@ -9,7 +9,7 @@
  */
 
 /*
- * Copyright 2023 MNX Cloud, Inc.
+ * Copyright 2024 MNX Cloud, Inc.
  */
 
 locals {
