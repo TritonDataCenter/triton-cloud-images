@@ -24,6 +24,12 @@
     "desc": "Rocky 8 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
     "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
   },
+  "rhel-9": {
+    "os": "linux",
+    "desc": "RedHat Enterprise Linux 9 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
+    "// homepage": "No homepage because this will not be a public image",
+    "homepage": ""
+  },
   "rocky-9": {
     "os": "linux",
     "desc": "Rocky 9 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
