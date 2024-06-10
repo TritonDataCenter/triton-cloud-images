@@ -162,6 +162,15 @@ function ensure_deps
     fi
 }
 
+function check_dhcpd
+{
+    # dhcpd may have been in maintenance if the nic wasn't up yet.
+    if ! svcs -Ho state isc-dhcpd | grep -q online; then
+        svcadm clear isc-dhcpd
+    fi
+    svcs isc-dhcpd
+}
+
 function ensure_services
 {
     printf 'Setting up SMF services...\n'
