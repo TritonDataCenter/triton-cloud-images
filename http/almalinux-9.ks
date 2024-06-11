@@ -58,6 +58,7 @@ reboot
 dracut-config-generic
 usermode
 -biosdevname
+-cockpit*
 -dnf-plugin-spacewalk
 -dracut-config-rescue
 -iprutils

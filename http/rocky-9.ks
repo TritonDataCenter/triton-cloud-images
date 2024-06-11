@@ -58,6 +58,7 @@ dracut-config-generic
 usermode
 -python3-libselinux
 -biosdevname
+-cockpit*
 -dnf-plugin-spacewalk
 -dracut-config-rescue
 -iprutils
