@@ -22,8 +22,6 @@
 - name: Install additional software
   dnf:
     name:
-      - cockpit-system
-      - cockpit-ws
       - dnf-utils
       - gdisk
       - nfs-utils
