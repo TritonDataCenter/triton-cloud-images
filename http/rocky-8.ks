@@ -59,7 +59,6 @@ reboot --eject
 %packages
 @core
 -biosdevname
--cockpit*
 -open-vm-tools
 -plymouth
 -dnf-plugin-spacewalk

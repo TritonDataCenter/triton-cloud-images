@@ -11,7 +11,6 @@
       - firewalld-filesystem
       - ipset
       - ipset-libs
-      - iptables
       - python3-firewall
       - python3-slip
       - libnftnl
@@ -24,6 +23,7 @@
     name:
       - dnf-utils
       - gdisk
+      - iptables
       - nfs-utils
       - rsync
       - tar
