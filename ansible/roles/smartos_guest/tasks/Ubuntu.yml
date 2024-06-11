@@ -55,13 +55,24 @@
     dest: /root/snap
     state: absent
 
-- name: Restore SSH listening behavior
+- name: Disable SSH socket service
+  systemd_service:
+    name: ssh.socket
+    enabled: false
+
+- name: Disable SSH socket listener
   file:
     dest: "/etc/systemd/{{ item }}"
     state: absent
   loop:
     - /ssh.service.d/00-socket.conf
     - /ssh.socket.d/addresses.conf
+
+- name: Start regular ssh service
+  systemd_service:
+    name: ssh.service
+    state: started
+    enabled: true
 
 # for some reason the 24.04 installer doesn't run this meaning a stale
 # ds=nocloud-net persists
