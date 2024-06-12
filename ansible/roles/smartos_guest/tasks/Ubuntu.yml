@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-# Copyright 2023 MNX Cloud, Inc.
+# Copyright 2024 MNX Cloud, Inc.
 
 ---
 
@@ -54,3 +54,29 @@
   file:
     dest: /root/snap
     state: absent
+
+- name: Disable SSH socket service
+  systemd_service:
+    name: ssh.socket
+    enabled: false
+
+- name: Disable SSH socket listener
+  file:
+    dest: "/etc/systemd/{{ item }}"
+    state: absent
+  loop:
+    - /ssh.service.d/00-socket.conf
+    - /ssh.socket.d/addresses.conf
+
+- name: Start regular ssh service
+  systemd_service:
+    name: ssh.service
+    state: started
+    enabled: true
+
+# for some reason the 24.04 installer doesn't run this meaning a stale
+# ds=nocloud-net persists
+- name: Run update-grub2
+  shell: update-grub2
+  ignore_errors: true
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'noble'
