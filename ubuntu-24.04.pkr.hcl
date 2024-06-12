@@ -1,5 +1,5 @@
 /*
- * Debian 11 Packer template for building Triton DataCenter/SmartOS images
+ * Ubuntu 24.04 Packer template for building SmartOS / Triton DataCenter images
  */
 
 /*
@@ -9,38 +9,29 @@
  */
 
 /*
- * Copyright 2023 MNX Cloud, Inc.
+ * Copyright 2024 MNX Cloud, Inc.
  */
 
 locals {
-  debian_11_ver          = "11.9.0"
-  debian_11_iso_url      = "https://cdimage.debian.org/cdimage/archive/${local.debian_11_ver}/amd64/iso-cd/debian-${local.debian_11_ver}-amd64-netinst.iso"
-  debian_11_iso_checksum = "file:https://cdimage.debian.org/cdimage/archive/${local.debian_11_ver}/amd64/iso-cd/SHA256SUMS"
+  ubuntu_24_ver          = "24.04"
+  ubuntu_24_iso_url      = "https://releases.ubuntu.com/noble/ubuntu-${local.ubuntu_24_ver}-live-server-amd64.iso"
+  ubuntu_24_iso_checksum = "file:https://releases.ubuntu.com/noble/SHA256SUMS"
 
-  debian_11_boot_command = [
-    "<wait><down>e<wait>",
-    "<down><down><down><end>",
-    "install <wait>",
-    "url=${var.base_url}/debian-11.preseed.cfg ",
-    "debian-installer=en_US locale=en_US keymap=us ",
-    "auto ",
-    "efi=runtime ",
-    "netcfg/get_hostname=debian11 ",
-    "netcfg/get_domain=tritondatacenter.com ",
-    "fb=false debconf/frontend=noninteractive ",
-    "passwd/user-fullname=${var.ssh_username} ",
-    "passwd/user-password=${var.ssh_password} ",
-    "passwd/user-password-again=${var.ssh_password} ",
-    "passwd/username=${var.ssh_username} ",
-    "console=tty0 console=ttyS0,115200n8 verbose ",
-    "tsc=reliable ",
-    "<f10><wait>"
+  ubuntu_24_boot_command = [
+    "c<wait>",
+    "linux /casper/vmlinuz --- autoinstall console=tty0 console=ttyS0,115200n8 ds=\"nocloud-net;seedfrom=${var.base_url}/ubuntu/24.04/\"",
+    " tsc=reliable",
+    "<enter><wait>",
+    "initrd /casper/initrd",
+    "<enter><wait>",
+    "boot",
+    "<enter>"
   ]
 
 }
 
-source "bhyve" "debian-11-x86_64" {
-  boot_command       = local.debian_11_boot_command
+source "bhyve" "ubuntu-2404-x86_64" {
+  boot_command       = local.ubuntu_24_boot_command
   boot_wait          = var.boot_wait
   cpus               = var.cpus
   disk_size          = var.disk_size
@@ -48,14 +39,14 @@ source "bhyve" "debian-11-x86_64" {
   disk_zpool         = var.disk_zpool
   host_nic           = var.host_nic
   http_directory     = var.http_directory
-  iso_checksum       = local.debian_11_iso_checksum
-  iso_url            = local.debian_11_iso_url
+  iso_checksum       = local.ubuntu_24_iso_checksum
+  iso_url            = local.ubuntu_24_iso_url
   memory             = var.memory
   shutdown_command   = var.root_shutdown_command
   ssh_password       = var.ssh_password
   ssh_timeout        = var.ssh_timeout
   ssh_username       = var.ssh_username
-  vm_name            = "debian-11-${formatdate("YYYYMMDD", timestamp())}.x86_64.zfs"
+  vm_name            = "ubuntu-24.04-${formatdate("YYYYMMDD", timestamp())}.x86_64.zfs"
   vnc_bind_address   = var.vnc_bind_address
   vnc_use_password   = var.vnc_use_password
   vnc_port_min       = var.vnc_port_min
@@ -64,7 +55,7 @@ source "bhyve" "debian-11-x86_64" {
 
 build {
   sources = [
-    "bhyve.debian-11-x86_64"
+    "bhyve.ubuntu-2404-x86_64"
   ]
 
   provisioner "ansible" {
@@ -77,6 +68,8 @@ build {
       "ANSIBLE_PIPELINING=True",
       "ANSIBLE_REMOTE_TEMP=/tmp",
       "ANSIBLE_SSH_ARGS='-o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa -o ControlMaster=no -o ControlPersist=180s -o ServerAliveInterval=120s -o TCPKeepAlive=yes'",
+      "ANSIBLE_HOST_KEY_CHECKING=False"
     ]
+    user = "root"
   }
 }

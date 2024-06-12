@@ -44,6 +44,11 @@
     "desc": "Ubuntu 22.04 LTS (Jammy Jellyfish). Built to run on bhyve or KVM virtual machines.",
     "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
   },
+  "ubuntu-24.04": {
+    "os": "linux",
+    "desc": "Ubuntu 24.04 LTS (Noble Numbat). Built to run on bhyve or KVM virtual machines.",
+    "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
+  },
   "freebsd-14": {
     "os": "freebsd",
     "desc": "FreeBSD 14. Built to run on bhyve virtual machines.",
