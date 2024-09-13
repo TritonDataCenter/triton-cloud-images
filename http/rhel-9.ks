@@ -17,6 +17,8 @@
 #repo --name="AppStream" --baseurl=https://dl.rockylinux.org/pub/rocky/9/AppStream/x86_64/os/
 cdrom
 
+text
+skipx
 eula --agreed
 firstboot --disabled
 
