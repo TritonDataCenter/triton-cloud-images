@@ -56,7 +56,6 @@ reboot --eject
 @core
 #dracut-config-generic
 #usermode
--python3-libselinux
 -biosdevname
 -dnf-plugin-spacewalk
 -dracut-config-rescue
@@ -69,6 +68,26 @@ reboot --eject
 -rhn*
 -grub2-efi-x86-modules
 -grub2-pc-modules
+-firewalld
+-firewalld-filesystem
+-ipset
+-ipset-libs
+-python3-firewall
+-python3-slip
+libnftnl
+libnfnetlink
+-linux-firmware
+iptables
+dnf-utils
+gdisk
+nfs-utils
+rsync
+tar
+tuned
+tcpdump
+cloud-init
+cloud-utils-growpart
+dracut-config-generic
 %end
 
 
