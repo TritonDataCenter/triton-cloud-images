@@ -21,12 +21,13 @@ locals {
     "c<wait>",
     "linuxefi /images/pxeboot/vmlinuz inst.repo=cdrom ",
     "inst.text biosdevname=0 net.ifnames=0 ",
+    "ip=dhcp inst.ks=${var.base_url}/rhel-9.ks inst.method=cdrom:// ",
     "<enter>",
     "initrdefi /images/pxeboot/initrd.img<enter>",
+    "<enter>",
     "boot<enter><wait>"
   ]
 }
-    # "inst.ks=${var.base_url}/rhel-9.ks inst.method=cdrom:// ",
 
 source "bhyve" "rhel-9-x86_64" {
   boot_command       = local.rhel_9_boot_command_uefi
