@@ -25,7 +25,7 @@ keyboard us
 timezone UTC --utc
 
 network --bootproto=dhcp
-firewall --enabled --service=ssh
+firewall --disabled 
 services --disabled="kdump" --enabled="chronyd,rsyslog,sshd"
 selinux --enforcing
 
