@@ -15,7 +15,7 @@
 #url --url https://download.rockylinux.org/stg/rocky/9/BaseOS/x86_64/os/
 #repo --name="BaseOS" --baseurl=https://dl.rockylinux.org/pub/rocky/9/BaseOS/x86_64/os/
 #repo --name="AppStream" --baseurl=https://dl.rockylinux.org/pub/rocky/9/AppStream/x86_64/os/
-#cdrom
+cdrom
 
 text
 skipx
