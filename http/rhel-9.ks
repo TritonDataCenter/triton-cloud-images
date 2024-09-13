@@ -80,6 +80,6 @@ reboot --eject
 # permit root login via SSH with password authetication
 echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/01-permitrootlogin.conf
 #dnf install -y grub2-efi-x64-modules grub2-pc-modules
-grub2-install --target=i386-pc /dev/vda
+#grub2-install --target=i386-pc /dev/vda
 %end
 
