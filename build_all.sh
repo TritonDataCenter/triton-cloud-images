@@ -7,7 +7,7 @@
 #
 
 #
-# Copyright 2024 MNX Cloud, Inc.
+# Copyright 2025 MNX Cloud, Inc.
 #
 
 if [[ -n "$TRACE" ]]; then
@@ -208,8 +208,6 @@ if [[ $1 == "list" ]]; then
     exit
 fi
 
-[[ -d $PACKER_PLUGIN_PATH ]] || packer_init
-
 case "$1" in
     *deps)
         # Q: Why do this here and also below, outside of the case statement?
@@ -238,6 +236,7 @@ else
 fi
 
 ensure_deps
+[[ -d $PACKER_PLUGIN_PATH ]] || packer_init
 ensure_services
 
 # Build any images passed on the command line, or all.

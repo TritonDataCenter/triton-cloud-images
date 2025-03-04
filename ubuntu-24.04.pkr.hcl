@@ -9,11 +9,11 @@
  */
 
 /*
- * Copyright 2024 MNX Cloud, Inc.
+ * Copyright 2025 MNX Cloud, Inc.
  */
 
 locals {
-  ubuntu_24_ver          = "24.04"
+  ubuntu_24_ver          = "24.04.2"
   ubuntu_24_iso_url      = "https://releases.ubuntu.com/noble/ubuntu-${local.ubuntu_24_ver}-live-server-amd64.iso"
   ubuntu_24_iso_checksum = "file:https://releases.ubuntu.com/noble/SHA256SUMS"
 

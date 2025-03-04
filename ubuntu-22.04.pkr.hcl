@@ -9,11 +9,11 @@
  */
 
 /*
- * Copyright 2023 MNX Cloud, Inc.
+ * Copyright 2025 MNX Cloud, Inc.
  */
 
 locals {
-  ubuntu_22_ver          = "22.04.4"
+  ubuntu_22_ver          = "22.04.5"
   ubuntu_22_iso_url      = "https://releases.ubuntu.com/jammy/ubuntu-${local.ubuntu_22_ver}-live-server-amd64.iso"
   ubuntu_22_iso_checksum = "file:https://releases.ubuntu.com/jammy/SHA256SUMS"
 

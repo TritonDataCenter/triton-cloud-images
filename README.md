@@ -3,7 +3,7 @@
     License, v. 2.0. If a copy of the MPL was not distributed with this
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-    Copyright 2024 MNX Cloud, Inc.
+    Copyright 2025 MNX Cloud, Inc.
  -->
 
 # Triton DataCenter and SmartOS Cloud Images
@@ -48,7 +48,7 @@ Building images requires additional services to be installed, running, and prope
 
 ### Granting permission for a zone to use Bhyve
 
-You must use a `joyent` brand zone `base-64-lts@22.4.0` or later, with a delegated dataset. The nic will need `"allow_ip_spoofing": true`. If you are using a stand-alone SmartOS server, add this to the JSON when creating the zone. If you are using Triton, you will need to add it via NAPI (AdminUI can also be used). For example:
+You must use a `joyent` brand zone `base-64-lts@22.4.0` with a delegated dataset. The nic will need `"allow_ip_spoofing": true`. If you are using a stand-alone SmartOS server, add this to the JSON when creating the zone. If you are using Triton, you will need to add it via NAPI (AdminUI can also be used). For example:
 
 ```sh
 sdc-napi /nics/00:53:37:aa:bb:cc -X PUT -d '{"allow_ip_spoofing": true}'
