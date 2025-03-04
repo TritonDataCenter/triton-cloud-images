@@ -9,11 +9,11 @@
  */
 
 /*
- * Copyright 2023 MNX Cloud, Inc.
+ * Copyright 2025 MNX Cloud, Inc.
  */
 
 locals {
-  debian_12_ver          = "12.5.0"
+  debian_12_ver          = "12.9.0"
   debian_12_iso_url      = "https://cdimage.debian.org/debian-cd/${local.debian_12_ver}/amd64/iso-cd/debian-${local.debian_12_ver}-amd64-netinst.iso"
   debian_12_iso_checksum = "file:https://cdimage.debian.org/debian-cd/${local.debian_12_ver}/amd64/iso-cd/SHA256SUMS"
 
