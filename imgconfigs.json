@@ -19,6 +19,16 @@
     "desc": "Debian 12 (bookworm) 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
     "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
   },
+  "oraclelinux-8": {
+    "os": "linux",
+    "desc": "Oracle Linux 8 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
+    "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
+  },
+  "oraclelinux-9": {
+    "os": "linux",
+    "desc": "Oracle Linux 9 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
+    "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
+  },
   "rocky-8": {
     "os": "linux",
     "desc": "Rocky 8 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
