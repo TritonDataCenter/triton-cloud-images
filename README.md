@@ -40,6 +40,8 @@ Only building on SmartOS with bhyve is supported. When building on SmartOS, the 
 
 Images produced will be usable with KVM as well as Bhyve.
 
+The settings for the build virtual machine is currently 4 CPUs, 4G of ram, and 10G of disk.  Make sure your build zone allocation has well in excess of that available during the build process.
+
 ## Building with Bhyve and packer on SmartOS
 
 We have created a [packer plugin for bhyve](https://github.com/TritonDataCenter/packer-plugin-bhyve) that works with SmartOS (and should be compatible with other illumos distributions). Please report any issues that you find.
