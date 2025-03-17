@@ -20,6 +20,10 @@ if ! uname -o | grep -q illumos || ! uname -v | grep -q joyent; then
     exit 1
 fi
 
+# If you brought an ssh agent with you, with many many keys, the builds
+# will fail.  This makes sure we don't attempt to use it
+unset SSH_AUTH_SOCK
+
 debug_args=()
 if [[ -n $DEBUG ]]; then
     debug_args=( '--on-error=abort' )
