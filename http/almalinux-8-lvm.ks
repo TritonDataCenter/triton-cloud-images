@@ -28,7 +28,6 @@ firewall --enabled --service=ssh
 services --disabled="kdump" --enabled="chronyd,rsyslog,sshd"
 selinux --enforcing
 
-# TODO: remove "console=tty0" from here
 bootloader --append="console=ttyS0,115200n8 console=tty0 crashkernel=auto net.ifnames=0 tsc=reliable no_timer_check" --location=mbr --timeout=1
 
 # Partition stuff
