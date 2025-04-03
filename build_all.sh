@@ -201,6 +201,11 @@ function ensure_services
     svcadm enable -r ipfilter
     svcadm enable -r isc-dhcpd
     svcadm enable -r ipv4-forwarding
+
+    # Also clear any maintenance state on dhcpd
+    # and make certain that it is up.
+    check_dhcpd
+    svcadm enable -s isc-dhcpd
 }
 
 # Check all valid

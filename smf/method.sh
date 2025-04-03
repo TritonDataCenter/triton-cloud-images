@@ -7,7 +7,7 @@
 #
 
 #
-# Copyright 2023 MNX Cloud, Inc.
+# Copyright 2025 MNX Cloud, Inc.
 #
 
 # shellcheck disable=SC1091
@@ -73,6 +73,12 @@ function do_start {
 }
 
 function do_stop {
+    # We won't be able to stop if dhcp is still running;
+    # temporarily disable it.
+    svcadm disable \
+        -c "Disabling dhcp to bring down image-networking" \
+        -st isc-dhcpd || warn "?!" "stop dhcp"
+
     # If things are out of alignment, we'll just try to take everything down
     # without regard for previous errors but we'll still emit a code
     set +o errexit
