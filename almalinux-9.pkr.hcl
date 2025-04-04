@@ -13,7 +13,7 @@
  */
 
 locals {
-  almalinux_9_ver          = "9.4"
+  almalinux_9_ver          = "9.5"
   almalinux_9_iso_url      = "https://repo.almalinux.org/almalinux/${local.almalinux_9_ver}/isos/x86_64/AlmaLinux-${local.almalinux_9_ver}-x86_64-boot.iso"
   almalinux_9_iso_checksum = "file:https://repo.almalinux.org/almalinux/${local.almalinux_9_ver}/isos/x86_64/CHECKSUM"
 
