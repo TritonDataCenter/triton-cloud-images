@@ -16,7 +16,7 @@ packer {
       source  = "github.com/TritonDataCenter/bhyve"
     }
     ansible = {
-      version = ">= 1.0.3"
+      version = ">= 1.1.1"
       source  = "github.com/hashicorp/ansible"
     }
   }
