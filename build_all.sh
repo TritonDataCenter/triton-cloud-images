@@ -109,23 +109,19 @@ function generate_manifest
     gzip "$imagefile"
 
     published_at=$(date -u +%FT%TZ)
-    os=$(json -f imgconfigs.json '["'"${1}"'"].os')
     sha1=$(digest -a sha1 "$imagegz")
     size=$(stat -c %s "${imagegz}")
-    desc=$(json -f imgconfigs.json '["'"${1}"'"].desc' )
-    home=$(json -f imgconfigs.json '["'"${1}"'"].homepage' )
 
-    sed \
+    { sed \
         -e 's/@UUID@/'"$(uuid -v 4)"'/g' \
         -e 's/@NAME@/'"${1}"'/g' \
         -e 's/@VERSION@/'"${IMG_VERSION}"'/g' \
         -e 's/@PUBLISHED_AT@/'"${published_at}"'/g' \
-        -e 's/@OS@/'"${os}"'/g' \
         -e 's/@SHA1@/'"${sha1}"'/g' \
         -e 's/@SIZE@/'"${size}"'/g' \
-        -e 's/@DESCRIPTION@/'"${desc}"'/g' \
-        -e 's#@HOMEPAGE@#'"${home}"'#g' \
-        manifest.in > "$manifestfile"
+        manifest.in
+        json -f imgconfigs.json '["'"${1}"'"]'
+    } | json --deep-merge > "$manifestfile"
 }
 
 function generate_all_manifests
