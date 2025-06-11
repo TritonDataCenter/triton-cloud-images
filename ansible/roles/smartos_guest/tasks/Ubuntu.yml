@@ -40,7 +40,7 @@
 
 - name: Install packages that may have been unavailable during install
   ansible.builtin.apt:
-    name "{{ item }}"
+    name: "{{ item }}"
   loop:
     - net-tools
     - nftables
