@@ -13,9 +13,9 @@
  */
 
 locals {
-  debian_12_ver          = "12.10.0"
-  debian_12_iso_url      = "https://cdimage.debian.org/debian-cd/${local.debian_12_ver}/amd64/iso-cd/debian-${local.debian_12_ver}-amd64-netinst.iso"
-  debian_12_iso_checksum = "file:https://cdimage.debian.org/debian-cd/${local.debian_12_ver}/amd64/iso-cd/SHA256SUMS"
+  debian_12_ver          = "12.13.0"
+  debian_12_iso_url      = "https://cdimage.debian.org/cdimage/archive/${local.debian_12_ver}/amd64/iso-cd/debian-${local.debian_12_ver}-amd64-netinst.iso"
+  debian_12_iso_checksum = "file:https://cdimage.debian.org/cdimage/archive/${local.debian_12_ver}/amd64/iso-cd/SHA256SUMS"
 
   debian_12_boot_command = [
     "<wait><down>e<wait>",
