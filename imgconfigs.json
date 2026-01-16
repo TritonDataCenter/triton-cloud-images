@@ -9,6 +9,11 @@
     "desc": "AlmaLinux 9 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
     "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
   },
+  "almalinux-10": {
+    "os": "linux",
+    "desc": "AlmaLinux 10 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
+    "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
+  },
   "debian-11": {
     "os": "linux",
     "desc": "Debian 11 (bullseye) 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
@@ -34,6 +39,11 @@
     "desc": "Oracle Linux 9 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
     "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
   },
+  "oraclelinux-10": {
+    "os": "linux",
+    "desc": "Oracle Linux 10 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
+    "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
+  },
   "rocky-8": {
     "os": "linux",
     "desc": "Rocky 8 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
@@ -42,6 +52,11 @@
   "rocky-9": {
     "os": "linux",
     "desc": "Rocky 9 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
+    "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
+  },
+  "rocky-10": {
+    "os": "linux",
+    "desc": "Rocky 10 64-bit image with just essential packages installed. Built to run on bhyve or KVM virtual machines.",
     "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
   },
   "ubuntu-20.04": {
