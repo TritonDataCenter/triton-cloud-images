@@ -13,8 +13,8 @@
  */
 
 locals {
-  oraclelinux_9_iso_url      = "https://yum.oracle.com/ISOS/OracleLinux/OL9/u5/x86_64/OracleLinux-R9-U5-x86_64-boot.iso"
-  oraclelinux_9_iso_checksum = "file:https://linux.oracle.com/security/gpg/checksum/OracleLinux-R9-U5-Server-x86_64.checksum"
+  oraclelinux_9_iso_url      = "https://yum.oracle.com/ISOS/OracleLinux/OL9/u7/x86_64/OracleLinux-R9-U7-x86_64-boot.iso"
+  oraclelinux_9_iso_checksum = "file:https://linux.oracle.com/security/gpg/checksum/OracleLinux-R9-U7-Server-x86_64.checksum"
 
   oraclelinux_9_boot_command_uefi = [
     "c<wait>",
