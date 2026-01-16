@@ -7,8 +7,9 @@
 # An Ansible playbook that configures a SmartOS image
 ---
 - name: SmartOS
-  hosts: default
+  hosts: all
   become: true
+  gather_facts: true
 
   roles:
     #- setup_cloud_init

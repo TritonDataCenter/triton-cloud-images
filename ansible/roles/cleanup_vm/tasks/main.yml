@@ -70,6 +70,8 @@
       - /tmp
       - /var/tmp
     patterns: '*'
+    excludes:
+      - 'packer-provisioner-ansible-local'
   register: tmp_files
 
 - name: Remove temporary files
@@ -77,6 +79,7 @@
     path: "{{ item.path }}"
     state: absent
   loop: "{{ tmp_files.files }}"
+  when: "'packer-provisioner-ansible-local' not in item.path"
 
 - name: Remove SSH host keys block
   block:

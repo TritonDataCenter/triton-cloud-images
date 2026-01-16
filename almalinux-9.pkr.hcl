@@ -55,18 +55,16 @@ build {
     "bhyve.almalinux-9-x86_64"
   ]
 
-  provisioner "ansible" {
+  # Install ansible on the target VM first
+  provisioner "shell" {
+    inline = [
+      "dnf install -y ansible-core"
+    ]
+  }
+
+  # Run ansible locally on the target VM to avoid illumos multiprocessing issues
+  provisioner "ansible-local" {
     playbook_file    = "./ansible/smartos.yml"
-    galaxy_file      = "./ansible/requirements.yml"
-    roles_path       = "./ansible/roles"
-    collections_path = "./ansible/collections"
-    extra_arguments  = [
-      "--scp-extra-args", "'-O '",
-      "--ssh-extra-args", "-o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa -o ControlMaster=no -o ControlPersist=180s -o ServerAliveInterval=120s -o TCPKeepAlive=yes"
-    ]
-    ansible_env_vars = [
-      "ANSIBLE_PIPELINING=True",
-      "ANSIBLE_REMOTE_TEMP=/tmp",
-    ]
+    playbook_dir     = "./ansible"
   }
 }
