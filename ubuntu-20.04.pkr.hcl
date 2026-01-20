@@ -18,12 +18,14 @@ locals {
   ubuntu_20_iso_checksum = "file:https://releases.ubuntu.com/focal/SHA256SUMS"
 
   ubuntu_20_boot_command = [
-    "<spacebar><wait><spacebar><wait><spacebar><wait><spacebar><wait><spacebar><wait>",
-    "e<wait>",
-    "<down><down><down><end>",
-    " console=tty0 console=ttyS0,115200n8 autoinstall ds=\"nocloud-net;seedfrom=${var.base_url}/ubuntu/20.04/\"",
+    "c<wait>",
+    "linux /casper/vmlinuz --- autoinstall console=tty0 console=ttyS0,115200n8 ds=\"nocloud-net;seedfrom=${var.base_url}/ubuntu/20.04/\"",
     " tsc=reliable",
-    "<f10>"
+    "<enter><wait>",
+    "initrd /casper/initrd",
+    "<enter><wait>",
+    "boot",
+    "<enter>"
   ]
 
 }
