@@ -12,6 +12,6 @@
   gather_facts: true
 
   roles:
-    #- setup_cloud_init
+    # - setup_cloud_init
     - smartos_guest
     - cleanup_vm

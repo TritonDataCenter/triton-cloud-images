@@ -4,6 +4,8 @@
 
 # Copyright 2025 MNX Cloud, Inc.
 
+---
+
 - name: Run common tasks for RedHat derivatives
   include_tasks: RedHat.yml
 

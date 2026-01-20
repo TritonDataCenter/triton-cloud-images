@@ -48,7 +48,7 @@
 
 - name: Remove dependencies that are no longer required
   ansible.builtin.apt:
-    autoremove: yes
+    autoremove: true
 
 - name: Remove snap cruft from root's homedir
   file:
@@ -56,7 +56,7 @@
     state: absent
 
 - name: Disable SSH socket service
-  systemd_service:
+  ansible.builtin.systemd:
     name: ssh.socket
     enabled: false
 
@@ -69,7 +69,7 @@
     - /ssh.socket.d/addresses.conf
 
 - name: Start regular ssh service
-  systemd_service:
+  ansible.builtin.systemd:
     name: ssh.service
     state: started
     enabled: true
@@ -79,4 +79,6 @@
 - name: Run update-grub2
   shell: update-grub2
   ignore_errors: true
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'noble'
+  when: >-
+    ansible_distribution == 'Ubuntu' and
+    ansible_distribution_release == 'noble'

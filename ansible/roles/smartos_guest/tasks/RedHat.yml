@@ -4,6 +4,8 @@
 
 # Copyright 2023 MNX Cloud, Inc.
 
+---
+
 - name: Remove firewall and linux-firmware
   dnf:
     name:
@@ -110,8 +112,7 @@
   lineinfile:
     path: /etc/tuned/active_profile
     line: virtual-guest
-    create: yes
+    create: true
 
 - name: Regenerate the initramfs
   command: dracut -f --regenerate-all
-
