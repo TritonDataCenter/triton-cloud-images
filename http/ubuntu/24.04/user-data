@@ -32,7 +32,7 @@ autoinstall:
     grub:
         reorder_uefi: false
     config:
-      - {ptable: gpt, preserve false, name: '', grub_device: true, type: disk, id: disk0, wipe: superblock-recursive, match: { "size": "largest" } }
+      - {ptable: gpt, preserve: false, name: '', grub_device: true, type: disk, id: disk0, wipe: superblock-recursive, match: { "size": "largest" } }
       - {device: disk0, size: 1MB, flag: bios_grub, number: 1, preserve: false, type: partition, id: disk0p1}
       - {device: disk0, size: 256MB, flag: esp, number: 2, preserve: false, grub_device: true, type: partition, id: disk0p2}
       - {device: disk0, size: 800MB, flag: linux, number: 3, preserve: false, type: partition, id: disk0p3}
@@ -58,12 +58,12 @@ autoinstall:
     timezone: UTC
     users:
       - name: root
-        hashed_passwd: $6$PoeuPl9INRKg51ib$yZcI0ipo4vxa6GA2yI7DhOgY7qnkNQastH0GmtlhD9d57nbaxUh0elFz2OQYtxdEPLnb1V7BS4ke6dvBDHLdR1
+        hashed_passwd: $6$VZxrbar1ns0msHfg$R4jV5M41VgyvSRYTVBJcvX5ftBSfYes8bIg52Ll1z8SvTDjqYiTmxx/acxqRUl0yaunsi3t/n.COsjSy9DVkS1
 
   identity:
     hostname: noble-daily
     username: root
-    password: $6$PoeuPl9INRKg51ib$yZcI0ipo4vxa6GA2yI7DhOgY7qnkNQastH0GmtlhD9d57nbaxUh0elFz2OQYtxdEPLnb1V7BS4ke6dvBDHLdR1
+    password: $6$VZxrbar1ns0msHfg$R4jV5M41VgyvSRYTVBJcvX5ftBSfYes8bIg52Ll1z8SvTDjqYiTmxx/acxqRUl0yaunsi3t/n.COsjSy9DVkS1
 
   ssh:
     install-server: true
