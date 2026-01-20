@@ -13,7 +13,6 @@ Each image is defined in a Packer HCL file (`*.pkr.hcl`) with version informatio
 | AlmaLinux 8     | 8.10            | almalinux-8.pkr.hcl      |
 | AlmaLinux 9     | 9.7             | almalinux-9.pkr.hcl      |
 | AlmaLinux 10    | 10.1            | almalinux-10.pkr.hcl     |
-| Debian 11       | 11.11.0         | debian-11.pkr.hcl        |
 | Debian 12       | 12.13.0         | debian-12.pkr.hcl        |
 | Debian 13       | 13.3.0          | debian-13.pkr.hcl        |
 | Oracle Linux 8  | R8-U10          | oraclelinux-8.pkr.hcl    |
