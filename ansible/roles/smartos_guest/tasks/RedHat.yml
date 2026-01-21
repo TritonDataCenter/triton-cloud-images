@@ -24,13 +24,18 @@
   dnf:
     name:
       - dnf-utils
-      - gdisk
       - iptables
       - nfs-utils
       - rsync
       - tar
       - tuned
       - tcpdump
+
+- name: Install gdisk (EL8/EL9 only)
+  dnf:
+    name:
+      - gdisk
+  when: ansible_distribution_major_version | int < 10
 
 - name: Install cloud-init
   dnf:
@@ -69,13 +74,14 @@
     - NETWORKING=yes
     - NOZEROCONF=yes
 
-- name: Configure /etc/sysconfig/network-scripts/ifcfg-eth0
+- name: Configure /etc/sysconfig/network-scripts/ifcfg-eth0 (EL8/EL9 only)
   copy:
     src: ifcfg-eth0
     dest: /etc/sysconfig/network-scripts/ifcfg-eth0
     owner: root
     group: root
     mode: 0644
+  when: ansible_distribution_major_version | int < 10
 
 - name: Disable consistent network device naming
   file:
@@ -85,22 +91,27 @@
     group: root
     state: link
 
+- name: Check if logind.conf exists
+  stat:
+    path: '/etc/systemd/logind.conf'
+  register: logind_conf
+
 - name: Disable virtual terminals allocation by logind
   replace:
     path: '/etc/systemd/logind.conf'
     regexp: '^#?NAutoVTs=\d+'
     replace: 'NAutoVTs=0'
+  when: logind_conf.stat.exists
 
 - name: Configure NetworkManager default DHCP timeout
-  community.general.ini_file:
-    path: /etc/NetworkManager/conf.d/dhcp.conf
-    section: connection
-    option: ipv4.dhcp-timeout
-    value: 300
+  copy:
+    dest: /etc/NetworkManager/conf.d/dhcp.conf
+    content: |
+      [connection]
+      ipv4.dhcp-timeout=300
     owner: root
     group: root
-    mode: 0644
-    seuser: system_u
+    mode: '0644'
 
 - name: Set default kernel package type to kernel
   replace:
