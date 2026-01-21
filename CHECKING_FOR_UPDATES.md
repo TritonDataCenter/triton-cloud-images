@@ -21,7 +21,6 @@ Each image is defined in a Packer HCL file (`*.pkr.hcl`) with version informatio
 | Rocky Linux 8   | 8.10            | rocky-8.pkr.hcl          |
 | Rocky Linux 9   | 9.7             | rocky-9.pkr.hcl          |
 | Rocky Linux 10  | 10.1            | rocky-10.pkr.hcl         |
-| Ubuntu 20.04    | 20.04.6         | ubuntu-20.04.pkr.hcl     |
 | Ubuntu 22.04    | 22.04.5         | ubuntu-22.04.pkr.hcl     |
 | Ubuntu 24.04    | 24.04.3         | ubuntu-24.04.pkr.hcl     |
 
@@ -41,7 +40,6 @@ Check for new point releases (e.g., 12.13.0 -> 12.14.0). Debian typically releas
 ### Ubuntu
 
 **Release pages:**
-- 20.04 (Focal): https://releases.ubuntu.com/focal/
 - 22.04 (Jammy): https://releases.ubuntu.com/jammy/
 - 24.04 (Noble): https://releases.ubuntu.com/noble/
 
