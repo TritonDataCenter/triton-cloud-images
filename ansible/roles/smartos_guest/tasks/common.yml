@@ -37,7 +37,7 @@
   with_fileglob:
     - "usr/sbin/mdata-*"
 
-#ln -s /usr/sbin/mdata-get /lib/smartdc/mdata-get
+# ln -s /usr/sbin/mdata-get /lib/smartdc/mdata-get
 - name: Triton symlink mdata-get
   file:
     src: /usr/sbin/mdata-get

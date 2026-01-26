@@ -11,14 +11,16 @@
     path: /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg
     state: absent
   ignore_errors: true
-  #when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'focal'
+  # when: ansible_distribution == 'Ubuntu' and
+  #   ansible_distribution_release == 'focal'
 
 - name: Remove 99-installer.cfg
   file:
     path: /etc/cloud/cloud.cfg.d/99-installer.cfg
     state: absent
   ignore_errors: true
-  #when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'focal'
+  # when: ansible_distribution == 'Ubuntu' and
+  #   ansible_distribution_release == 'focal'
 
 - name: Remove netplan installer networking
   file:
@@ -35,7 +37,9 @@
   when: ansible_os_family == "RedHat"
 
 - name: Remove old kernels
-  shell: apt-get purge -y $(dpkg --get-selections | grep ^linux-.*-5.* | grep -v $(uname -r) | awk '{print $1}')
+  shell: >-
+    apt-get purge -y $(dpkg --get-selections |
+    grep ^linux-.*-5.* | grep -v $(uname -r) | awk '{print $1}')
   when: ansible_os_family == "Debian"
 
 - name: Delete DNF cache
@@ -43,8 +47,7 @@
   when: ansible_os_family == "RedHat"
 
 - name: Delete APT cache
-  apt:
-    clean: yes
+  command: apt-get clean
   when: ansible_os_family == "Debian"
 
 - name: Find APT sources cache
@@ -52,14 +55,14 @@
     paths:
       - /var/lib/apt/lists
     patterns: ".*_dists_.*"
-    use_regex: yes
+    use_regex: true
   register: src_cache
   when: ansible_os_family == "Debian"
 
 - name: Remove APT sources cache
   ansible.builtin.file:
-     path: "{{item.path}}"
-     state: absent
+    path: "{{ item.path }}"
+    state: absent
   loop: '{{ src_cache.files }}'
   when: ansible_os_family == "Debian"
 
@@ -70,6 +73,8 @@
       - /tmp
       - /var/tmp
     patterns: '*'
+    excludes:
+      - 'packer-provisioner-ansible-local'
   register: tmp_files
 
 - name: Remove temporary files
@@ -77,6 +82,7 @@
     path: "{{ item.path }}"
     state: absent
   loop: "{{ tmp_files.files }}"
+  when: "'packer-provisioner-ansible-local' not in item.path"
 
 - name: Remove SSH host keys block
   block:
@@ -161,10 +167,14 @@
   file:
     path: /etc/ssh/sshd_config.d/01-permitrootlogin.conf
     state: absent
-  when: ansible_os_family == "RedHat" and ansible_facts['distribution_major_version'] == '9'
+  when: >-
+    ansible_os_family == "RedHat" and
+    ansible_facts['distribution_major_version'] == '9'
 
 - name: Fill free space with zeroes
-  shell: dd if=/dev/zero of=/zeroed_file bs=1M oflag=direct || rm -f /zeroed_file
+  shell: >-
+    dd if=/dev/zero of=/zeroed_file bs=1M oflag=direct ||
+    rm -f /zeroed_file
 
 - name: Detect swap partition
   command: grep -oP '^/dev/[\w-]+' /proc/swaps
@@ -181,7 +191,9 @@
       command: "swapoff {{ swaps.stdout }}"
 
     - name: Fill swap partition with zeroes
-      shell: "dd if=/dev/zero of={{ swaps.stdout }} bs=1M oflag=direct || /bin/true"
+      shell: >-
+        dd if=/dev/zero of={{ swaps.stdout }} bs=1M oflag=direct ||
+        /bin/true
 
     - name: Format swap partition
       command: "mkswap -U {{ swap_blkid.stdout }} -f {{ swaps.stdout }}"

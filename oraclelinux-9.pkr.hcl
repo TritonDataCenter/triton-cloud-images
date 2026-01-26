@@ -13,8 +13,8 @@
  */
 
 locals {
-  oraclelinux_9_iso_url      = "https://yum.oracle.com/ISOS/OracleLinux/OL9/u5/x86_64/OracleLinux-R9-U5-x86_64-boot.iso"
-  oraclelinux_9_iso_checksum = "file:https://linux.oracle.com/security/gpg/checksum/OracleLinux-R9-U5-Server-x86_64.checksum"
+  oraclelinux_9_iso_url      = "https://yum.oracle.com/ISOS/OracleLinux/OL9/u7/x86_64/OracleLinux-R9-U7-x86_64-boot.iso"
+  oraclelinux_9_iso_checksum = "file:https://linux.oracle.com/security/gpg/checksum/OracleLinux-R9-U7-Server-x86_64.checksum"
 
   oraclelinux_9_boot_command_uefi = [
     "c<wait>",
@@ -54,18 +54,16 @@ build {
     "bhyve.oraclelinux-9-x86_64"
   ]
 
-  provisioner "ansible" {
+  # Install ansible on the target VM first
+  provisioner "shell" {
+    inline = [
+      "dnf install -y ansible-core"
+    ]
+  }
+
+  # Run ansible locally on the target VM to avoid illumos multiprocessing issues
+  provisioner "ansible-local" {
     playbook_file    = "./ansible/smartos.yml"
-    galaxy_file      = "./ansible/requirements.yml"
-    roles_path       = "./ansible/roles"
-    collections_path = "./ansible/collections"
-    extra_arguments  = [
-      "--scp-extra-args", "'-O '",
-      "--ssh-extra-args", "-o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa -o ControlMaster=no -o ControlPersist=180s -o ServerAliveInterval=120s -o TCPKeepAlive=yes"
-    ]
-    ansible_env_vars = [
-      "ANSIBLE_PIPELINING=True",
-      "ANSIBLE_REMOTE_TEMP=/tmp",
-    ]
+    playbook_dir     = "./ansible"
   }
 }

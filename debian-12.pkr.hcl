@@ -13,9 +13,9 @@
  */
 
 locals {
-  debian_12_ver          = "12.10.0"
-  debian_12_iso_url      = "https://cdimage.debian.org/debian-cd/${local.debian_12_ver}/amd64/iso-cd/debian-${local.debian_12_ver}-amd64-netinst.iso"
-  debian_12_iso_checksum = "file:https://cdimage.debian.org/debian-cd/${local.debian_12_ver}/amd64/iso-cd/SHA256SUMS"
+  debian_12_ver          = "12.13.0"
+  debian_12_iso_url      = "https://cdimage.debian.org/cdimage/archive/${local.debian_12_ver}/amd64/iso-cd/debian-${local.debian_12_ver}-amd64-netinst.iso"
+  debian_12_iso_checksum = "file:https://cdimage.debian.org/cdimage/archive/${local.debian_12_ver}/amd64/iso-cd/SHA256SUMS"
 
   debian_12_boot_command = [
     "<wait><down>e<wait>",
@@ -67,18 +67,21 @@ build {
     "bhyve.debian-12-x86_64"
   ]
 
-  provisioner "ansible" {
+  # Install ansible and configure locale on the target VM first
+  provisioner "shell" {
+    inline = [
+      "apt-get update",
+      "apt-get install -y ansible locales",
+      "sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen",
+      "locale-gen",
+      "update-locale LANG=en_US.UTF-8"
+    ]
+  }
+
+  # Run ansible locally on the target VM to avoid illumos multiprocessing issues
+  provisioner "ansible-local" {
     playbook_file    = "./ansible/smartos.yml"
-    galaxy_file      = "./ansible/requirements.yml"
-    roles_path       = "./ansible/roles"
-    collections_path = "./ansible/collections"
-    extra_arguments  = [
-      "--scp-extra-args", "'-O '",
-      "--ssh-extra-args", "-o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa -o ControlMaster=no -o ControlPersist=180s -o ServerAliveInterval=120s -o TCPKeepAlive=yes"
-    ]
-    ansible_env_vars = [
-      "ANSIBLE_PIPELINING=True",
-      "ANSIBLE_REMOTE_TEMP=/tmp",
-    ]
+    playbook_dir     = "./ansible"
+    command          = "LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 ansible-playbook"
   }
 }
