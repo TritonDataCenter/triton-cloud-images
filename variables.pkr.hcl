@@ -36,7 +36,7 @@ variables {
   vnc_bind_address      = "127.0.0.1"
   vnc_use_password      = true
   vnc_port_min          = 5900
-  vnc_port_max          = 6000
+  vnc_port_max          = 5900
 
   disk_size             = "10G"
   ssh_username          = "root"
