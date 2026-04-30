@@ -56,13 +56,10 @@ autoinstall:
   user-data:
     disable_root: false
     timezone: UTC
-    users:
-      - name: root
-        hashed_passwd: $6$PoeuPl9INRKg51ib$yZcI0ipo4vxa6GA2yI7DhOgY7qnkNQastH0GmtlhD9d57nbaxUh0elFz2OQYtxdEPLnb1V7BS4ke6dvBDHLdR1
 
   identity:
     hostname: noble-daily
-    username: root
+    username: ubuntu
     password: $6$PoeuPl9INRKg51ib$yZcI0ipo4vxa6GA2yI7DhOgY7qnkNQastH0GmtlhD9d57nbaxUh0elFz2OQYtxdEPLnb1V7BS4ke6dvBDHLdR1
 
   ssh:
@@ -83,6 +80,7 @@ autoinstall:
     - iptables
 
   late-commands:
+    - echo 'root:tritondatacenter' | curtin in-target --target=/target -- chpasswd
     - sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /target/etc/ssh/sshd_config
     - sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/g' /target/etc/ssh/sshd_config
     - parted /dev/vda set 1 bios_grub on
