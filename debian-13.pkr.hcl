@@ -13,7 +13,7 @@
  */
 
 locals {
-  debian_13_ver          = "13.3.0"
+  debian_13_ver          = "13.4.0"
   debian_13_iso_url      = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-${local.debian_13_ver}-amd64-netinst.iso"
   debian_13_iso_checksum = "file:https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS"
 

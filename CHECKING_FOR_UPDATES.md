@@ -14,7 +14,7 @@ Each image is defined in a Packer HCL file (`*.pkr.hcl`) with version informatio
 | AlmaLinux 9     | 9.7             | almalinux-9.pkr.hcl      |
 | AlmaLinux 10    | 10.1            | almalinux-10.pkr.hcl     |
 | Debian 12       | 12.13.0         | debian-12.pkr.hcl        |
-| Debian 13       | 13.3.0          | debian-13.pkr.hcl        |
+| Debian 13       | 13.4.0          | debian-13.pkr.hcl        |
 | Oracle Linux 8  | R8-U10          | oraclelinux-8.pkr.hcl    |
 | Oracle Linux 9  | R9-U7           | oraclelinux-9.pkr.hcl    |
 | Oracle Linux 10 | R10-U1          | oraclelinux-10.pkr.hcl   |
@@ -22,7 +22,7 @@ Each image is defined in a Packer HCL file (`*.pkr.hcl`) with version informatio
 | Rocky Linux 9   | 9.7             | rocky-9.pkr.hcl          |
 | Rocky Linux 10  | 10.1            | rocky-10.pkr.hcl         |
 | Ubuntu 22.04    | 22.04.5         | ubuntu-22.04.pkr.hcl     |
-| Ubuntu 24.04    | 24.04.3         | ubuntu-24.04.pkr.hcl     |
+| Ubuntu 24.04    | 24.04.4         | ubuntu-24.04.pkr.hcl     |
 
 ## Checking for Updates by Distribution
 
