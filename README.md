@@ -4,6 +4,7 @@
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
     Copyright 2025 MNX Cloud, Inc.
+    Copyright 2026 Edgecast Cloud LLC.
  -->
 
 # Triton DataCenter and SmartOS Cloud Images
@@ -22,17 +23,21 @@ This project uses [Packer](https://www.packer.io/) templates and and Ansible for
 
 ## Available Images
 
-| Name        | Version |
-| :---------: | :-----: |
-| AlmaLinux   | 8       |
-| AlmaLinux   | 9       |
-| Debian      | 11      |
-| Debian      | 12      |
-| Rocky Linux | 8       |
-| Rocky Linux | 9       |
-| Ubuntu      | 20.04   |
-| Ubuntu      | 22.04   |
-| Ubuntu      | 24.04   |
+| Name         | Version |
+| :----------: | :-----: |
+| AlmaLinux    | 8       |
+| AlmaLinux    | 9       |
+| AlmaLinux    | 10      |
+| Debian       | 12      |
+| Debian       | 13      |
+| Oracle Linux | 8       |
+| Oracle Linux | 9       |
+| Oracle Linux | 10      |
+| Rocky Linux  | 8       |
+| Rocky Linux  | 9       |
+| Rocky Linux  | 10      |
+| Ubuntu       | 22.04   |
+| Ubuntu       | 24.04   |
 
 ## Requirements
 
