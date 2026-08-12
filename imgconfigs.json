@@ -41,7 +41,14 @@
   },
   "windows-2019": {
     "os": "windows",
+    "image_size": 25600,
     "desc": "Windows images.  Built to run on bhyve only",
+    "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/windows"
+  },
+  "windows-2025": {
+    "os": "windows",
+    "image_size": 40960,
+    "desc": "Windows Server 2025 64-bit image. Built to run on bhyve virtual machines.",
     "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/windows"
   }
 }
