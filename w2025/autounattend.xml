@@ -140,22 +140,31 @@
                 </RunSynchronousCommand>
                 <RunSynchronousCommand wcm:action="add">
                     <Order>4</Order>
-                    <Path>cmd.exe /C FOR %i IN (D E F G) DO @IF EXIST %i:\triton\copy_files.bat CALL %i:\triton\copy_files.bat</Path>
+                    <!-- Do not use % variables here; Setup expands environment strings in RunSynchronousCommand paths before cmd runs. -->
+                    <Path>cmd.exe /C if exist D:\triton\copy_files.bat D:\triton\copy_files.bat</Path>
                 </RunSynchronousCommand>
                 <RunSynchronousCommand wcm:action="add">
                     <Order>5</Order>
-                    <Path>SchTasks /create /f /ru SYSTEM /sc ONSTART /tn "TritonNetworking" /tr "powershell.exe -file c:\smartdc\bin\enable_networking.ps1"</Path>
+                    <Path>cmd.exe /C if exist E:\triton\copy_files.bat E:\triton\copy_files.bat</Path>
                 </RunSynchronousCommand>
                 <RunSynchronousCommand wcm:action="add">
                     <Order>6</Order>
-                    <Path>SchTasks /create /f /ru SYSTEM /sc ONSTART /tn "TritonDiskResize" /tr "powershell.exe -file c:\smartdc\bin\resize_disk.ps1"</Path>
+                    <Path>cmd.exe /C if exist F:\triton\copy_files.bat F:\triton\copy_files.bat</Path>
                 </RunSynchronousCommand>
                 <RunSynchronousCommand wcm:action="add">
                     <Order>7</Order>
-                    <Path>SchTasks /create /f /ru SYSTEM /sc ONSTART /tn "TritonPrepareImage" /tr "powershell.exe -file c:\smartdc\bin\prepare_image_runner.ps1"</Path>
+                    <Path>SchTasks /create /f /ru SYSTEM /sc ONSTART /tn "TritonNetworking" /tr "powershell.exe -file c:\smartdc\bin\enable_networking.ps1"</Path>
                 </RunSynchronousCommand>
                 <RunSynchronousCommand wcm:action="add">
                     <Order>8</Order>
+                    <Path>SchTasks /create /f /ru SYSTEM /sc ONSTART /tn "TritonDiskResize" /tr "powershell.exe -file c:\smartdc\bin\resize_disk.ps1"</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>9</Order>
+                    <Path>SchTasks /create /f /ru SYSTEM /sc ONSTART /tn "TritonPrepareImage" /tr "powershell.exe -file c:\smartdc\bin\prepare_image_runner.ps1"</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>10</Order>
                     <!-- Shutdown must be immediate or Setup reboots into OOBE and loses it; capture the image before OOBE runs. -->
                     <Path>shutdown /s /t 0 /f</Path>
                 </RunSynchronousCommand>
