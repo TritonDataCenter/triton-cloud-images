@@ -156,7 +156,8 @@
                 </RunSynchronousCommand>
                 <RunSynchronousCommand wcm:action="add">
                     <Order>8</Order>
-                    <Path>shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"</Path>
+                    <!-- Shutdown must be immediate or Setup reboots into OOBE and loses it; capture the image before OOBE runs. -->
+                    <Path>shutdown /s /t 0 /f</Path>
                 </RunSynchronousCommand>
             </RunSynchronous>
         </component>
