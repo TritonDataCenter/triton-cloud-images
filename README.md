@@ -135,3 +135,17 @@ To generate images for a subset of targets, pass only targets you wish to create
 ```sh
 ./build_all.sh <target1> <target2>
 ```
+
+### Windows Server images
+
+Build the Windows templates directly on a SmartOS bhyve build host:
+
+```sh
+packer build --only=bhyve.windows-2019-x86_64 .
+packer build --only=bhyve.windows-2025-x86_64 .
+```
+
+The Windows Server 2025 template requires a `packer-plugin-bhyve` build with
+the companion optional-NIC patch. The build runs in a non-global zone that
+cannot create VNICs, and the guest needs no network because Packer supplies all
+install files on a CD. Windows Server evaluation media expires after 180 days.
