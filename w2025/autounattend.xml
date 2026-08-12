@@ -42,10 +42,21 @@
                         </CreatePartition>
                     </CreatePartitions>
                     <ModifyPartitions>
+                        <!-- The ESP must be formatted FAT32 or Setup fails after applying the image with the ESP left RAW. -->
+                        <ModifyPartition wcm:action="add">
+                            <Format>FAT32</Format>
+                            <Order>1</Order>
+                            <PartitionID>1</PartitionID>
+                            <Label>System</Label>
+                        </ModifyPartition>
+                        <ModifyPartition wcm:action="add">
+                            <Order>2</Order>
+                            <PartitionID>2</PartitionID>
+                        </ModifyPartition>
                         <ModifyPartition wcm:action="add">
                             <Format>NTFS</Format>
                             <Letter>C</Letter>
-                            <Order>1</Order>
+                            <Order>3</Order>
                             <PartitionID>3</PartitionID>
                             <Label>Windows</Label>
                         </ModifyPartition>
