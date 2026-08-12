@@ -75,15 +75,25 @@
             </ImageInstall>
         </component>
         <component name="Microsoft-Windows-PnpCustomizationsWinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <!-- DriverPaths entries must name the leaf directory containing the .inf, not a parent tree. -->
             <DriverPaths>
                 <PathAndCredentials wcm:keyValue="1" wcm:action="add">
-                    <Path>D:\drivers</Path>
+                    <Path>D:\$WinPEDriver$\viostor</Path>
                 </PathAndCredentials>
                 <PathAndCredentials wcm:keyValue="2" wcm:action="add">
-                    <Path>E:\drivers</Path>
+                    <Path>D:\$WinPEDriver$\netkvm</Path>
                 </PathAndCredentials>
                 <PathAndCredentials wcm:keyValue="3" wcm:action="add">
-                    <Path>F:\drivers</Path>
+                    <Path>E:\$WinPEDriver$\viostor</Path>
+                </PathAndCredentials>
+                <PathAndCredentials wcm:keyValue="4" wcm:action="add">
+                    <Path>E:\$WinPEDriver$\netkvm</Path>
+                </PathAndCredentials>
+                <PathAndCredentials wcm:keyValue="5" wcm:action="add">
+                    <Path>F:\$WinPEDriver$\viostor</Path>
+                </PathAndCredentials>
+                <PathAndCredentials wcm:keyValue="6" wcm:action="add">
+                    <Path>F:\$WinPEDriver$\netkvm</Path>
                 </PathAndCredentials>
             </DriverPaths>
         </component>
