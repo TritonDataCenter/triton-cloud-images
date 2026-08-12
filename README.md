@@ -149,7 +149,10 @@ The Windows Server 2025 template requires a `packer-plugin-bhyve` build with
 the companion optional-NIC patch. The build runs in a non-global zone that
 cannot create VNICs, and the guest needs no network because Packer supplies all
 install files on a CD. Windows Server evaluation media expires after 180 days.
-Boot-critical virtio storage drivers must live under `w2025/$WinPEDriver$` so
-`wpeinit` loads them before Setup evaluates `DiskConfiguration`. The answer
-file retains `DriverPaths` to stage the same drivers in the installed image,
-but `DriverPaths` alone runs too late to expose the virtio-blk disk for setup.
+Boot-critical virtio storage drivers must live under the repository-root
+`$WinPEDriver$` so `wpeinit` loads them before Setup evaluates
+`DiskConfiguration`. Packer's `cd_files` preserves a directory's relative path
+while flattening files to the CD root, so this directory must remain at the
+repository root. The answer file retains `DriverPaths` to stage the same
+drivers in the installed image, but `DriverPaths` alone runs too late to expose
+the virtio-blk disk for setup.

@@ -19,7 +19,7 @@ source "bhyve" "windows-2025-x86_64" {
   boot_wait          = "2s"
   cpus               = 4
   memory             = 8192
-  cd_files           = ["./w2025/autounattend.xml", "./triton", "./w2025/$WinPEDriver$"]
+  cd_files           = ["./w2025/autounattend.xml", "./triton", "./$WinPEDriver$"]
   disk_size          = var.windows_2025_disk_size
 
   disk_use_zvol      = var.disk_use_zvol
