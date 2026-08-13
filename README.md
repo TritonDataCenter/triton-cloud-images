@@ -161,3 +161,20 @@ repository root. Windows Setup installs the drivers it finds there into both
 the WinPE session and the offline Windows image. The answer file therefore does
 not define `DriverPaths`; adding the same INFs there makes Setup fail with
 `0x80070103`.
+
+#### NetKVM compatibility
+
+The NetKVM driver under `$WinPEDriver$` is deliberately the 2023 build
+(`100.93.104.24000`). Do not replace it with the current virtio-win release
+without retesting it on Triton: the 2025 build regresses against the legacy
+virtio-net device presented by bhyve. The failure can be identified by:
+
+- `CM_PROB_FAILED_POST_START` on the Red Hat VirtIO Ethernet Adapter;
+- a dead NIC with no IP interface; and
+- a misleading `Last Result: 0` from the `TritonNetworking` scheduled task,
+  because PowerShell exits successfully even when every statement errors.
+
+The forward-looking fix is a platform image that supports the `virtio1` zone
+attribute, with `virtio1=true` set on the VM. Once that is available, re-evaluate
+the modern NetKVM driver rather than upgrading it independently. The working
+viostor driver does not share this constraint.

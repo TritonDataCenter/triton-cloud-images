@@ -113,13 +113,9 @@ the VIOPROT protocol driver is installed:
 
 ## Protocol installation
 
-First install netkvm driver.
-
-(by admin, from the directory where **vioprot.inf** is located)
+(by admin, from the directory where **vioprot.inf** and **netkvmp.exe** are located)
 
 `netkvmp install` or `netkvmp i`
-
-Note: **netkvmp.exe** is installed with netkvm driver and located in System32 directory
 
 ## Protocol uninstallation
 
