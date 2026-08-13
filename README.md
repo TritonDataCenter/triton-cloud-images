@@ -162,19 +162,28 @@ the WinPE session and the offline Windows image. The answer file therefore does
 not define `DriverPaths`; adding the same INFs there makes Setup fail with
 `0x80070103`.
 
-#### NetKVM compatibility
+#### VirtIO driver compatibility
 
-The NetKVM driver under `$WinPEDriver$` is deliberately the 2023 build
-(`100.93.104.24000`). Do not replace it with the current virtio-win release
-without retesting it on Triton: the 2025 build regresses against the legacy
-virtio-net device presented by bhyve. The failure can be identified by:
+The NetKVM and viostor drivers under `$WinPEDriver$` are the `2k25` builds from
+virtio-win 0.1.271 (`100.100.104.27100`). The trailing version digits identify
+the virtio-win release: `27100` is 0.1.271, `24000` is 0.1.240, and `28500` is
+0.1.285. Release 0.1.285 binds the Triton NIC but then fails with
+`CM_PROB_FAILED_POST_START`. Release 0.1.240 works, but predates Server 2025 and
+has no `2k25` build. Release 0.1.271 is the first tested release that is both
+`2k25`-targeted and working.
+
+Do not replace these drivers with the current virtio-win release without
+retesting them against a Triton bhyve VM. A NetKVM regression can be identified
+by:
 
 - `CM_PROB_FAILED_POST_START` on the Red Hat VirtIO Ethernet Adapter;
 - a dead NIC with no IP interface; and
 - a misleading `Last Result: 0` from the `TritonNetworking` scheduled task,
   because PowerShell exits successfully even when every statement errors.
 
-The forward-looking fix is a platform image that supports the `virtio1` zone
-attribute, with `virtio1=true` set on the VM. Once that is available, re-evaluate
-the modern NetKVM driver rather than upgrading it independently. The working
-viostor driver does not share this constraint.
+The underlying constraint is legacy virtio-net. In illumos-joyent,
+`usr/src/lib/brand/bhyve/zone/boot.c` maps the `virtio1` zone attribute to
+bhyve's `virtio.modern` and passes `virtio.modern=false` when the attribute is
+absent. No tested platform image includes that support yet, so `virtio1=true`
+is currently ignored. Once a platform image includes it, re-evaluate newer
+drivers rather than upgrading them independently.

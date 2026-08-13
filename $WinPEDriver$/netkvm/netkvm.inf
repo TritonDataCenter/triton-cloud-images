@@ -1,5 +1,5 @@
 ;-------------------------------------------------------------------------------
-;Copyright (c) 2008-2022 Red Hat Inc.
+;Copyright (c) 2008-2021 Red Hat Inc.
 ;
 ;
 ;Module Name:
@@ -8,6 +8,10 @@
 ; VirtIO Ethernet Adapter
 ;
 ;-------------------------------------------------------------------------------
+;Installation Notes:
+;    Step by step driver installation wiki:
+;        https://github.com/virtio-win/kvm-guest-drivers-windows/wiki/Driver-installation
+;
 
 [version]
 Signature   = "$Windows NT$"
@@ -15,15 +19,15 @@ Class       = Net
 CatalogFile = netkvm.cat
 ClassGUID   = {4d36e972-e325-11ce-bfc1-08002be10318}
 Provider=%VENDOR%
-DriverVer = 07/21/2023,100.93.104.24000
+DriverVer = 01/13/2025,100.100.104.27100
 DriverPackageType = PlugAndPlay
 DriverPackageDisplayName = %kvmnet6.DeviceDesc%
 PnpLockDown=1
 
 [Manufacturer]
-%VENDOR% = NetKVM, NTamd64.6.3
+%VENDOR% = NetKVM, NTamd64.10.0...16299
 
-[NetKVM.NTamd64.6.3]
+[NetKVM.NTamd64.10.0...16299]
 %kvmnet6.DeviceDesc%    = kvmnet6.ndi, PCI\VEN_1AF4&DEV_1000&SUBSYS_00011AF4&REV_00, PCI\VEN_1AF4&DEV_1000
 %kvmnet6.DeviceDesc%    = kvmnet6.ndi, PCI\VEN_1AF4&DEV_1041&SUBSYS_11001AF4&REV_01, PCI\VEN_1AF4&DEV_1041
 
@@ -43,7 +47,7 @@ HKR, "Interrupt Management\Affinity Policy", DevicePriority, 0x00010001, 2
 Characteristics = 0x84 ; NCF_PHYSICAL  | NCF_HAS_UI
 BusType     = 5 ; PCI
 AddReg          = kvmnet6.Reg, Parameters
-CopyFiles       = kvmnet6.CopyFiles
+CopyFiles       = kvmnet6.CopyFiles, netkvmp.CopyFiles
 *IfType         = 6
 *MediaType      = 0     ; NdisMedium802_3
 *PhysicalMediaType = 0      ; NdisPhysicalMediumUnspecified
@@ -109,7 +113,7 @@ HKR, Ndi\Params\TxCapacity\enum,    "1024",     0,          %String_1024%
 
 HKR, Ndi\params\RxCapacity,         ParamDesc,  0,          %RxCapacity%
 HKR, Ndi\params\RxCapacity,         type,       0,          "enum"
-HKR, Ndi\params\RxCapacity,         default,    0,          "256"
+HKR, Ndi\params\RxCapacity,         default,    0,          "1024"
 HKR, Ndi\Params\RxCapacity\enum,    "16",       0,          %String_16%
 HKR, Ndi\Params\RxCapacity\enum,    "32",       0,          %String_32%
 HKR, Ndi\Params\RxCapacity\enum,    "64",       0,          %String_64%
@@ -201,15 +205,25 @@ HKR, Ndi\Params\*UDPChecksumOffloadIPv6\enum,   "2",    0,      %Rx%
 HKR, Ndi\Params\*UDPChecksumOffloadIPv6\enum,   "1",    0,      %Tx%
 HKR, Ndi\Params\*UDPChecksumOffloadIPv6\enum,   "0",    0,      %Disable%
 
+HKR, Ndi\params\MinRxBufferPercent,         ParamDesc,  0,          %MinRxBufferPercent%
+HKR, Ndi\params\MinRxBufferPercent,         type,       0,          "int"
+HKR, Ndi\params\MinRxBufferPercent,         default,    0,          "0"
+HKR, Ndi\params\MinRxBufferPercent,         min,        0,          "0"
+HKR, Ndi\params\MinRxBufferPercent,         max,        0,          "100"
+HKR, Ndi\params\MinRxBufferPercent,         step,       0,          "1"
+
 [kvmnet6.CopyFiles]
 netkvm.sys,,,2
+
+[netkvmp.CopyFiles]
+netkvmp.exe,,,2
 
 [kvmnet6.Service]
 DisplayName     = %kvmnet6.Service.DispName%
 ServiceType     = 1 ;%SERVICE_KERNEL_DRIVER%
 StartType       = 3 ;%SERVICE_DEMAND_START%
 ErrorControl    = 1 ;%SERVICE_ERROR_NORMAL%
-ServiceBinary   = %12%\netkvm.sys
+ServiceBinary   = %13%\netkvm.sys
 LoadOrderGroup  = NDIS
 AddReg          = TextModeFlags.Reg
 
@@ -224,15 +238,19 @@ HKR, , TypesSupported,   0x00010001, 7
 HKR,,TextModeFlags,0x00010001, 0x0001
 HKR,Parameters,DisableMSI,,"0"
 HKR,Parameters,EarlyDebug,,"3"
+HKR,Parameters,DmaRemappingCompatible,0x00010001,2
+
 
 [SourceDisksNames]
 1 = %DiskId1%,,,""
 
 [SourceDisksFiles]
 netkvm.sys  = 1,,
+netkvmp.exe = 1,,
 
 [DestinationDirs]
-kvmnet6.CopyFiles = 12
+kvmnet6.CopyFiles = 13
+netkvmp.CopyFiles = 11
 
 [Strings]
 VENDOR = "Red Hat, Inc."
@@ -286,6 +304,7 @@ TCPUDPAll = "TCP/UDP(v4,v6)"
 All = "All"
 IPv4 = "IPv4"
 Maximal = "Maximal"
+MinRxBufferPercent = "MinRxBufferPercent"
 
 [kvmnet6.Reg] 
 HKR,    ,                         BusNumber,           0, "0"
@@ -333,3 +352,10 @@ HKR, Ndi\params\*UsoIPv6,        Default,              0, "1"
 HKR, Ndi\params\*UsoIPv6,        Optional,             0, "0"
 HKR, Ndi\params\*UsoIPv6\enum,   "0",                  0, "Disabled"
 HKR, Ndi\params\*UsoIPv6\enum,   "1",                  0, "Enabled"
+
+HKR, Ndi\params\*NdisPoll,       ParamDesc,            0, "Ndis Poll Mode"
+HKR, Ndi\params\*NdisPoll,       Type,                 0, "enum"
+HKR, Ndi\params\*NdisPoll,       Default,              0, "1"
+HKR, Ndi\params\*NdisPoll,       Optional,             0, "0"
+HKR, Ndi\params\*NdisPoll\enum,  "0",                  0, "Disabled"
+HKR, Ndi\params\*NdisPoll\enum,  "1",                  0, "Enabled"

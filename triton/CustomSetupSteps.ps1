@@ -9,6 +9,9 @@ function Get-MetadataValue {
     for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
         $value = [string](& "C:\smartdc\bin\mdata-get.exe" $Key)
         $metadataExitCode = $LASTEXITCODE
+        if ($null -eq $value) {
+            $value = ""
+        }
         $value = $value.Trim()
         $missing = [string]::IsNullOrWhiteSpace($value) -or
             $value.StartsWith(
