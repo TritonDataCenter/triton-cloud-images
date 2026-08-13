@@ -90,6 +90,15 @@
     </settings>
     <settings pass="oobeSystem">
         <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <AutoLogon>
+                <Password>
+                    <Value>tritondatacenter</Value>
+                    <PlainText>true</PlainText>
+                </Password>
+                <LogonCount>1</LogonCount>
+                <Username>Administrator</Username>
+                <Enabled>true</Enabled>
+            </AutoLogon>
             <UserAccounts>
                 <AdministratorPassword>
                     <Value>tritondatacenter</Value>
@@ -105,6 +114,14 @@
                 <ProtectYourPC>3</ProtectYourPC>
             </OOBE>
             <ShowWindowsLive>false</ShowWindowsLive>
+            <!-- Explicitly replace Setup's cached C:\Windows\Panther\unattend.xml; otherwise the generalized image reruns this build answer file's specialize pass on the customer's first boot. -->
+            <FirstLogonCommands>
+                <SynchronousCommand wcm:action="add">
+                    <Order>1</Order>
+                    <CommandLine>C:\Windows\System32\Sysprep\sysprep.exe /generalize /oobe /shutdown /unattend:C:\smartdc\bin\unattend.xml</CommandLine>
+                    <Description>Generalize and shut down the Windows Server 2025 image</Description>
+                </SynchronousCommand>
+            </FirstLogonCommands>
         </component>
     </settings>
     <settings pass="specialize">
@@ -163,11 +180,7 @@
                     <Order>9</Order>
                     <Path>SchTasks /create /f /ru SYSTEM /sc ONSTART /tn "TritonPrepareImage" /tr "powershell.exe -file c:\smartdc\bin\prepare_image_runner.ps1"</Path>
                 </RunSynchronousCommand>
-                <RunSynchronousCommand wcm:action="add">
-                    <Order>10</Order>
-                    <!-- Shutdown must be immediate or Setup reboots into OOBE and loses it; capture the image before OOBE runs. -->
-                    <Path>shutdown /s /t 0 /f</Path>
-                </RunSynchronousCommand>
+                <!-- A shutdown inside specialize is converted into Setup's own restart; the build ends via sysprep at first logon. -->
             </RunSynchronous>
         </component>
     </settings>

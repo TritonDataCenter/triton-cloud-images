@@ -148,7 +148,11 @@ packer build --only=bhyve.windows-2025-x86_64 .
 The Windows Server 2025 template requires a `packer-plugin-bhyve` build with
 the companion optional-NIC patch. The build runs in a non-global zone that
 cannot create VNICs, and the guest needs no network because Packer supplies all
-install files on a CD. Windows Server evaluation media expires after 180 days.
+install files on a CD. At first logon, the Windows Server 2025 build runs
+sysprep with `/generalize /oobe /shutdown` to prepare the image and power it
+off. A shutdown requested during specialize does not work because Windows Setup
+overrides it with its own restart. Windows Server evaluation media expires
+after 180 days.
 Boot-critical virtio storage drivers must live under the repository-root
 `$WinPEDriver$` so `wpeinit` loads them before Setup evaluates
 `DiskConfiguration`. Packer's `cd_files` preserves a directory's relative path
