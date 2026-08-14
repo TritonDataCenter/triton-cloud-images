@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+    <settings pass="generalize">
+      <component name="Microsoft-Windows-Security-SPP" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <SkipRearm>1</SkipRearm>
+      </component>
+      <component name="Microsoft-Windows-PnpSysprep" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <PersistAllDeviceInstalls>true</PersistAllDeviceInstalls>
+        <DoNotCleanUpNonPresentDevices>true</DoNotCleanUpNonPresentDevices>
+      </component>
+    </settings>
+    <settings pass="windowsPE">
+        <component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <SetupUILanguage>
+                <UILanguage>en-US</UILanguage>
+            </SetupUILanguage>
+            <UILanguage>en-US</UILanguage>
+            <UserLocale>en-US</UserLocale>
+            <SystemLocale>en-US</SystemLocale>
+            <InputLocale>en-US</InputLocale>
+            <UILanguageFallback>en-US</UILanguageFallback>
+        </component>
+        <component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <DiskConfiguration>
+                <DisableEncryptedDiskProvisioning>true</DisableEncryptedDiskProvisioning>
+                <Disk wcm:action="add">
+                    <CreatePartitions>
+                        <CreatePartition wcm:action="add">
+                            <Order>1</Order>
+                            <Type>EFI</Type>
+                            <Size>200</Size>
+                        </CreatePartition>
+                        <CreatePartition wcm:action="add">
+                            <Order>2</Order>
+                            <Type>MSR</Type>
+                            <Size>16</Size>
+                        </CreatePartition>
+                        <CreatePartition wcm:action="add">
+                            <Order>3</Order>
+                            <Type>Primary</Type>
+                            <Extend>true</Extend>
+                        </CreatePartition>
+                    </CreatePartitions>
+                    <ModifyPartitions>
+                        <!-- The ESP must be formatted FAT32 or Setup fails after applying the image with the ESP left RAW. -->
+                        <ModifyPartition wcm:action="add">
+                            <Format>FAT32</Format>
+                            <Order>1</Order>
+                            <PartitionID>1</PartitionID>
+                            <Label>System</Label>
+                        </ModifyPartition>
+                        <ModifyPartition wcm:action="add">
+                            <Order>2</Order>
+                            <PartitionID>2</PartitionID>
+                        </ModifyPartition>
+                        <ModifyPartition wcm:action="add">
+                            <Format>NTFS</Format>
+                            <Letter>C</Letter>
+                            <Order>3</Order>
+                            <PartitionID>3</PartitionID>
+                            <Label>Windows</Label>
+                        </ModifyPartition>
+                    </ModifyPartitions>
+                    <DiskID>0</DiskID>
+                    <WillWipeDisk>true</WillWipeDisk>
+                </Disk>
+                <WillShowUI>OnError</WillShowUI>
+            </DiskConfiguration>
+            <UserData>
+                <AcceptEula>true</AcceptEula>
+            </UserData>
+            <ImageInstall>
+                <OSImage>
+                    <InstallFrom>
+                        <MetaData wcm:action="add">
+                            <Key>/IMAGE/INDEX</Key>
+                            <Value>2</Value>
+                        </MetaData>
+                    </InstallFrom>
+                    <InstallTo>
+                        <DiskID>0</DiskID>
+                        <PartitionID>3</PartitionID>
+                    </InstallTo>
+                    <WillShowUI>OnError</WillShowUI>
+                </OSImage>
+            </ImageInstall>
+        </component>
+        <!-- $WinPEDriver$ must arrive at the CD root, which wpeinit scans. In cd_files,
+             omit a leading "./": files land at the CD root under their basename, while
+             directories contribute their last component and everything below it. A
+             leading "./" can reproduce the whole source path on the CD. Adding DriverPaths
+             for the same INFs makes Setup fail with 0x80070103. -->
+    </settings>
+    <settings pass="oobeSystem">
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <AutoLogon>
+                <Password>
+                    <Value>tritondatacenter</Value>
+                    <PlainText>true</PlainText>
+                </Password>
+                <LogonCount>1</LogonCount>
+                <Username>Administrator</Username>
+                <Enabled>true</Enabled>
+            </AutoLogon>
+            <UserAccounts>
+                <AdministratorPassword>
+                    <Value>tritondatacenter</Value>
+                    <PlainText>true</PlainText>
+                </AdministratorPassword>
+            </UserAccounts>
+            <OOBE>
+                <HideEULAPage>true</HideEULAPage>
+                <HideLocalAccountScreen>true</HideLocalAccountScreen>
+                <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+                <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+                <NetworkLocation>Work</NetworkLocation>
+                <ProtectYourPC>3</ProtectYourPC>
+            </OOBE>
+            <ShowWindowsLive>false</ShowWindowsLive>
+            <!-- Explicitly replace Setup's cached C:\Windows\Panther\unattend.xml; otherwise the generalized image reruns this build answer file's specialize pass on the customer's first boot. -->
+            <FirstLogonCommands>
+                <SynchronousCommand wcm:action="add">
+                    <Order>1</Order>
+                    <CommandLine>C:\Windows\System32\Sysprep\sysprep.exe /generalize /oobe /shutdown /unattend:C:\triton\bin\unattend.xml</CommandLine>
+                    <Description>Generalize and shut down the Windows Server 2025 image</Description>
+                </SynchronousCommand>
+            </FirstLogonCommands>
+        </component>
+    </settings>
+    <settings pass="specialize">
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <ComputerName>Windows</ComputerName>
+            <TimeZone>UTC</TimeZone>
+        </component>
+        <component name="Microsoft-Windows-TerminalServices-LocalSessionManager" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <fDenyTSConnections>false</fDenyTSConnections>
+        </component>
+        <component name="Networking-MPSSVC-Svc" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <FirewallGroups>
+                <FirewallGroup wcm:action="add" wcm:keyValue="RemoteDesktop">
+                    <Active>true</Active>
+                    <Group>Remote Desktop</Group>
+                    <Profile>all</Profile>
+                </FirewallGroup>
+            </FirewallGroups>
+        </component>
+        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <RunSynchronous>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>1</Order>
+                    <Path>bcdedit /ems {current} on</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>2</Order>
+                    <Path>bcdedit /emssettings EMSPORT:1 EMSBAUDRATE:115200</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>3</Order>
+                    <Path>bcdedit /bootems {bootmgr} on</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>4</Order>
+                    <!-- Do not use % variables here; Setup expands environment strings in RunSynchronousCommand paths before cmd runs. -->
+                    <Path>cmd.exe /C if exist D:\windows-guest\copy_files.bat D:\windows-guest\copy_files.bat</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>5</Order>
+                    <Path>cmd.exe /C if exist E:\windows-guest\copy_files.bat E:\windows-guest\copy_files.bat</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>6</Order>
+                    <Path>cmd.exe /C if exist F:\windows-guest\copy_files.bat F:\windows-guest\copy_files.bat</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>7</Order>
+                    <Path>SchTasks /create /f /ru SYSTEM /sc ONSTART /tn "TritonNetworking" /tr "powershell.exe -file c:\triton\bin\enable_networking.ps1"</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>8</Order>
+                    <Path>SchTasks /create /f /ru SYSTEM /sc ONSTART /tn "TritonDiskResize" /tr "powershell.exe -file c:\triton\bin\resize_disk.ps1"</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>9</Order>
+                    <Path>SchTasks /create /f /ru SYSTEM /sc ONSTART /tn "TritonPrepareImage" /tr "powershell.exe -file c:\triton\bin\prepare_image_runner.ps1"</Path>
+                </RunSynchronousCommand>
+                <!-- A shutdown inside specialize is converted into Setup's own restart; the build ends via sysprep at first logon. -->
+            </RunSynchronous>
+        </component>
+    </settings>
+</unattend>
