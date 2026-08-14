@@ -85,8 +85,11 @@
                 </OSImage>
             </ImageInstall>
         </component>
-        <!-- Driver injection is handled entirely by $WinPEDriver$ on the CD root.
-             Adding DriverPaths for the same INFs makes Setup fail with 0x80070103. -->
+        <!-- $WinPEDriver$ must arrive at the CD root, which wpeinit scans. In cd_files,
+             omit a leading "./": files land at the CD root under their basename, while
+             directories contribute their last component and everything below it. A
+             leading "./" can reproduce the whole source path on the CD. Adding DriverPaths
+             for the same INFs makes Setup fail with 0x80070103. -->
     </settings>
     <settings pass="oobeSystem">
         <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
