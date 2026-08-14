@@ -12,9 +12,9 @@
 # This file can/should be run every time windows boots to support
 # 'vmadm create -S'. While it can be run manually, that's unsupported.
 
-$meta_file = 'c:\smartdc\prepare-image.ps1'
+$meta_file = 'c:\triton\prepare-image.ps1'
 
-c:\smartdc\bin\mdata-get.exe sdc:operator-script > $meta_file
+c:\triton\bin\mdata-get.exe sdc:operator-script > $meta_file
 
 # If we received a proper operator script, it should contain "prepare-image"
 # calls in it

@@ -15,7 +15,7 @@ function getmdata {
     $key = $args[0]
 
     while ($true) {
-        $json = c:\smartdc\bin\mdata-get $key
+        $json = c:\triton\bin\mdata-get $key
 
         try {
             $object = $json | ConvertFrom-Json

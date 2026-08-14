@@ -7,7 +7,7 @@ function Get-MetadataValue {
     )
 
     for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
-        $value = [string](& "C:\smartdc\bin\mdata-get.exe" $Key)
+        $value = [string](& "C:\triton\bin\mdata-get.exe" $Key)
         $metadataExitCode = $LASTEXITCODE
         if ($null -eq $value) {
             $value = ""
