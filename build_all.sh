@@ -99,7 +99,7 @@ function generate_manifest
         printf 'Skipping manifest.\n'
         return
     fi
-    local published_at os sha1 size desc home imagefile
+    local published_at os sha1 size desc home imagefile image_size manifest_template
 
     output_stub="output-${i//.}-x86_64/${i}-${IMG_VERSION}"
     imagefile="${output_stub}.x86_64.zfs"
@@ -110,6 +110,12 @@ function generate_manifest
 
     published_at=$(date -u +%FT%TZ)
     os=$(json -f imgconfigs.json '["'"${1}"'"].os')
+    image_size=$(json -f imgconfigs.json '["'"${1}"'"].image_size')
+    image_size=${image_size:-10240}
+    manifest_template="manifest-${os}.in"
+    if [[ ! -f $manifest_template ]]; then
+        manifest_template=manifest.in
+    fi
     sha1=$(digest -a sha1 "$imagegz")
     size=$(stat -c %s "${imagegz}")
     desc=$(json -f imgconfigs.json '["'"${1}"'"].desc' )
@@ -123,9 +129,10 @@ function generate_manifest
         -e 's/@OS@/'"${os}"'/g' \
         -e 's/@SHA1@/'"${sha1}"'/g' \
         -e 's/@SIZE@/'"${size}"'/g' \
+        -e 's/@IMAGE_SIZE@/'"${image_size}"'/g' \
         -e 's/@DESCRIPTION@/'"${desc}"'/g' \
         -e 's#@HOMEPAGE@#'"${home}"'#g' \
-        manifest.in > "$manifestfile"
+        "$manifest_template" > "$manifestfile"
 }
 
 function generate_all_manifests

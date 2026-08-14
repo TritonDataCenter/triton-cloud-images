@@ -38,6 +38,7 @@ This project uses [Packer](https://www.packer.io/) templates and and Ansible for
 | Rocky Linux  | 10      |
 | Ubuntu       | 22.04   |
 | Ubuntu       | 24.04   |
+| Windows Server | 2025  |
 
 ## Requirements
 
@@ -46,6 +47,24 @@ Only building on SmartOS with bhyve is supported. When building on SmartOS, the 
 Images produced will be usable with KVM as well as Bhyve.
 
 The settings for the build virtual machine is currently 4 CPUs, 4G of ram, and 10G of disk.  Make sure your build zone allocation has well in excess of that available during the build process.
+
+## Windows Server 2025
+
+The Windows Server 2025 image uses evaluation media that expires after 180 days. Build it directly with Packer, or use the build script to also produce the image manifest:
+
+```sh
+packer build --only=bhyve.windows-2025-x86_64 .
+./build_all.sh windows-2025
+```
+
+The build attaches no guest NIC (`host_nic` is empty) because it runs in a non-global zone that cannot create VNICs. The `communicator = "none"` build delivers everything on CD and requires a `packer-plugin-bhyve` build with the companion optional-NIC change.
+
+The following details are important when maintaining this image:
+
+* Boot-critical storage drivers must remain in `$WinPEDriver$` at the repository root. `cd_files` flattens individual files to the ISO root but preserves a directory's relative source path, and `wpeinit` scans only the drive root. Adding `DriverPaths` for the same INFs makes Setup fail with `0x80070103`.
+* The virtio drivers are pinned to virtio-win 0.1.271 (`100.100.104.27100`). Do not update them without retesting on Triton: 0.1.285 binds the virtio-net device and then fails with `CM_PROB_FAILED_POST_START`, leaving a dead NIC. The trailing version digits identify the virtio-win release. Triton's bhyve presents legacy virtio unless the zone sets `virtio1=true`, which maps to bhyve's `virtio.modern`; re-evaluate newer drivers once platform images carry that setting.
+* The build ends with sysprep `/generalize /oobe /shutdown` as a first-logon command. Setup overrides a shutdown in the specialize pass with its own restart. The `/unattend:` argument prevents the generalized image from running the build answer file again on a customer's first boot.
+* At first boot, `SetupComplete.cmd` applies the per-instance Administrator password from metadata, while the `TritonNetworking` startup task applies networking metadata. The image manifest enables `generate_passwords` for the `administrator` user.
 
 ## Building with Bhyve and packer on SmartOS
 

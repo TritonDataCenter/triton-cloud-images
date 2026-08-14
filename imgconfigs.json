@@ -63,5 +63,11 @@
     "os": "linux",
     "desc": "Ubuntu 24.04 LTS (Noble Numbat). Built to run on bhyve or KVM virtual machines.",
     "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/linux"
+  },
+  "windows-2025": {
+    "os": "windows",
+    "image_size": 40960,
+    "desc": "Windows Server 2025 64-bit evaluation image. Built to run on bhyve virtual machines.",
+    "homepage": "https://docs.tritondatacenter.com/public-cloud/instances/virtual-machines/images/windows"
   }
 }
