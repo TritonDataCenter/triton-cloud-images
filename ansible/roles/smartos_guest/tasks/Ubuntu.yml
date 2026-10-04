@@ -36,7 +36,22 @@
     - thermald
     - upower
     - usbmuxd
+# as of 24.04.5 this breaks the install, because linux-modules-7.x have become
+# dependent on it. wireless-regdb must be connditionally removed from other
+# versions instead
+#    - wireless-regdb
+
+- name: Remove unwanted packages (Jammy, Resolute)
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  loop:
     - wireless-regdb
+  when: >-
+    ansible_distribution == 'Ubuntu' and
+    ansible_distribution_release != 'noble'
+
 
 - name: Install packages that may have been unavailable during install
   ansible.builtin.apt:
