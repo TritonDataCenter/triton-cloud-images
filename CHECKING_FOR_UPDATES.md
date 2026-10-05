@@ -22,7 +22,8 @@ Each image is defined in a Packer HCL file (`*.pkr.hcl`) with version informatio
 | Rocky Linux 9   | 9.7             | rocky-9.pkr.hcl          |
 | Rocky Linux 10  | 10.1            | rocky-10.pkr.hcl         |
 | Ubuntu 22.04    | 22.04.5         | ubuntu-22.04.pkr.hcl     |
-| Ubuntu 24.04    | 24.04.4         | ubuntu-24.04.pkr.hcl     |
+| Ubuntu 24.04    | 24.04.5         | ubuntu-24.04.pkr.hcl     |
+| Ubuntu 26.04    | 26.04.1         | ubuntu-26.04.pkr.hcl     |
 
 ## Checking for Updates by Distribution
 
@@ -42,6 +43,7 @@ Check for new point releases (e.g., 12.13.0 -> 12.14.0). Debian typically releas
 **Release pages:**
 - 22.04 (Jammy): https://releases.ubuntu.com/jammy/
 - 24.04 (Noble): https://releases.ubuntu.com/noble/
+- 26.04 (Resolute): https://releases.ubuntu.com/resolute/
 
 Look for new point releases in the `ubuntu-XX.XX.Y-live-server-amd64.iso` filename. Ubuntu LTS releases get point updates approximately every 6 months.
 

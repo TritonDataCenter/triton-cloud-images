@@ -11,16 +11,16 @@
     path: /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg
     state: absent
   ignore_errors: true
-  # when: ansible_distribution == 'Ubuntu' and
-  #   ansible_distribution_release == 'focal'
+  # when: ansible_facts['distribution'] == 'Ubuntu' and
+  #   ansible_facts['distribution_release'] == 'focal'
 
 - name: Remove 99-installer.cfg
   file:
     path: /etc/cloud/cloud.cfg.d/99-installer.cfg
     state: absent
   ignore_errors: true
-  # when: ansible_distribution == 'Ubuntu' and
-  #   ansible_distribution_release == 'focal'
+  # when: ansible_facts['distribution'] == 'Ubuntu' and
+  #   ansible_facts['distribution_release'] == 'focal'
 
 - name: Remove netplan installer networking
   file:
@@ -34,21 +34,21 @@
 
 - name: Remove old kernels
   shell: dnf remove -y $(dnf repoquery --installonly --latest-limit=-1 -q)
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts['os_family'] == "RedHat"
 
 - name: Remove old kernels
   shell: >-
     apt-get purge -y $(dpkg --get-selections |
     grep ^linux-.*-5.* | grep -v $(uname -r) | awk '{print $1}')
-  when: ansible_os_family == "Debian"
+  when: ansible_facts['os_family'] == "Debian"
 
 - name: Delete DNF cache
   command: dnf clean all
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts['os_family'] == "RedHat"
 
 - name: Delete APT cache
   command: apt-get clean
-  when: ansible_os_family == "Debian"
+  when: ansible_facts['os_family'] == "Debian"
 
 - name: Find APT sources cache
   find:
@@ -57,14 +57,14 @@
     patterns: ".*_dists_.*"
     use_regex: true
   register: src_cache
-  when: ansible_os_family == "Debian"
+  when: ansible_facts['os_family'] == "Debian"
 
 - name: Remove APT sources cache
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: absent
   loop: '{{ src_cache.files }}'
-  when: ansible_os_family == "Debian"
+  when: ansible_facts['os_family'] == "Debian"
 
 - name: Find temporary files
   find:
@@ -128,7 +128,7 @@
     path: /etc/network/interfaces
     regexp: "^(# The|auto|iface|allow).*"
     state: absent
-  when: ansible_os_family == "Debian" and ansible_distribution != "Ubuntu"
+  when: ansible_facts['os_family'] == "Debian" and ansible_facts['distribution'] != "Ubuntu"
 
 - name: Remove log folders.
   file:
@@ -168,7 +168,7 @@
     path: /etc/ssh/sshd_config.d/01-permitrootlogin.conf
     state: absent
   when: >-
-    ansible_os_family == "RedHat" and
+    ansible_facts['os_family'] == "RedHat" and
     ansible_facts['distribution_major_version'] == '9'
 
 - name: Fill free space with zeroes
@@ -220,7 +220,7 @@
 
 - name: Remove installer from /etc/hosts
   shell:
-    cmd: sed -i'' '/{{ ansible_hostname }}/d' /etc/hosts
+    cmd: sed -i'' '/{{ ansible_facts['hostname'] }}/d' /etc/hosts
 
 - name: Run fstrim
   shell: /usr/sbin/fstrim -a

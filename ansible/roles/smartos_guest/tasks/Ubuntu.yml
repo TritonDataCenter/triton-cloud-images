@@ -40,16 +40,12 @@
 # somewhere in the HWE upgrade to linux 7, linux-modules-7.x are now dependent
 # upon wireless-regdb. Removing it from the Noble install breaks the build,
 # removing it from Resolute results in an unbootable image.
-- name: Remove unwanted packages (Jammy)
+- name: Remove wireless-regdb (Jammy)
   ansible.builtin.apt:
-    name: "{{ item }}"
+    name: wireless-regdb
     state: absent
     purge: true
-  loop:
-    - wireless-regdb
-  when: ( ansible_facts['distribution'] == 'Ubuntu' and
-    ansible_facts['distribution_release'] == 'jammy' )
-
+  when: ansible_facts['distribution_release'] == 'jammy'
 
 - name: Install packages that may have been unavailable during install
   ansible.builtin.apt:
@@ -91,5 +87,4 @@
 # ds=nocloud-net persists
 - name: Run update-grub2
   shell: update-grub2
-  when: ( ansible_facts['distribution'] == 'Ubuntu' and
-    ansible_facts['distribution_release'] != 'jammy' )
+  when: ansible_facts['distribution_release'] != 'jammy'
