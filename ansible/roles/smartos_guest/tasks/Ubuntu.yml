@@ -36,21 +36,19 @@
     - thermald
     - upower
     - usbmuxd
-# as of 24.04.5 this breaks the install, because linux-modules-7.x have become
-# dependent on it. wireless-regdb must be connditionally removed from other
-# versions instead
-#    - wireless-regdb
 
-- name: Remove unwanted packages (Jammy, Resolute)
+# somewhere in the HWE upgrade to linux 7, linux-modules-7.x are now dependent
+# upon wireless-regdb. Removing it from the Noble install breaks the build,
+# removing it from Resolute results in an unbootable image.
+- name: Remove unwanted packages (Jammy)
   ansible.builtin.apt:
     name: "{{ item }}"
     state: absent
     purge: true
   loop:
     - wireless-regdb
-  when: >-
-    ansible_distribution == 'Ubuntu' and
-    ansible_distribution_release != 'noble'
+  when: ( ansible_facts['distribution'] == 'Ubuntu' and
+    ansible_facts['distribution_release'] == 'jammy' )
 
 
 - name: Install packages that may have been unavailable during install
@@ -89,11 +87,9 @@
     state: started
     enabled: true
 
-# for some reason the 24.04 installer doesn't run this meaning a stale
+# for some reason the 24.04 installer (and later) do not run this meaning a stale
 # ds=nocloud-net persists
 - name: Run update-grub2
   shell: update-grub2
-  ignore_errors: true
-  when: >-
-    ansible_distribution == 'Ubuntu' and
-    ansible_distribution_release == 'noble'
+  when: ( ansible_facts['distribution'] == 'Ubuntu' and
+    ansible_facts['distribution_release'] != 'jammy' )
