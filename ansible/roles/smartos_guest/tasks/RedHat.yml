@@ -35,7 +35,7 @@
   dnf:
     name:
       - gdisk
-  when: ansible_distribution_major_version | int < 10
+  when: ansible_facts['distribution_major_version'] | int < 10
 
 - name: Install cloud-init
   dnf:
@@ -81,7 +81,7 @@
     owner: root
     group: root
     mode: 0644
-  when: ansible_distribution_major_version | int < 10
+  when: ansible_facts['distribution_major_version'] | int < 10
 
 - name: Disable consistent network device naming
   file:
